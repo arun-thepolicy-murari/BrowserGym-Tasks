@@ -163,9 +163,26 @@ therefore carry `?bridge=http://127.0.0.1:8090`, which routes every interactable
 the real engine — cross-app bus, scheduler, breaker traps, verifiers. The Environment tab
 says which mode is live, and refuses to imply a stale link is current.
 
-The shop link opens at the task's own `start_path` (`#/cart` for 13 of the 14 tasks), i.e.
-the page the agent saw at step 0. Mocks are hash-routed; set `ROUTE_STYLE=path` if one is
-switched to `BrowserRouter`.
+**Deep links.** Each tab opens on the page the agent saw at step 0 — `/cart` for 13 of the
+14 tasks, `/inbox` for Gmail. The route goes in **both** the path and the hash:
+
+```
+http://127.0.0.1:5201/cart?sid=…&bridge=…#/cart
+```
+
+A `BrowserRouter` build reads the path (vite's SPA fallback serves index.html for any
+path, so `/cart` is not a 404); a `HashRouter` build ignores the path and reads the hash.
+Either way it lands correctly, rather than depending on a guess about which router a mock
+uses — the earlier hash-only guess was wrong and every link quietly opened on the home
+page. `run_local.sh` probes each deep path before printing it and falls back to hash-only
+for any mock that doesn't serve the shell there. Force one form with `ROUTE_STYLE=hash`
+or `ROUTE_STYLE=path`.
+
+**Pop-ups.** Browsers allow one pop-up per click, so *Open all* opens one tab per click by
+default — the button re-labels itself to the remaining count so the progress is visible.
+Allow pop-ups for `127.0.0.1:8899` once (Chrome: the blocked-pop-up icon in the address
+bar → *Always allow*) and one click opens every app. Tabs are opened under stable names,
+so re-clicking focuses the existing tab instead of piling up duplicates.
 
 Session ids come from `/bridge/reset` rather than being reconstructed, and are built by
 `tools/bridge.py::sid_for` — slug-safe, since a mock persists a session as

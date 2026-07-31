@@ -252,8 +252,8 @@ wait_for "http://127.0.0.1:$APP_PORT/index.html" "annotator"
       "http://127.0.0.1:$APP_PORT" <<'PY'
 import json, sys, urllib.parse, urllib.request
 reset_json, mnum, seed, bridge, start_path, style, app_url = sys.argv[1:8]
-r = json.load(open(reset_json))
-sids, mocks = r.get("sids") or {}, r.get("mocks") or {}
+reset = json.load(open(reset_json))
+sids, mocks = reset.get("sids") or {}, reset.get("mocks") or {}
 
 def route(app):
     """The step-0 page for an app. Only shop varies per task; the others have one
@@ -265,17 +265,17 @@ def route(app):
 
 def url_for(app, sid, base, form):
     q = urllib.parse.urlencode({"sid": sid, "bridge": bridge})
-    r = route(app)
-    if not r or r == "/":
+    path = route(app)
+    if not path or path == "/":
         return f"{base}/?{q}"
     if form == "hash":
-        return f"{base}/?{q}#{r}"
+        return f"{base}/?{q}#{path}"
     if form == "path":
-        return f"{base}{r}?{q}"
-    return f"{base}{r}?{q}#{r}"        # dual: whichever router the mock uses, it hits
+        return f"{base}{path}?{q}"
+    return f"{base}{path}?{q}#{path}"   # dual: whichever router the mock uses, it hits
 
 
-def serves_shell(base, r):
+def serves_shell(base, path):
     """Does the dev server return the SPA shell at this deep path?
 
     A wrong deep link does not error — it quietly lands on the mock's home page,
@@ -284,7 +284,7 @@ def serves_shell(base, r):
     is unusable and we drop back to hash-only for that app.
     """
     try:
-        with urllib.request.urlopen(f"{base}{r}", timeout=5) as resp:
+        with urllib.request.urlopen(f"{base}{path}", timeout=5) as resp:
             return resp.status == 200 and 'id="root"' in resp.read(4096).decode("utf-8", "replace")
     except Exception:
         return False
@@ -295,20 +295,20 @@ for app, sid in sids.items():
     base = (mocks.get(app) or "").rstrip("/")
     if not base:
         continue
-    r = route(app)
+    path = route(app)
     form = style
-    if style == "dual" and r and r != "/" and not serves_shell(base, r):
-        print(f"  !! {app}: {base}{r} does not serve the app shell — using hash-only")
+    if style == "dual" and path and path != "/" and not serves_shell(base, path):
+        print(f"  !! {app}: {base}{path} does not serve the app shell — using hash-only")
         form = "hash"
     apps[app] = url_for(app, sid, base, form)
 
-json.dump({"mnum": mnum, "task_id": r.get("task_id"), "seed": int(seed),
+json.dump({"mnum": mnum, "task_id": reset.get("task_id"), "seed": int(seed),
            "mode": "bridged", "bridge": bridge, "start_path": start_path,
            "route_style": style, "routes": {a: route(a) for a in apps},
            "sids": sids, "apps": apps},
           open("live_env.json", "w"), indent=2)
 print()
-print(f"  task        {mnum}  ({r.get('task_id')})  seed {seed}   start {start_path}")
+print(f"  task        {mnum}  ({reset.get('task_id')})  seed {seed}   start {start_path}")
 print(f"  annotator   {app_url}/index.html")
 for app, url in apps.items():
     print(f"  {app:<11} {url}")
