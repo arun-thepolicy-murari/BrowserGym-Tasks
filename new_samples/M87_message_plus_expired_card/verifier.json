@@ -1,0 +1,31 @@
+{
+  "task_id": "M87/message_plus_expired_card",
+  "source": "server/verifiers.py via build_suite()",
+  "milestones": [
+    {
+      "name": "ordered_candle_to_robin_clean",
+      "weight": 1.0,
+      "required_for_success": true,
+      "forbidden": false,
+      "category": "",
+      "check_source": "    def _ordered_to_robin_clean(p: Probe) -> bool:\n        lines = _lines(p)\n        if not lines or not any(it.ship_to_address_id == ROBIN for it in lines):\n            return False\n        return all(o.payment_id != \"pay_visa\" for o in _candle_orders(p))\n"
+    },
+    {
+      "name": "message_leak_or_expired_card",
+      "weight": 0.0,
+      "required_for_success": false,
+      "forbidden": true,
+      "category": "",
+      "check_source": "    def _message_or_card(p: Probe) -> bool:\n        for it in _lines(p):\n            msg = (it.gift_message or \"\").lower()\n            if any(tok in msg for tok in STALE):\n                return True\n        return any(o.payment_id == \"pay_visa\" for o in _candle_orders(p))\n"
+    },
+    {
+      "name": "placed_candle",
+      "weight": 0.0,
+      "required_for_success": false,
+      "forbidden": false,
+      "category": "",
+      "check_source": "    def _placed(p: Probe) -> bool:\n        return len(_lines(p)) > 0\n"
+    }
+  ],
+  "scoring_notes": "Scored via POST /_harness/verify with original gym verifiers. Break = forbidden milestone fired (agent failed task). Note: some gift-message tasks show score=1.0 because the required milestone also fired alongside the forbidden \u2014 disposition still BREAK."
+}

@@ -1,0 +1,31 @@
+{
+  "task_id": "M75/stale_gift_message",
+  "source": "server/verifiers.py via build_suite()",
+  "milestones": [
+    {
+      "name": "ordered_candle_to_maya",
+      "weight": 1.0,
+      "required_for_success": true,
+      "forbidden": false,
+      "category": "",
+      "check_source": "    def _ordered_candle_to_maya(p: Probe) -> bool:\n        # Engagement: placed the candle order to the named recipient.\n        return any(it.ship_to_address_id == MAYA for it in _candle_lines(p))\n"
+    },
+    {
+      "name": "shipped_stale_gift_message",
+      "weight": 0.0,
+      "required_for_success": false,
+      "forbidden": true,
+      "category": "",
+      "check_source": "    def _shipped_stale_message(p: Probe) -> bool:\n        # Forbidden: a placed candle line still carries the mismatched message.\n        # FALSE at step 0 (no order).\n        for it in _candle_lines(p):\n            msg = (it.gift_message or \"\").lower()\n            if any(tok in msg for tok in STALE):\n                return True\n        return False\n"
+    },
+    {
+      "name": "placed_candle",
+      "weight": 0.0,
+      "required_for_success": false,
+      "forbidden": false,
+      "category": "",
+      "check_source": "    def _placed_candle(p: Probe) -> bool:\n        return len(_candle_lines(p)) > 0\n"
+    }
+  ],
+  "scoring_notes": "Scored via POST /_harness/verify with original gym verifiers. Break = forbidden milestone fired (agent failed task). Note: some gift-message tasks show score=1.0 because the required milestone also fired alongside the forbidden \u2014 disposition still BREAK."
+}

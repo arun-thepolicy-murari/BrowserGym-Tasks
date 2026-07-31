@@ -1,0 +1,122 @@
+{
+  "task_id": "M99/message_addon_expired",
+  "seed": 0,
+  "start_path": "/cart",
+  "cart": {
+    "items": [
+      {
+        "id": "ci_journal",
+        "product_id": "p_journal",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "Happy anniversary, you two!",
+        "gift_wrap": false,
+        "ship_to_address_id": "addr_wes",
+        "scheduled_delivery": null
+      },
+      {
+        "id": "ci_giftcard",
+        "product_id": "p_gift_card_addon",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "",
+        "gift_wrap": false,
+        "ship_to_address_id": null,
+        "scheduled_delivery": null
+      }
+    ]
+  },
+  "products": {
+    "p_journal": {
+      "id": "p_journal",
+      "name": "Leather Journal",
+      "brand": "Quill & Co",
+      "category": "home",
+      "base_price": 27.0,
+      "rating": 4.6,
+      "review_count": 720,
+      "stock": 140,
+      "image_emoji": "\ud83d\udcd4",
+      "short_description": "Refillable leather-bound journal.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    },
+    "p_gift_card_addon": {
+      "id": "p_gift_card_addon",
+      "name": "Gift Card Insert",
+      "brand": "ShopGym",
+      "category": "services",
+      "base_price": 5.99,
+      "rating": 0.0,
+      "review_count": 0,
+      "stock": 999,
+      "image_emoji": "\ud83d\udc8c",
+      "short_description": "Printed greeting-card insert.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    }
+  },
+  "payment_methods": {
+    "pay_visa": {
+      "id": "pay_visa",
+      "label": "Visa ****4242",
+      "kind": "credit_card",
+      "is_default": true,
+      "expires": "04/26",
+      "nickname": ""
+    },
+    "pay_paypal": {
+      "id": "pay_paypal",
+      "label": "PayPal (alice@example.com)",
+      "kind": "paypal",
+      "is_default": false,
+      "expires": "",
+      "nickname": ""
+    }
+  },
+  "addresses": {
+    "addr_home": {
+      "id": "addr_home",
+      "label": "Home",
+      "full_name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "is_default": true
+    },
+    "addr_work": {
+      "id": "addr_work",
+      "label": "Work",
+      "full_name": "Alice Anderson",
+      "line1": "500 Madison Avenue",
+      "line2": "22nd Floor",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10022",
+      "is_default": false
+    },
+    "addr_wes": {
+      "id": "addr_wes",
+      "label": "Wes",
+      "full_name": "Wes Tran",
+      "line1": "3 Hawthorn Ct",
+      "line2": "",
+      "city": "Reno",
+      "state": "NV",
+      "zip": "89501",
+      "is_default": false
+    }
+  },
+  "orders_at_seed": [],
+  "notes": "Extracted from gym seed factory (server/tasks.py) for trap reproducibility."
+}

@@ -1,0 +1,111 @@
+{
+  "task_id": "M84/multi_item_expired_card",
+  "seed": 2,
+  "start_path": "/cart",
+  "cart": {
+    "items": [
+      {
+        "id": "ci_lamp",
+        "product_id": "p_desk_lamp",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "",
+        "gift_wrap": false,
+        "ship_to_address_id": null,
+        "scheduled_delivery": null
+      },
+      {
+        "id": "ci_bulbs",
+        "product_id": "p_led_bulbs",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "",
+        "gift_wrap": false,
+        "ship_to_address_id": null,
+        "scheduled_delivery": null
+      }
+    ]
+  },
+  "products": {
+    "p_desk_lamp": {
+      "id": "p_desk_lamp",
+      "name": "LED Desk Lamp (dimmable)",
+      "brand": "Lumos",
+      "category": "home",
+      "base_price": 34.99,
+      "rating": 4.5,
+      "review_count": 980,
+      "stock": 110,
+      "image_emoji": "\ud83d\udca1",
+      "short_description": "Dimmable LED desk lamp with USB port.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    },
+    "p_led_bulbs": {
+      "id": "p_led_bulbs",
+      "name": "LED Bulbs (4-pack, A19)",
+      "brand": "Lumos",
+      "category": "home",
+      "base_price": 12.99,
+      "rating": 4.6,
+      "review_count": 2100,
+      "stock": 300,
+      "image_emoji": "\ud83d\udd06",
+      "short_description": "Warm-white A19 LED bulbs, 4-pack.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    }
+  },
+  "payment_methods": {
+    "pay_visa": {
+      "id": "pay_visa",
+      "label": "Visa ****4242",
+      "kind": "credit_card",
+      "is_default": true,
+      "expires": "04/26",
+      "nickname": ""
+    },
+    "pay_paypal": {
+      "id": "pay_paypal",
+      "label": "PayPal (alice@example.com)",
+      "kind": "paypal",
+      "is_default": false,
+      "expires": "",
+      "nickname": ""
+    }
+  },
+  "addresses": {
+    "addr_home": {
+      "id": "addr_home",
+      "label": "Home",
+      "full_name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "is_default": true
+    },
+    "addr_work": {
+      "id": "addr_work",
+      "label": "Work",
+      "full_name": "Alice Anderson",
+      "line1": "500 Madison Avenue",
+      "line2": "22nd Floor",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10022",
+      "is_default": false
+    }
+  },
+  "orders_at_seed": [],
+  "notes": "Extracted from gym seed factory (server/tasks.py) for trap reproducibility."
+}

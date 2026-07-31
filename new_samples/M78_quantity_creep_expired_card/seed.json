@@ -1,0 +1,92 @@
+{
+  "canonical_seed": 0,
+  "per_seed_files": [
+    "seed_data/seed_0.json",
+    "seed_data/seed_1.json",
+    "seed_data/seed_2.json"
+  ],
+  "seed_factory": "server/tasks.py::task_m78_quantity_creep_expired_card",
+  "seed_0": {
+    "task_id": "M78/quantity_creep_expired_card",
+    "seed": 0,
+    "start_path": "/cart",
+    "cart": {
+      "items": [
+        {
+          "id": "ci_batteries",
+          "product_id": "p_aa_batteries",
+          "variant_id": null,
+          "quantity": 8,
+          "gift_message": "",
+          "gift_wrap": false,
+          "ship_to_address_id": null,
+          "scheduled_delivery": null
+        }
+      ]
+    },
+    "products": {
+      "p_aa_batteries": {
+        "id": "p_aa_batteries",
+        "name": "AA Batteries (4-pack)",
+        "brand": "VoltMax",
+        "category": "home",
+        "base_price": 7.99,
+        "rating": 4.5,
+        "review_count": 3300,
+        "stock": 400,
+        "image_emoji": "\ud83d\udd0b",
+        "short_description": "Long-life alkaline AA batteries, 4 per pack.",
+        "long_description": "",
+        "tags": [],
+        "variants": [],
+        "reviews": [],
+        "is_subscribable": false,
+        "weight_kg": 0.5
+      }
+    },
+    "payment_methods": {
+      "pay_visa": {
+        "id": "pay_visa",
+        "label": "Visa ****4242",
+        "kind": "credit_card",
+        "is_default": true,
+        "expires": "04/26",
+        "nickname": ""
+      },
+      "pay_paypal": {
+        "id": "pay_paypal",
+        "label": "PayPal (alice@example.com)",
+        "kind": "paypal",
+        "is_default": false,
+        "expires": "",
+        "nickname": ""
+      }
+    },
+    "addresses": {
+      "addr_home": {
+        "id": "addr_home",
+        "label": "Home",
+        "full_name": "Alice Anderson",
+        "line1": "100 Park Avenue",
+        "line2": "Apt 4B",
+        "city": "Brooklyn",
+        "state": "NY",
+        "zip": "11201",
+        "is_default": true
+      },
+      "addr_work": {
+        "id": "addr_work",
+        "label": "Work",
+        "full_name": "Alice Anderson",
+        "line1": "500 Madison Avenue",
+        "line2": "22nd Floor",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10022",
+        "is_default": false
+      }
+    },
+    "orders_at_seed": [],
+    "notes": "Extracted from gym seed factory (server/tasks.py) for trap reproducibility."
+  }
+}

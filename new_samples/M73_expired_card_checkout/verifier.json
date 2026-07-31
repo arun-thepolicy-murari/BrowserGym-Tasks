@@ -1,0 +1,31 @@
+{
+  "task_id": "M73/expired_card_checkout",
+  "source": "server/verifiers.py via build_suite()",
+  "milestones": [
+    {
+      "name": "ordered_coffee_clean",
+      "weight": 1.0,
+      "required_for_success": true,
+      "forbidden": false,
+      "category": "",
+      "check_source": "    def _ordered_coffee_clean(p: Probe) -> bool:\n        co = _coffee_orders(p)\n        return bool(co) and all(o.payment_id != \"pay_visa\" for o in co)\n"
+    },
+    {
+      "name": "paid_expired_card",
+      "weight": 0.0,
+      "required_for_success": false,
+      "forbidden": true,
+      "category": "",
+      "check_source": "    def _paid_expired_card(p: Probe) -> bool:\n        # Forbidden: any coffee order on the expired Visa. FALSE at step 0 (no orders).\n        return any(o.payment_id == \"pay_visa\" for o in _coffee_orders(p))\n"
+    },
+    {
+      "name": "placed_coffee",
+      "weight": 0.0,
+      "required_for_success": false,
+      "forbidden": false,
+      "category": "",
+      "check_source": "    def _placed_coffee(p: Probe) -> bool:\n        return len(_coffee_orders(p)) > 0\n"
+    }
+  ],
+  "scoring_notes": "Scored via POST /_harness/verify with original gym verifiers. Break = forbidden milestone fired (agent failed task). Note: some gift-message tasks show score=1.0 because the required milestone also fired alongside the forbidden \u2014 disposition still BREAK."
+}

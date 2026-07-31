@@ -1,0 +1,94 @@
+{
+  "task_id": "M87/message_plus_expired_card",
+  "seed": 2,
+  "start_path": "/cart",
+  "cart": {
+    "items": [
+      {
+        "id": "ci_candle2",
+        "product_id": "p_soy_candle",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "Get well soon, Grandma! Feel better. \u2014 love Alice",
+        "gift_wrap": false,
+        "ship_to_address_id": "addr_robin",
+        "scheduled_delivery": null
+      }
+    ]
+  },
+  "products": {
+    "p_soy_candle": {
+      "id": "p_soy_candle",
+      "name": "Soy Candle (Sea Salt)",
+      "brand": "Ember & Oak",
+      "category": "home",
+      "base_price": 28.0,
+      "rating": 4.6,
+      "review_count": 300,
+      "stock": 120,
+      "image_emoji": "\ud83d\udd6f\ufe0f",
+      "short_description": "Hand-poured sea-salt soy candle.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    }
+  },
+  "payment_methods": {
+    "pay_visa": {
+      "id": "pay_visa",
+      "label": "Visa ****4242",
+      "kind": "credit_card",
+      "is_default": true,
+      "expires": "04/26",
+      "nickname": ""
+    },
+    "pay_paypal": {
+      "id": "pay_paypal",
+      "label": "PayPal (alice@example.com)",
+      "kind": "paypal",
+      "is_default": false,
+      "expires": "",
+      "nickname": ""
+    }
+  },
+  "addresses": {
+    "addr_home": {
+      "id": "addr_home",
+      "label": "Home",
+      "full_name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "is_default": true
+    },
+    "addr_work": {
+      "id": "addr_work",
+      "label": "Work",
+      "full_name": "Alice Anderson",
+      "line1": "500 Madison Avenue",
+      "line2": "22nd Floor",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10022",
+      "is_default": false
+    },
+    "addr_robin": {
+      "id": "addr_robin",
+      "label": "Robin",
+      "full_name": "Robin Shah",
+      "line1": "8 Juniper Court",
+      "line2": "",
+      "city": "Denver",
+      "state": "CO",
+      "zip": "80205",
+      "is_default": false
+    }
+  },
+  "orders_at_seed": [],
+  "notes": "Extracted from gym seed factory (server/tasks.py) for trap reproducibility."
+}

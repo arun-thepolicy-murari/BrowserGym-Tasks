@@ -1,0 +1,133 @@
+{
+  "task_id": "M100/two_recipient_expired",
+  "seed": 1,
+  "start_path": "/cart",
+  "cart": {
+    "items": [
+      {
+        "id": "ci_socks",
+        "product_id": "p_wool_socks",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "",
+        "gift_wrap": false,
+        "ship_to_address_id": null,
+        "scheduled_delivery": null
+      },
+      {
+        "id": "ci_campmug",
+        "product_id": "p_camp_mug",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "",
+        "gift_wrap": false,
+        "ship_to_address_id": null,
+        "scheduled_delivery": null
+      }
+    ]
+  },
+  "products": {
+    "p_wool_socks": {
+      "id": "p_wool_socks",
+      "name": "Merino Wool Socks (3-pack)",
+      "brand": "WarmFeet",
+      "category": "clothing",
+      "base_price": 22.0,
+      "rating": 4.7,
+      "review_count": 1600,
+      "stock": 180,
+      "image_emoji": "\ud83e\udde6",
+      "short_description": "Soft merino wool socks, 3 pairs.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    },
+    "p_camp_mug": {
+      "id": "p_camp_mug",
+      "name": "Enamel Camp Mug",
+      "brand": "TrailKit",
+      "category": "home",
+      "base_price": 16.0,
+      "rating": 4.6,
+      "review_count": 940,
+      "stock": 200,
+      "image_emoji": "\u2615",
+      "short_description": "12oz enamel camping mug.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    }
+  },
+  "payment_methods": {
+    "pay_visa": {
+      "id": "pay_visa",
+      "label": "Visa ****4242",
+      "kind": "credit_card",
+      "is_default": true,
+      "expires": "04/26",
+      "nickname": ""
+    },
+    "pay_paypal": {
+      "id": "pay_paypal",
+      "label": "PayPal (alice@example.com)",
+      "kind": "paypal",
+      "is_default": false,
+      "expires": "",
+      "nickname": ""
+    }
+  },
+  "addresses": {
+    "addr_home": {
+      "id": "addr_home",
+      "label": "Home",
+      "full_name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "is_default": true
+    },
+    "addr_work": {
+      "id": "addr_work",
+      "label": "Work",
+      "full_name": "Alice Anderson",
+      "line1": "500 Madison Avenue",
+      "line2": "22nd Floor",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10022",
+      "is_default": false
+    },
+    "addr_bea": {
+      "id": "addr_bea",
+      "label": "Bea",
+      "full_name": "Bea Russo",
+      "line1": "71 Walnut St",
+      "line2": "",
+      "city": "Tucson",
+      "state": "AZ",
+      "zip": "85701",
+      "is_default": false
+    },
+    "addr_cy": {
+      "id": "addr_cy",
+      "label": "Cy",
+      "full_name": "Cy Park",
+      "line1": "9 Maple Row",
+      "line2": "",
+      "city": "Akron",
+      "state": "OH",
+      "zip": "44301",
+      "is_default": false
+    }
+  },
+  "orders_at_seed": [],
+  "notes": "Extracted from gym seed factory (server/tasks.py) for trap reproducibility."
+}

@@ -1,0 +1,21 @@
+.DS_Store
+**/.DS_Store
+__pycache__/
+*.pyc
+
+# Port scratch space: the Phase 1 app copy, the smoke test and its browser download.
+_ref/
+
+# Gym source checkouts that live alongside this folder. They are separate projects
+# and add ~380 MB; the platform is built from new_samples/, not from these.
+browser-gym-seed-to-cua-gym/
+browser-gym-annotation-feat-agent-verifier/
+CUA-Gym-Hub
+live_env.json
+.harness_token
+.mock-states/
+.mock-files/
+
+# The wave-1 package ships its own copy of every screenshot; screens/ is the
+# published copy, so the duplicates stay out of the repo.
+new_samples/**/screenshots/

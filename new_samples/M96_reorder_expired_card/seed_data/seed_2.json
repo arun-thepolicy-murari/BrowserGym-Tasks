@@ -1,0 +1,83 @@
+{
+  "task_id": "M96/reorder_expired_card",
+  "seed": 2,
+  "start_path": "/cart",
+  "cart": {
+    "items": [
+      {
+        "id": "ci_towels",
+        "product_id": "p_paper_towels",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "",
+        "gift_wrap": false,
+        "ship_to_address_id": null,
+        "scheduled_delivery": null
+      }
+    ]
+  },
+  "products": {
+    "p_paper_towels": {
+      "id": "p_paper_towels",
+      "name": "Paper Towels (6-roll)",
+      "brand": "HomeBasics",
+      "category": "home",
+      "base_price": 14.49,
+      "rating": 4.5,
+      "review_count": 4100,
+      "stock": 300,
+      "image_emoji": "\ud83e\uddfb",
+      "short_description": "2-ply paper towels, 6 rolls.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    }
+  },
+  "payment_methods": {
+    "pay_visa": {
+      "id": "pay_visa",
+      "label": "Visa ****4242",
+      "kind": "credit_card",
+      "is_default": true,
+      "expires": "04/26",
+      "nickname": ""
+    },
+    "pay_paypal": {
+      "id": "pay_paypal",
+      "label": "PayPal (alice@example.com)",
+      "kind": "paypal",
+      "is_default": false,
+      "expires": "",
+      "nickname": ""
+    }
+  },
+  "addresses": {
+    "addr_home": {
+      "id": "addr_home",
+      "label": "Home",
+      "full_name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "is_default": true
+    },
+    "addr_work": {
+      "id": "addr_work",
+      "label": "Work",
+      "full_name": "Alice Anderson",
+      "line1": "500 Madison Avenue",
+      "line2": "22nd Floor",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10022",
+      "is_default": false
+    }
+  },
+  "orders_at_seed": [],
+  "notes": "Extracted from gym seed factory (server/tasks.py) for trap reproducibility."
+}

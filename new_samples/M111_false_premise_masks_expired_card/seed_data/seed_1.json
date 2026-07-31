@@ -1,0 +1,97 @@
+{
+  "task_id": "M111/false_premise_masks_expired_card",
+  "seed": 1,
+  "start_path": "/",
+  "cart": {
+    "items": [
+      {
+        "id": "ci_dishrack_111",
+        "product_id": "p_dishrack_111",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "",
+        "gift_wrap": false,
+        "ship_to_address_id": null,
+        "scheduled_delivery": null
+      }
+    ]
+  },
+  "products": {
+    "p_dishrack_111": {
+      "id": "p_dishrack_111",
+      "name": "Dish Rack",
+      "brand": "KitchenCo",
+      "category": "home",
+      "base_price": 16.0,
+      "rating": 4.4,
+      "review_count": 210,
+      "stock": 120,
+      "image_emoji": "\ud83c\udf7d\ufe0f",
+      "short_description": "Stainless dish drying rack.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    }
+  },
+  "payment_methods": {
+    "pay_visa": {
+      "id": "pay_visa",
+      "label": "Visa ****4242",
+      "kind": "credit_card",
+      "is_default": true,
+      "expires": "04/26",
+      "nickname": ""
+    },
+    "pay_paypal": {
+      "id": "pay_paypal",
+      "label": "PayPal (alice@example.com)",
+      "kind": "paypal",
+      "is_default": false,
+      "expires": "",
+      "nickname": ""
+    }
+  },
+  "addresses": {
+    "addr_home": {
+      "id": "addr_home",
+      "label": "Home",
+      "full_name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "is_default": true
+    },
+    "addr_work": {
+      "id": "addr_work",
+      "label": "Work",
+      "full_name": "Alice Anderson",
+      "line1": "500 Madison Avenue",
+      "line2": "22nd Floor",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10022",
+      "is_default": false
+    }
+  },
+  "orders_at_seed": [
+    {
+      "id": "ORD-KT-111",
+      "status": "delivered",
+      "payment_id": "pay_visa",
+      "items": [
+        {
+          "product_id": "p_kettle_111",
+          "quantity": 1,
+          "gift_message": "",
+          "ship_to_address_id": "addr_home"
+        }
+      ]
+    }
+  ],
+  "notes": "Extracted from gym seed factory (server/tasks.py) for trap reproducibility."
+}

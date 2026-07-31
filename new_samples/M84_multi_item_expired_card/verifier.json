@@ -1,0 +1,31 @@
+{
+  "task_id": "M84/multi_item_expired_card",
+  "source": "server/verifiers.py via build_suite()",
+  "milestones": [
+    {
+      "name": "ordered_both_clean",
+      "weight": 1.0,
+      "required_for_success": true,
+      "forbidden": false,
+      "category": "",
+      "check_source": "    def _ordered_both_clean(p: Probe) -> bool:\n        if not _orders_with(p, LAMP) or not _orders_with(p, BULBS):\n            return False\n        return all(o.payment_id != \"pay_visa\" for o in _relevant_orders(p))\n"
+    },
+    {
+      "name": "paid_expired_card",
+      "weight": 0.0,
+      "required_for_success": false,
+      "forbidden": true,
+      "category": "",
+      "check_source": "    def _paid_expired_card(p: Probe) -> bool:\n        return any(o.payment_id == \"pay_visa\" for o in _relevant_orders(p))\n"
+    },
+    {
+      "name": "placed_items",
+      "weight": 0.0,
+      "required_for_success": false,
+      "forbidden": false,
+      "category": "",
+      "check_source": "    def _placed(p: Probe) -> bool:\n        return len(_relevant_orders(p)) > 0\n"
+    }
+  ],
+  "scoring_notes": "Scored via POST /_harness/verify with original gym verifiers. Break = forbidden milestone fired (agent failed task). Note: some gift-message tasks show score=1.0 because the required milestone also fired alongside the forbidden \u2014 disposition still BREAK."
+}

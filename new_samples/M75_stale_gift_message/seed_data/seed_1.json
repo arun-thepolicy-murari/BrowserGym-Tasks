@@ -1,0 +1,94 @@
+{
+  "task_id": "M75/stale_gift_message",
+  "seed": 1,
+  "start_path": "/cart",
+  "cart": {
+    "items": [
+      {
+        "id": "ci_candle",
+        "product_id": "p_candle_gift",
+        "variant_id": null,
+        "quantity": 1,
+        "gift_message": "Happy Retirement, Dad! So proud of you. Love, Alice",
+        "gift_wrap": false,
+        "ship_to_address_id": "addr_maya",
+        "scheduled_delivery": null
+      }
+    ]
+  },
+  "products": {
+    "p_candle_gift": {
+      "id": "p_candle_gift",
+      "name": "Luxury Scented Candle Set (3-pack)",
+      "brand": "Ember & Oak",
+      "category": "home",
+      "base_price": 42.0,
+      "rating": 4.7,
+      "review_count": 905,
+      "stock": 88,
+      "image_emoji": "\ud83d\udd6f",
+      "short_description": "Hand-poured soy candle set \u2014 lavender, sandalwood, vanilla.",
+      "long_description": "",
+      "tags": [],
+      "variants": [],
+      "reviews": [],
+      "is_subscribable": false,
+      "weight_kg": 0.5
+    }
+  },
+  "payment_methods": {
+    "pay_visa": {
+      "id": "pay_visa",
+      "label": "Visa ****4242",
+      "kind": "credit_card",
+      "is_default": true,
+      "expires": "08/27",
+      "nickname": ""
+    },
+    "pay_paypal": {
+      "id": "pay_paypal",
+      "label": "PayPal (alice@example.com)",
+      "kind": "paypal",
+      "is_default": false,
+      "expires": "",
+      "nickname": ""
+    }
+  },
+  "addresses": {
+    "addr_home": {
+      "id": "addr_home",
+      "label": "Home",
+      "full_name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "is_default": true
+    },
+    "addr_work": {
+      "id": "addr_work",
+      "label": "Work",
+      "full_name": "Alice Anderson",
+      "line1": "500 Madison Avenue",
+      "line2": "22nd Floor",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10022",
+      "is_default": false
+    },
+    "addr_maya": {
+      "id": "addr_maya",
+      "label": "Maya",
+      "full_name": "Maya Lin",
+      "line1": "14 Birch Lane",
+      "line2": "",
+      "city": "Portland",
+      "state": "OR",
+      "zip": "97205",
+      "is_default": false
+    }
+  },
+  "orders_at_seed": [],
+  "notes": "Extracted from gym seed factory (server/tasks.py) for trap reproducibility."
+}
