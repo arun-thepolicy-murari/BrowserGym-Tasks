@@ -1,6 +1,1321 @@
 {
   "products": [
     {
+      "id": "p_laptop_studio",
+      "title": "Studio Laptop 14",
+      "price": 899.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 128,
+      "image": "https://picsum.photos/seed/p_laptop_studio/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_laptop_studio/400/400"
+      ],
+      "description": "Lightweight 14-inch laptop with anti-glare display. Great for creators on a budget. Configurable RAM/SSD.",
+      "bulletPoints": [
+        "laptop",
+        "creator",
+        "14-inch"
+      ],
+      "specs": {
+        "Brand": "LumeBook",
+        "Weight": "1.4 kg",
+        "Emoji": "\ud83d\udcbb"
+      },
+      "category": "Electronics",
+      "brand": "LumeBook",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 12,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_laptop_pro",
+      "title": "Pro Laptop X1",
+      "price": 1499.99,
+      "originalPrice": null,
+      "rating": 4.8,
+      "reviewCount": 412,
+      "image": "https://picsum.photos/seed/p_laptop_pro/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_laptop_pro/400/400"
+      ],
+      "description": "Premium 16-inch laptop for power users.",
+      "bulletPoints": [
+        "laptop",
+        "pro",
+        "16-inch"
+      ],
+      "specs": {
+        "Brand": "LumeBook",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcbb"
+      },
+      "category": "Electronics",
+      "brand": "LumeBook",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 5,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_laptop_budget",
+      "title": "Budget Laptop Lite",
+      "price": 549.99,
+      "originalPrice": null,
+      "rating": 3.6,
+      "reviewCount": 92,
+      "image": "https://picsum.photos/seed/p_laptop_budget/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_laptop_budget/400/400"
+      ],
+      "description": "Cheap but slow. 8GB RAM, 256GB.",
+      "bulletPoints": [
+        "laptop",
+        "budget"
+      ],
+      "specs": {
+        "Brand": "GenericTech",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcbb"
+      },
+      "category": "Electronics",
+      "brand": "GenericTech",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 20,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_mouse_wireless",
+      "title": "Wireless Mouse",
+      "price": 29.99,
+      "originalPrice": null,
+      "rating": 4.4,
+      "reviewCount": 2811,
+      "image": "https://picsum.photos/seed/p_mouse_wireless/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_mouse_wireless/400/400"
+      ],
+      "description": "Reliable 2.4GHz wireless mouse with USB receiver.",
+      "bulletPoints": [
+        "mouse",
+        "wireless"
+      ],
+      "specs": {
+        "Brand": "Logitech",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\uddb1\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Logitech",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 58,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_mouse_gaming",
+      "title": "Wireless Gaming Mouse",
+      "price": 79.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 1240,
+      "image": "https://picsum.photos/seed/p_mouse_gaming/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_mouse_gaming/400/400"
+      ],
+      "description": "Pro-grade gaming mouse with customizable RGB.",
+      "bulletPoints": [
+        "mouse",
+        "gaming"
+      ],
+      "specs": {
+        "Brand": "Razer",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\uddb1\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Razer",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 22,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_kb_mech",
+      "title": "Mechanical Keyboard",
+      "price": 119.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 856,
+      "image": "https://picsum.photos/seed/p_kb_mech/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_kb_mech/400/400"
+      ],
+      "description": "Compact 75% layout, hot-swap PCB, Cherry switches.",
+      "bulletPoints": [
+        "keyboard",
+        "mechanical"
+      ],
+      "specs": {
+        "Brand": "Keychron",
+        "Weight": "0.5 kg",
+        "Emoji": "\u2328\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Keychron",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 18,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_kb_wireless",
+      "title": "Wireless Keyboard",
+      "price": 59.99,
+      "originalPrice": null,
+      "rating": 4.3,
+      "reviewCount": 1932,
+      "image": "https://picsum.photos/seed/p_kb_wireless/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_kb_wireless/400/400"
+      ],
+      "description": "Slim wireless keyboard.",
+      "bulletPoints": [
+        "keyboard",
+        "wireless"
+      ],
+      "specs": {
+        "Brand": "Logitech",
+        "Weight": "0.5 kg",
+        "Emoji": "\u2328\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Logitech",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 33,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_monitor_24",
+      "title": "24-inch Monitor",
+      "price": 199.99,
+      "originalPrice": null,
+      "rating": 4.4,
+      "reviewCount": 540,
+      "image": "https://picsum.photos/seed/p_monitor_24/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_monitor_24/400/400"
+      ],
+      "description": "1080p 24-inch IPS monitor.",
+      "bulletPoints": [
+        "monitor",
+        "24-inch"
+      ],
+      "specs": {
+        "Brand": "Dell",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udda5\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Dell",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 15,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_monitor_27",
+      "title": "27-inch Monitor",
+      "price": 329.99,
+      "originalPrice": null,
+      "rating": 4.7,
+      "reviewCount": 312,
+      "image": "https://picsum.photos/seed/p_monitor_27/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_monitor_27/400/400"
+      ],
+      "description": "1440p 27-inch monitor.",
+      "bulletPoints": [
+        "monitor",
+        "27-inch",
+        "1440p"
+      ],
+      "specs": {
+        "Brand": "LG",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udda5\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "LG",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 8,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_hp_premium",
+      "title": "Bluetooth Headphone Premium",
+      "price": 249.99,
+      "originalPrice": null,
+      "rating": 4.8,
+      "reviewCount": 2100,
+      "image": "https://picsum.photos/seed/p_hp_premium/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_hp_premium/400/400"
+      ],
+      "description": "Industry-leading active noise cancellation.",
+      "bulletPoints": [
+        "headphones",
+        "bluetooth",
+        "anc"
+      ],
+      "specs": {
+        "Brand": "Sony",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83c\udfa7"
+      },
+      "category": "Electronics",
+      "brand": "Sony",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 8,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_hp_studio",
+      "title": "Bluetooth Headphone Studio",
+      "price": 129.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 812,
+      "image": "https://picsum.photos/seed/p_hp_studio/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_hp_studio/400/400"
+      ],
+      "description": "Studio-grade comfort.",
+      "bulletPoints": [
+        "headphones",
+        "studio"
+      ],
+      "specs": {
+        "Brand": "Audio-Technica",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83c\udfa7"
+      },
+      "category": "Electronics",
+      "brand": "Audio-Technica",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 12,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_hp_lite",
+      "title": "Bluetooth Headphone Lite",
+      "price": 49.99,
+      "originalPrice": null,
+      "rating": 4.1,
+      "reviewCount": 4280,
+      "image": "https://picsum.photos/seed/p_hp_lite/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_hp_lite/400/400"
+      ],
+      "description": "Lightweight everyday headphones.",
+      "bulletPoints": [
+        "headphones",
+        "budget"
+      ],
+      "specs": {
+        "Brand": "JBL",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83c\udfa7"
+      },
+      "category": "Electronics",
+      "brand": "JBL",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 42,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_speaker",
+      "title": "Bluetooth Speaker",
+      "price": 79.99,
+      "originalPrice": null,
+      "rating": 4.4,
+      "reviewCount": 1280,
+      "image": "https://picsum.photos/seed/p_speaker/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_speaker/400/400"
+      ],
+      "description": "Portable wireless speaker.",
+      "bulletPoints": [
+        "speaker",
+        "bluetooth"
+      ],
+      "specs": {
+        "Brand": "JBL",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udd0a"
+      },
+      "category": "Electronics",
+      "brand": "JBL",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 20,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_book_cook",
+      "title": "The Joy of Cooking",
+      "price": 24.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 920,
+      "image": "https://picsum.photos/seed/p_book_cook/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_book_cook/400/400"
+      ],
+      "description": "Classic American cookbook.",
+      "bulletPoints": [
+        "cookbook"
+      ],
+      "specs": {
+        "Brand": "Scribner",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcd5"
+      },
+      "category": "Books",
+      "brand": "Scribner",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 8,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_book_sci_fi",
+      "title": "Project Hail Mary",
+      "price": 16.5,
+      "originalPrice": null,
+      "rating": 4.8,
+      "reviewCount": 15300,
+      "image": "https://picsum.photos/seed/p_book_sci_fi/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_book_sci_fi/400/400"
+      ],
+      "description": "Andy Weir sci-fi novel.",
+      "bulletPoints": [
+        "fiction",
+        "sci-fi"
+      ],
+      "specs": {
+        "Brand": "Ballantine",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcda"
+      },
+      "category": "Books",
+      "brand": "Ballantine",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 14,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_book_history",
+      "title": "Sapiens",
+      "price": 19.99,
+      "originalPrice": null,
+      "rating": 4.7,
+      "reviewCount": 23800,
+      "image": "https://picsum.photos/seed/p_book_history/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_book_history/400/400"
+      ],
+      "description": "A brief history of humankind.",
+      "bulletPoints": [
+        "nonfiction",
+        "history"
+      ],
+      "specs": {
+        "Brand": "Harper",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcd8"
+      },
+      "category": "Books",
+      "brand": "Harper",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 20,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_book_oos",
+      "title": "The Power Broker",
+      "price": 32.0,
+      "originalPrice": null,
+      "rating": 4.9,
+      "reviewCount": 6200,
+      "image": "https://picsum.photos/seed/p_book_oos/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_book_oos/400/400"
+      ],
+      "description": "Robert Caro classic. OUT OF STOCK.",
+      "bulletPoints": [
+        "nonfiction",
+        "biography"
+      ],
+      "specs": {
+        "Brand": "Knopf",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcd7"
+      },
+      "category": "Books",
+      "brand": "Knopf",
+      "prime": true,
+      "inStock": false,
+      "stockCount": 0,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_clothing_tshirt",
+      "title": "Cotton T-Shirt",
+      "price": 24.99,
+      "originalPrice": null,
+      "rating": 4.2,
+      "reviewCount": 820,
+      "image": "https://picsum.photos/seed/p_clothing_tshirt/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_clothing_tshirt/400/400"
+      ],
+      "description": "Classic cotton t-shirt.",
+      "bulletPoints": [
+        "tshirt"
+      ],
+      "specs": {
+        "Brand": "Everlane",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udc55"
+      },
+      "category": "Fashion",
+      "brand": "Everlane",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 120,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_clothing_hoodie",
+      "title": "Pullover Hoodie",
+      "price": 49.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 3120,
+      "image": "https://picsum.photos/seed/p_clothing_hoodie/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_clothing_hoodie/400/400"
+      ],
+      "description": "Heavyweight pullover hoodie.",
+      "bulletPoints": [
+        "hoodie"
+      ],
+      "specs": {
+        "Brand": "Champion",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83e\udde5"
+      },
+      "category": "Fashion",
+      "brand": "Champion",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 80,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_home_lamp",
+      "title": "Modern Desk Lamp",
+      "price": 39.99,
+      "originalPrice": null,
+      "rating": 4.1,
+      "reviewCount": 210,
+      "image": "https://picsum.photos/seed/p_home_lamp/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_home_lamp/400/400"
+      ],
+      "description": "Adjustable LED desk lamp.",
+      "bulletPoints": [
+        "lamp"
+      ],
+      "specs": {
+        "Brand": "IKEA",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udca1"
+      },
+      "category": "Home & Kitchen",
+      "brand": "IKEA",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 25,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_home_mug",
+      "title": "Ceramic Coffee Mug Set (4)",
+      "price": 44.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 512,
+      "image": "https://picsum.photos/seed/p_home_mug/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_home_mug/400/400"
+      ],
+      "description": "Set of 4 ceramic mugs.",
+      "bulletPoints": [
+        "mug"
+      ],
+      "specs": {
+        "Brand": "Le Creuset",
+        "Weight": "0.5 kg",
+        "Emoji": "\u2615"
+      },
+      "category": "Home & Kitchen",
+      "brand": "Le Creuset",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 18,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_pet_food",
+      "title": "Premium Dog Food (5 lb)",
+      "price": 34.99,
+      "originalPrice": null,
+      "rating": 4.7,
+      "reviewCount": 4820,
+      "image": "https://picsum.photos/seed/p_pet_food/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_pet_food/400/400"
+      ],
+      "description": "Premium dog food, 5 lb bag. Available as a one-time purchase or weekly/biweekly subscription with a loyalty discount for gold members.",
+      "bulletPoints": [
+        "pet",
+        "dog",
+        "subscription"
+      ],
+      "specs": {
+        "Brand": "Wellness",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udc36"
+      },
+      "category": "Electronics",
+      "brand": "Wellness",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 120,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_office_display",
+      "title": "Office Display Pro",
+      "price": 159.99,
+      "originalPrice": null,
+      "rating": 4.3,
+      "reviewCount": 120,
+      "image": "https://picsum.photos/seed/p_office_display/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_office_display/400/400"
+      ],
+      "description": "Looks like a monitor but listed under 'office' category. Adversarial: tasks that require 'electronics' won't match this.",
+      "bulletPoints": [
+        "display"
+      ],
+      "specs": {
+        "Brand": "Acer",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udda5\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Acer",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 15,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_office_chair",
+      "title": "Ergonomic Office Chair",
+      "price": 249.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 412,
+      "image": "https://picsum.photos/seed/p_office_chair/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_office_chair/400/400"
+      ],
+      "description": "High-back ergonomic chair.",
+      "bulletPoints": [
+        "chair",
+        "ergonomic"
+      ],
+      "specs": {
+        "Brand": "Herman Miller",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83e\ude91"
+      },
+      "category": "Electronics",
+      "brand": "Herman Miller",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 10,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_mouse_ergonomic",
+      "title": "Wireless Ergonomic Mouse",
+      "price": 49.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 820,
+      "image": "https://picsum.photos/seed/p_mouse_ergonomic/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_mouse_ergonomic/400/400"
+      ],
+      "description": "Reduces wrist strain. Same brand as the standard Wireless Mouse.",
+      "bulletPoints": [
+        "mouse",
+        "wireless",
+        "ergonomic"
+      ],
+      "specs": {
+        "Brand": "Logitech",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\uddb1\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Logitech",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 33,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_mouse_mini",
+      "title": "Wireless Mini Mouse",
+      "price": 19.99,
+      "originalPrice": null,
+      "rating": 4.1,
+      "reviewCount": 1432,
+      "image": "https://picsum.photos/seed/p_mouse_mini/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_mouse_mini/400/400"
+      ],
+      "description": "Compact wireless mouse for travel.",
+      "bulletPoints": [
+        "mouse",
+        "wireless",
+        "mini"
+      ],
+      "specs": {
+        "Brand": "Logitech",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\uddb1\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Logitech",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 64,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_mouse_trackpad",
+      "title": "Bluetooth Magic Trackpad",
+      "price": 129.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 2100,
+      "image": "https://picsum.photos/seed/p_mouse_trackpad/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_mouse_trackpad/400/400"
+      ],
+      "description": "Multi-touch trackpad (not a mouse).",
+      "bulletPoints": [
+        "trackpad",
+        "bluetooth"
+      ],
+      "specs": {
+        "Brand": "Apple",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udfe6"
+      },
+      "category": "Electronics",
+      "brand": "Apple",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 11,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_clothing_polo",
+      "title": "Cotton Polo Shirt",
+      "price": 34.99,
+      "originalPrice": null,
+      "rating": 4.3,
+      "reviewCount": 540,
+      "image": "https://picsum.photos/seed/p_clothing_polo/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_clothing_polo/400/400"
+      ],
+      "description": "Same brand as the Cotton T-Shirt \u2014 but a polo, not a tee.",
+      "bulletPoints": [
+        "polo",
+        "cotton"
+      ],
+      "specs": {
+        "Brand": "Everlane",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udc54"
+      },
+      "category": "Fashion",
+      "brand": "Everlane",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 85,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_clothing_long_sleeve",
+      "title": "Cotton Long-Sleeve T-Shirt",
+      "price": 29.99,
+      "originalPrice": null,
+      "rating": 4.4,
+      "reviewCount": 320,
+      "image": "https://picsum.photos/seed/p_clothing_long_sleeve/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_clothing_long_sleeve/400/400"
+      ],
+      "description": "Long-sleeve cotton tee.",
+      "bulletPoints": [
+        "tshirt",
+        "long-sleeve",
+        "cotton"
+      ],
+      "specs": {
+        "Brand": "Everlane",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83e\udd7c"
+      },
+      "category": "Fashion",
+      "brand": "Everlane",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 60,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_clothing_graphic",
+      "title": "Graphic Print Cotton T-Shirt",
+      "price": 22.99,
+      "originalPrice": null,
+      "rating": 4.0,
+      "reviewCount": 1820,
+      "image": "https://picsum.photos/seed/p_clothing_graphic/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_clothing_graphic/400/400"
+      ],
+      "description": "Graphic-print cotton tee.",
+      "bulletPoints": [
+        "tshirt",
+        "graphic"
+      ],
+      "specs": {
+        "Brand": "UNIQLO",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udc55"
+      },
+      "category": "Fashion",
+      "brand": "UNIQLO",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 45,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_clothing_tank",
+      "title": "Cotton Tank Top",
+      "price": 18.99,
+      "originalPrice": null,
+      "rating": 4.2,
+      "reviewCount": 290,
+      "image": "https://picsum.photos/seed/p_clothing_tank/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_clothing_tank/400/400"
+      ],
+      "description": "Sleeveless cotton tank.",
+      "bulletPoints": [
+        "tank",
+        "cotton"
+      ],
+      "specs": {
+        "Brand": "Everlane",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udc5a"
+      },
+      "category": "Fashion",
+      "brand": "Everlane",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 70,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_laptop_studio_pro",
+      "title": "Studio Laptop Pro 14",
+      "price": 1299.99,
+      "originalPrice": null,
+      "rating": 4.7,
+      "reviewCount": 210,
+      "image": "https://picsum.photos/seed/p_laptop_studio_pro/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_laptop_studio_pro/400/400"
+      ],
+      "description": "Premium variant of the Studio Laptop line. Adversarial: the C1 task wants the *Studio Laptop 14*, not the PRO.",
+      "bulletPoints": [
+        "laptop",
+        "creator",
+        "pro"
+      ],
+      "specs": {
+        "Brand": "LumeBook",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcbb"
+      },
+      "category": "Electronics",
+      "brand": "LumeBook",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 6,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_laptop_creator",
+      "title": "Creator Studio Laptop",
+      "price": 949.99,
+      "originalPrice": null,
+      "rating": 4.4,
+      "reviewCount": 88,
+      "image": "https://picsum.photos/seed/p_laptop_creator/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_laptop_creator/400/400"
+      ],
+      "description": "Mid-range creator laptop from a different brand.",
+      "bulletPoints": [
+        "laptop",
+        "creator"
+      ],
+      "specs": {
+        "Brand": "GenericTech",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcbb"
+      },
+      "category": "Electronics",
+      "brand": "GenericTech",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 14,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_hp_studio_pro",
+      "title": "Bluetooth Headphone Studio Pro",
+      "price": 199.99,
+      "originalPrice": null,
+      "rating": 4.7,
+      "reviewCount": 410,
+      "image": "https://picsum.photos/seed/p_hp_studio_pro/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_hp_studio_pro/400/400"
+      ],
+      "description": "Same brand and family as the Studio Headphone \u2014 but Pro tier.",
+      "bulletPoints": [
+        "headphones",
+        "studio",
+        "pro"
+      ],
+      "specs": {
+        "Brand": "Audio-Technica",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83c\udfa7"
+      },
+      "category": "Electronics",
+      "brand": "Audio-Technica",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 9,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_hp_kids",
+      "title": "Bluetooth Kids Headphone",
+      "price": 29.99,
+      "originalPrice": null,
+      "rating": 4.0,
+      "reviewCount": 820,
+      "image": "https://picsum.photos/seed/p_hp_kids/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_hp_kids/400/400"
+      ],
+      "description": "Volume-limited headphones for kids.",
+      "bulletPoints": [
+        "headphones",
+        "kids"
+      ],
+      "specs": {
+        "Brand": "JBL",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83c\udfa7"
+      },
+      "category": "Electronics",
+      "brand": "JBL",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 42,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_kb_mini",
+      "title": "Mini Mechanical Keyboard",
+      "price": 79.99,
+      "originalPrice": null,
+      "rating": 4.4,
+      "reviewCount": 320,
+      "image": "https://picsum.photos/seed/p_kb_mini/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_kb_mini/400/400"
+      ],
+      "description": "60% layout mechanical mini keyboard.",
+      "bulletPoints": [
+        "keyboard",
+        "mechanical",
+        "mini"
+      ],
+      "specs": {
+        "Brand": "Keychron",
+        "Weight": "0.5 kg",
+        "Emoji": "\u2328\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Keychron",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 24,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_kb_membrane",
+      "title": "Membrane Keyboard",
+      "price": 24.99,
+      "originalPrice": null,
+      "rating": 3.9,
+      "reviewCount": 2010,
+      "image": "https://picsum.photos/seed/p_kb_membrane/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_kb_membrane/400/400"
+      ],
+      "description": "Standard membrane keyboard (NOT mechanical).",
+      "bulletPoints": [
+        "keyboard",
+        "membrane"
+      ],
+      "specs": {
+        "Brand": "Dell",
+        "Weight": "0.5 kg",
+        "Emoji": "\u2328\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "Dell",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 88,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_book_sci_fi_signed",
+      "title": "Project Hail Mary (Signed Edition)",
+      "price": 39.99,
+      "originalPrice": null,
+      "rating": 4.9,
+      "reviewCount": 120,
+      "image": "https://picsum.photos/seed/p_book_sci_fi_signed/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_book_sci_fi_signed/400/400"
+      ],
+      "description": "Signed-edition Andy Weir novel.",
+      "bulletPoints": [
+        "fiction",
+        "sci-fi",
+        "signed"
+      ],
+      "specs": {
+        "Brand": "Ballantine",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udcda"
+      },
+      "category": "Books",
+      "brand": "Ballantine",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 3,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_pet_treats",
+      "title": "Premium Dog Treats",
+      "price": 14.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 890,
+      "image": "https://picsum.photos/seed/p_pet_treats/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_pet_treats/400/400"
+      ],
+      "description": "Same brand as Premium Dog Food. Adversarial: a subscription task wanting the *food* should NOT pick the *treats*.",
+      "bulletPoints": [
+        "pet",
+        "dog",
+        "treats"
+      ],
+      "specs": {
+        "Brand": "Wellness",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83e\uddb4"
+      },
+      "category": "Electronics",
+      "brand": "Wellness",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 80,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_smartwatch",
+      "title": "Smart Watch Pro",
+      "price": 249.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 1820,
+      "image": "https://picsum.photos/seed/p_smartwatch/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_smartwatch/400/400"
+      ],
+      "description": "Fitness-tracking smart watch.",
+      "bulletPoints": [
+        "watch",
+        "fitness"
+      ],
+      "specs": {
+        "Brand": "Garmin",
+        "Weight": "0.5 kg",
+        "Emoji": "\u231a"
+      },
+      "category": "Electronics",
+      "brand": "Garmin",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 18,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_charger",
+      "title": "USB-C Fast Charger 65W",
+      "price": 29.99,
+      "originalPrice": null,
+      "rating": 4.7,
+      "reviewCount": 3210,
+      "image": "https://picsum.photos/seed/p_charger/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_charger/400/400"
+      ],
+      "description": "65W GaN USB-C charger.",
+      "bulletPoints": [
+        "charger",
+        "usb-c"
+      ],
+      "specs": {
+        "Brand": "Anker",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udd0c"
+      },
+      "category": "Electronics",
+      "brand": "Anker",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 120,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_home_candle",
+      "title": "Scented Candle Set (3)",
+      "price": 34.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 620,
+      "image": "https://picsum.photos/seed/p_home_candle/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_home_candle/400/400"
+      ],
+      "description": "Set of 3 scented soy candles.",
+      "bulletPoints": [
+        "candle",
+        "home"
+      ],
+      "specs": {
+        "Brand": "Yankee Candle",
+        "Weight": "0.5 kg",
+        "Emoji": "\ud83d\udd6f\ufe0f"
+      },
+      "category": "Home & Kitchen",
+      "brand": "Yankee Candle",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 30,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
       "id": "p_journal",
       "title": "Leather Journal",
       "price": 27.0,
@@ -15,6 +1330,7 @@
       "bulletPoints": [],
       "specs": {
         "Brand": "Quill & Co",
+        "Weight": "0.5 kg",
         "Emoji": "\ud83d\udcd4"
       },
       "category": "Home & Kitchen",
@@ -43,6 +1359,7 @@
       "bulletPoints": [],
       "specs": {
         "Brand": "ShopGym",
+        "Weight": "0.5 kg",
         "Emoji": "\ud83d\udc8c"
       },
       "category": "Electronics",
@@ -56,77 +1373,74 @@
     }
   ],
   "user": {
-    "id": "u1",
+    "id": "u_alice",
     "name": "Alice Anderson",
     "email": "alice@example.com",
     "address": {
       "id": "addr_home",
-      "label": "Home",
-      "name": "Alice Anderson",
-      "line1": "100 Park Avenue",
-      "line2": "Apt 4B",
+      "fullName": "Alice Anderson",
+      "street": "100 Park Avenue, Apt 4B",
       "city": "Brooklyn",
       "state": "NY",
       "zip": "11201",
+      "country": "United States",
+      "phone": "555-0123",
       "isDefault": true
     },
     "addresses": [
       {
         "id": "addr_home",
-        "label": "Home",
-        "name": "Alice Anderson",
-        "line1": "100 Park Avenue",
-        "line2": "Apt 4B",
+        "fullName": "Alice Anderson",
+        "street": "100 Park Avenue, Apt 4B",
         "city": "Brooklyn",
         "state": "NY",
         "zip": "11201",
+        "country": "United States",
+        "phone": "555-0123",
         "isDefault": true
       },
       {
         "id": "addr_work",
-        "label": "Work",
-        "name": "Alice Anderson",
-        "line1": "500 Madison Avenue",
-        "line2": "22nd Floor",
+        "fullName": "Alice Anderson",
+        "street": "500 Madison Avenue, 22nd Floor",
         "city": "New York",
         "state": "NY",
         "zip": "10022",
+        "country": "United States",
+        "phone": "555-0123",
         "isDefault": false
       },
       {
         "id": "addr_wes",
-        "label": "Wes",
-        "name": "Wes Tran",
-        "line1": "3 Hawthorn Ct",
-        "line2": "",
+        "fullName": "Wes Tran",
+        "street": "3 Hawthorn Ct",
         "city": "Reno",
         "state": "NV",
         "zip": "89501",
+        "country": "United States",
+        "phone": "555-0123",
         "isDefault": false
       }
     ],
     "paymentMethod": {
       "id": "pay_visa",
-      "type": "card",
-      "label": "Visa ****4242",
       "last4": "4242",
+      "brand": "Visa",
       "expiry": "04/26",
       "isDefault": true
     },
     "paymentMethods": [
       {
         "id": "pay_visa",
-        "type": "card",
-        "label": "Visa ****4242",
         "last4": "4242",
+        "brand": "Visa",
         "expiry": "04/26",
         "isDefault": true
       },
       {
         "id": "pay_paypal",
-        "type": "paypal",
-        "label": "PayPal (alice@example.com)",
-        "last4": "4242",
+        "last4": "0000",
+        "brand": "PayPal",
         "expiry": "",
         "isDefault": false
       }
@@ -146,13 +1460,45 @@
       "lineId": "ci_giftcard"
     }
   ],
-  "wishlist": [],
+  "wishlist": [
+    "p_laptop_studio",
+    "p_laptop_pro",
+    "p_laptop_budget"
+  ],
   "savedForLater": [],
   "orders": [],
-  "reviews": [],
+  "reviews": [
+    {
+      "id": "r1",
+      "productId": "p_laptop_studio",
+      "userId": "u_alice",
+      "userName": "Aisha",
+      "rating": 5,
+      "title": "Great value",
+      "content": "Perfect for my workflow.",
+      "date": "2024-01-01T00:00:00.000Z",
+      "helpful": 0,
+      "verifiedPurchase": true
+    },
+    {
+      "id": "r2",
+      "productId": "p_laptop_studio",
+      "userId": "u_alice",
+      "userName": "Marco",
+      "rating": 4,
+      "title": "Display is sharp",
+      "content": "Just wish the battery lasted longer.",
+      "date": "2024-01-01T00:00:00.000Z",
+      "helpful": 0,
+      "verifiedPurchase": false
+    }
+  ],
   "recentSearches": [],
   "recentlyViewed": [
-    "p_journal",
-    "p_gift_card_addon"
-  ]
+    "p_laptop_studio",
+    "p_laptop_pro",
+    "p_laptop_budget"
+  ],
+  "_gym_subscriptions": [],
+  "_gym_promotions": []
 }

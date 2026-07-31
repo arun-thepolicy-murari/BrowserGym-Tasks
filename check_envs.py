@@ -115,8 +115,55 @@ def audit_payloads(tasks: list[dict]) -> dict[str, list[str]]:
         if brief and prompt and brief != prompt:
             stale_prompt.append(t["mnum"])
 
-    return {"dangling reference": dangling, "seeds do not vary": flat_seed,
-            "stale `prompt` field": stale_prompt}
+    return {"dangling reference": dangling, "static env_ui seeds": audit_static(),
+            "seeds do not vary": flat_seed, "stale `prompt` field": stale_prompt}
+
+
+def audit_static() -> list[str]:
+    """The Pages environment under env_ui/seeds — frozen JSON, so it rots with time.
+
+    amazon_mock's Orders page filters on the real clock and opens on "past 3 months".
+    A static seed cannot age with it, so exported order dates go stale and the Orders
+    page renders empty — which is not an error anywhere and looks exactly like a task
+    that simply has no order history. Re-export with `export_env_ui.py` when this fires.
+    """
+    out: list[str] = []
+    root = ROOT / "env_ui" / "seeds"
+    if not root.is_dir():
+        return out
+    now = datetime.datetime.now(datetime.timezone.utc)
+    for f in sorted(root.glob("*/*/shop.json")):
+        who = f"{f.parent.parent.name}/{f.parent.name}"
+        try:
+            state = json.loads(f.read_text())
+        except json.JSONDecodeError as e:
+            out.append(f"{who}: shop.json is not valid JSON ({e})")
+            continue
+        ids = {p.get("id") for p in state.get("products") or []}
+        for o in state.get("orders") or []:
+            for i in o.get("items") or []:
+                if i.get("productId") not in ids:
+                    out.append(f"{who}: order {o.get('id')} item {i.get('productId')} is not "
+                               f"in the catalogue — renders with no name, price or image")
+            if o.get("total") is None:
+                out.append(f"{who}: order {o.get('id')} has no total")
+            try:
+                age = (now - datetime.datetime.fromisoformat(
+                    str(o.get("date")).replace("Z", "+00:00"))).days
+            except ValueError:
+                out.append(f"{who}: order {o.get('id')} date {o.get('date')!r} is unparseable")
+                continue
+            if age > 90:
+                out.append(f"{who}: order {o.get('id')} is {age}d old — the Orders page's "
+                           f"default tab hides it, so the page looks empty. Re-run "
+                           f"`SEEDS_ONLY=1 python3 export_env_ui.py`.")
+            elif age > 75:
+                out.append(f"{who}: order {o.get('id')} is {age}d old — {90 - age} day(s) "
+                           f"before it drops off the default Orders tab. Re-export soon.")
+        for c in state.get("cart") or []:
+            if c.get("productId") not in ids:
+                out.append(f"{who}: cart line {c.get('productId')} is not in the catalogue")
+    return out
 
 
 def check(task: dict, seed: str, verbose: bool) -> list[str]:
@@ -257,7 +304,7 @@ def main(argv: list[str] | None = None) -> int:
     for kind, hits in groups.items():
         if not hits:
             continue
-        if kind == "dangling reference":
+        if kind in ("dangling reference", "static env_ui seeds"):
             for h in hits:                       # task-specific — print each in full
                 print(f"  warn {h}")
         elif kind == "seeds do not vary":

@@ -208,6 +208,29 @@ It also checks the mock's own `/state?sid` against the engine projection line by
 "the tab is showing unseeded demo data" is caught rather than mistaken for a seeding bug,
 and flags any order that has aged out of the Orders page's default *past 3 months* tab.
 
+### The Pages environment (`env_ui/`)
+
+`export_env_ui.py` builds the CUA mocks to `env_ui/` and writes one static state JSON per
+`(task, seed)` under `env_ui/seeds/`, loaded via `?seed=<url>` instead of `?bridge=`. That
+is what GitHub Pages serves: browsable and correctly seeded, but **not bridged** — clicks
+mutate the mock's local store only, and no verifier sees them. Use the local stack for
+anything that has to be scored.
+
+Seed state comes from the gym's own `transform_shop`, the same function the live bridge
+uses, so both environments are produced by one code path. Run it with the gym importable:
+
+```bash
+SEEDS_ONLY=1 _ref/venv/bin/python export_env_ui.py   # seeds only, no npm build
+_ref/venv/bin/python export_env_ui.py                # seeds + rebuild the mocks
+```
+
+It self-checks on the way out: every order inside the default *past 3 months* tab, every
+order with a total, every ordered or carted product resolving in the catalogue.
+
+**These files are frozen JSON and go stale.** Static state cannot age with the wall clock,
+so ~3 months after an export the orders drop off the Orders page's default tab again. The
+export prints its own expiry date and `check_envs.py --payload-only` warns 15 days ahead.
+
 ### The gym's clock is frozen; the mocks' is not
 
 `SEED_DATE = 2026-05-21` in `server/apps/*/state.py`, but amazon_mock's Orders page filters

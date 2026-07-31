@@ -1,13 +1,33 @@
 #!/usr/bin/env python3
 """Build CUA mock UIs into env_ui/ and export per-task shop seed JSON.
 
-The packaged wave-1 seeds only carry shop state, so we transform that into the
-amazon_mock shape. Built assets use Vite base './' + HashRouter so they work on
-GitHub Pages and local http.server without a bridge.
+Built assets use Vite base './' + HashRouter so they work on GitHub Pages and local
+http.server without a bridge.
+
+Seed state comes from the gym's own `transform_shop` wherever the gym is importable,
+so the static Pages environment and the live bridged one are produced by ONE code
+path. They used to be two: this file carried its own copy of the transform, fed from
+the packaged `new_samples/*/seed_data/*.json` rather than the live world, and it
+quietly disagreed with the real thing —
+
+  * order dates were hardcoded to `2024-01-01`, which is ~940 days before any real
+    "today". amazon_mock's Orders page filters on the wall clock and opens on the
+    "past 3 months" tab, so every pre-existing order rendered as an EMPTY page. That
+    is the whole of M111: its brief is "my electric kettle order never showed up",
+    and the order proving it did was invisible.
+  * `total` came from `orders_at_seed`, which has no `total` key -> null.
+  * `products` came from the packaged seed's filtered catalogue, so an order line
+    could reference a product that was not there (M111's `p_kettle_111`) and render
+    with no name, price or image.
+
+The packaged-payload path is kept as a fallback for building without the gym, but it
+warns, because what it produces is a degraded environment rather than a faithful one.
 """
 from __future__ import annotations
 
+import datetime
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -17,6 +37,22 @@ ROOT = Path(__file__).resolve().parent
 HUB = ROOT / "CUA-Gym-Hub" / "websites"
 OUT = ROOT / "env_ui"
 SAMPLES = ROOT / "new_samples"
+GYM = ROOT / "browser-gym-seed-to-cua-gym"
+
+# The gym's world is frozen here; the mocks render against the real clock.
+SEED_DATE = datetime.date(2026, 5, 21)
+
+
+def _gym():
+    """The gym's canonical transform, or None if this checkout can't import it."""
+    if str(GYM) not in sys.path:
+        sys.path.insert(0, str(GYM))
+    try:
+        from tools.seed_to_cuagym import dump_world, transform_shop
+        return dump_world, transform_shop
+    except Exception as exc:                       # no gym, no venv, no deps
+        print(f"  !! gym not importable ({exc.__class__.__name__}: {exc})", file=sys.stderr)
+        return None
 
 # mock dir name -> env_ui folder
 APPS = {
@@ -109,12 +145,17 @@ def pack_to_shop(seed: dict) -> dict:
                 line[k] = it[k]
         cart.append(line)
 
+    # A hardcoded date here is what made every pre-existing order invisible. Without
+    # the gym we have no `placed_at`, so put the order a plausible few days back from
+    # today — visible in the default tab, which is the property that matters.
+    fallback_date = (datetime.datetime.now() - datetime.timedelta(days=9)) \
+        .strftime("%Y-%m-%dT%H:%M:%S.000Z")
     orders = []
     for o in seed.get("orders_at_seed") or []:
         orders.append({
             "id": o.get("id"),
-            "date": "2024-01-01T00:00:00.000Z",
-            "status": (o.get("status") or "Delivered").title(),
+            "date": fallback_date,
+            "status": (o.get("status") or "Delivered").replace("_", " ").title(),
             "total": o.get("total"),
             "items": [{"productId": i.get("product_id"), "quantity": i.get("quantity") or 1}
                       for i in (o.get("items") or [])],
@@ -135,8 +176,48 @@ def pack_to_shop(seed: dict) -> dict:
     }
 
 
-def export_seeds() -> int:
-    n = 0
+def task_ids() -> dict[str, str]:
+    """{M111: 'M111/false_premise_masks_expired_card'} from the built data.json."""
+    f = ROOT / "data.json"
+    if not f.exists():
+        return {}
+    return {t["mnum"]: t["task_id"] for t in json.loads(f.read_text())["tasks"]}
+
+
+def check(state: dict, who: str) -> list[str]:
+    """Properties the static environment must hold to not misrepresent itself."""
+    problems = []
+    now = datetime.datetime.now(datetime.timezone.utc)
+    ids = {p.get("id") for p in state.get("products") or []}
+    for o in state.get("orders") or []:
+        for i in o.get("items") or []:
+            if i.get("productId") not in ids:
+                problems.append(f"{who}: order {o.get('id')} item {i.get('productId')} "
+                                f"is not in the catalogue — renders with no name or image")
+        raw = o.get("date")
+        try:
+            age = (now - datetime.datetime.fromisoformat(str(raw).replace("Z", "+00:00"))).days
+        except ValueError:
+            problems.append(f"{who}: order {o.get('id')} has an unparseable date {raw!r}")
+            continue
+        if age > 90:
+            problems.append(f"{who}: order {o.get('id')} is dated {str(raw)[:10]} ({age}d ago) "
+                            f"— outside the Orders page's default 'past 3 months' tab, so it "
+                            f"will not be rendered")
+        if o.get("total") is None:
+            problems.append(f"{who}: order {o.get('id')} has no total")
+    for pid in {i.get("productId") for i in state.get("cart") or []}:
+        if pid not in ids:
+            problems.append(f"{who}: cart line {pid} is not in the catalogue")
+    return problems
+
+
+def export_seeds() -> tuple[int, list[str]]:
+    gym, problems = _gym(), []
+    ids = task_ids()
+    if not gym:
+        print("  falling back to the packaged payload — the static env will be degraded "
+              "(filtered catalogue, no order totals, approximated dates)", file=sys.stderr)
     for task_dir in sorted(SAMPLES.iterdir()):
         if not task_dir.is_dir():
             continue
@@ -144,20 +225,31 @@ def export_seeds() -> int:
         if not seed_dir.is_dir():
             continue
         mnum = task_dir.name.split("_", 1)[0]
+        n = 0
         for sf in sorted(seed_dir.glob("seed_[0-9].json")):
             seed_n = sf.stem.rsplit("_", 1)[1]
-            raw = json.loads(sf.read_text())
+            state = None
+            if gym and ids.get(mnum):
+                dump_world, transform_shop = gym
+                try:
+                    state = transform_shop(dump_world(ids[mnum], int(seed_n))["shop"])
+                except Exception as exc:
+                    print(f"  !! {mnum}/{seed_n} gym build failed ({exc}) — using the payload",
+                          file=sys.stderr)
+            if state is None:
+                state = pack_to_shop(json.loads(sf.read_text()))
             out = OUT / "seeds" / mnum / seed_n
             out.mkdir(parents=True, exist_ok=True)
-            (out / "shop.json").write_text(json.dumps(pack_to_shop(raw), indent=2) + "\n")
+            (out / "shop.json").write_text(json.dumps(state, indent=2) + "\n")
             # empty companions so links are consistent; mocks fall back to defaults
             for app in ("mail", "market", "food"):
                 p = out / f"{app}.json"
                 if not p.exists():
                     p.write_text("{}\n")
+            problems += check(state, f"{mnum}/{seed_n}")
             n += 1
-            print(f"  seed {mnum}/{seed_n}")
-    return n
+        print(f"  {mnum}: {n} seed(s)")
+    return n, problems
 
 
 def build_mocks() -> None:
@@ -182,9 +274,24 @@ def build_mocks() -> None:
 def main() -> None:
     OUT.mkdir(exist_ok=True)
     print("seeds:")
-    n = export_seeds()
-    print(f"  {n} seed files")
-    print("mocks:")
+    _, problems = export_seeds()
+    print()
+    if problems:
+        print("PROBLEMS — the exported environment misrepresents itself:")
+        for p in problems:
+            print(f"  !! {p}")
+    else:
+        print("  every order is inside the default 'past 3 months' tab, has a total, and "
+              "every ordered/carted product resolves in the catalogue")
+    # Static JSON cannot age with the wall clock: dates are frozen at export time, so
+    # roughly three months from now the orders drop off the default tab again. Say when.
+    print(f"\n  exported {datetime.date.today()} — re-run before "
+          f"{datetime.date.today() + datetime.timedelta(days=80)} or the orders "
+          f"age out of the Orders page again")
+    if os.environ.get("SEEDS_ONLY"):
+        print("SEEDS_ONLY set — skipping the mock build")
+        return
+    print("\nmocks:")
     build_mocks()
     print("done →", OUT)
 
