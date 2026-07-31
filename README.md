@@ -204,6 +204,24 @@ M99, i.e. 18 of the 42 task/seeds — never reached the UI. The mock's cart read
 `item.gift_message` / `gift_wrap` / `scheduled_delivery` and the gym's `/api/cart/update`
 takes the same names, so the fields now round-trip, and a regression fails this check.
 
+It also checks the mock's own `/state?sid` against the engine projection line by line, so
+"the tab is showing unseeded demo data" is caught rather than mistaken for a seeding bug,
+and flags any order that has aged out of the Orders page's default *past 3 months* tab.
+
+### The gym's clock is frozen; the mocks' is not
+
+`SEED_DATE = 2026-05-21` in `server/apps/*/state.py`, but amazon_mock's Orders page filters
+on `new Date()` and opens on **past 3 months**. Every dated artifact therefore ages out of
+the default view as real time passes, silently. M111's `ORD-KT-111` is the clearest case:
+the brief is *"my electric kettle order never showed up"*, the proof that it did is that
+order, and at 90 days it stops being rendered — the environment ends up contradicting its
+own premise with no error anywhere.
+
+`transform_*` now shifts projected timestamps by `today − SEED_DATE`, so relative ages are
+as designed and the mocks behave as they did when the wave was recorded. Absolute dates
+differ from the archived screenshots; that's the deliberate trade. `GYM_DATE_REBASE=0` for
+verbatim gym dates, `GYM_DATE_REBASE=2026-05-21` to reproduce an archived run exactly.
+
 `--payload-only` audits `data.json` with no stack running and reports three known
 properties of the wave-1 package (warnings, not failures — they are upstream, not
 regressions here):

@@ -26,6 +26,7 @@ run_local.sh for the one you actually want to annotate.
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import sys
 import urllib.error
@@ -153,6 +154,31 @@ def check(task: dict, seed: str, verbose: bool) -> list[str]:
         bad.append(f"{tag}: a projected cart line has no lineId, so a click "
                    f"cannot address the exact line")
 
+    # --- dated artifacts must still be visible in the mock's own UI ----------
+    # amazon_mock's Orders page filters on the REAL clock and opens on "past 3 months",
+    # while the gym world is frozen at SEED_DATE. An order outside that window is not an
+    # error anywhere — it just silently isn't rendered, and the task's premise evaporates
+    # (M111 is "my kettle never arrived"; the proof it did is that order).
+    now = datetime.datetime.now(datetime.timezone.utc)
+    for o in (apps["shop"] or {}).get("orders") or []:
+        raw = o.get("date")
+        if not raw:
+            continue
+        try:
+            when = datetime.datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+        except ValueError:
+            bad.append(f"{tag}: order {o.get('id')} has an unparseable date {raw!r}")
+            continue
+        age = (now - when).days
+        if age > 90:
+            bad.append(f"{tag}: order {o.get('id')} is dated {str(raw)[:10]} ({age}d ago) — "
+                       f"outside the Orders page's default 'past 3 months' tab, so it is "
+                       f"invisible unless the annotator switches tabs. Rebase the clock "
+                       f"(GYM_DATE_REBASE) or the environment misrepresents itself.")
+        elif age > 75:
+            bad.append(f"{tag}: order {o.get('id')} is {age}d old — within {90 - age} day(s) "
+                       f"of dropping off the default Orders tab.")
+
     # --- the mock must actually serve the session the bridge wrote ------------
     base, sid = mocks.get("shop"), sids.get("shop")
     if base and sid:
@@ -161,10 +187,28 @@ def check(task: dict, seed: str, verbose: bool) -> list[str]:
         if st != 200:
             bad.append(f"{tag}: mock /state?sid returned {st} for {sid}")
         elif isinstance(body, dict):
-            served = body.get("cart") if "cart" in body else (body.get("state") or {}).get("cart")
-            if served is not None and len(served) != len(got):
-                bad.append(f"{tag}: mock serves {len(served)} cart line(s), "
-                           f"engine projected {len(got)}")
+            served = body if "cart" in body else (body.get("state") or {})
+            # Compare what the MOCK holds against what the engine projected. If these
+            # diverge the browser is showing the mock's own demo data, which looks
+            # plausible and is entirely wrong — the failure mode worth catching.
+            sc = served.get("cart")
+            if sc is not None and len(sc) != len(got):
+                bad.append(f"{tag}: mock serves {len(sc)} cart line(s), engine projected "
+                           f"{len(got)} — the tab is showing unseeded demo data")
+            so = served.get("orders")
+            eo = (apps["shop"] or {}).get("orders") or []
+            if so is not None and len(so) != len(eo):
+                bad.append(f"{tag}: mock serves {len(so)} order(s), engine projected "
+                           f"{len(eo)} — pre-existing orders are missing from the UI")
+            for eline in got:
+                match = next((l for l in (sc or []) if l.get("productId") == eline.get("productId")), None)
+                if match is None:
+                    bad.append(f"{tag}: product {eline.get('productId')} missing from the mock's cart")
+                    continue
+                for field in ("gift_message", "ship_to_address_id"):
+                    if (eline.get(field) or "") != (match.get(field) or ""):
+                        bad.append(f"{tag}: {field} on {eline.get('productId')} is "
+                                   f"{match.get(field)!r} in the mock, {eline.get(field)!r} in the engine")
 
     # --- nothing forbidden may already be tripped at step 0 ------------------
     st, v = http("GET", f"{BRIDGE}/bridge/verify")

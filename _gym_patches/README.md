@@ -26,6 +26,29 @@ gift/split-shipping breaker tasks". The write half honoured that; the read half 
 Lines now carry their options and their `lineId`, and only genuinely identical lines merge,
 so a split-shipping cart stays two lines rather than becoming one of quantity 2.
 
+### `tools/seed_to_cuagym.py` — clock rebasing (`_clock_delta` / `_shift`)
+
+The gym's world is frozen at `SEED_DATE = 2026-05-21`. The mocks are not: amazon_mock's
+Orders page filters against `new Date()` and **opens on the "past 3 months" tab**, gmail
+formats timestamps against real time, and the calendar draws its grid around today.
+
+So every dated artifact ages out of the default view as real time passes, with no error
+anywhere. M111's `ORD-KT-111` is dated 2026-05-12 and *is the premise of the task* — the
+brief says "my electric kettle order never showed up", and the proof that it did is that
+order sitting in Orders. At 90 days it drops off the default tab and the environment
+starts contradicting its own brief.
+
+Projected timestamps are now shifted by `today − SEED_DATE`, so relative ages ("delivered
+9 days ago") are exactly as designed and the mocks' wall-clock logic behaves as it did the
+day the wave was recorded. Applied to order dates, shipment ETAs, mail timestamps and
+calendar event days. Ids, totals, statuses and every other field are untouched, and no
+verifier reads a date.
+
+Absolute dates therefore differ from the archived screenshots — the deliberate trade is
+that an order the annotator can actually see beats one whose printed date matches a
+screenshot. `GYM_DATE_REBASE=0` restores verbatim gym dates; `GYM_DATE_REBASE=2026-05-21`
+pins "today" to a fixed day, which is what reproducing an archived run wants.
+
 ### `tools/bridge.py` — `sid_for()` + `Bridge.default_sid()`
 
 The default session id was `seed-<task_id>-<seed>-<app>`, and a gym `task_id` contains a

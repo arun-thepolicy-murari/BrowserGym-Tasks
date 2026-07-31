@@ -75,6 +75,70 @@ def _iso(ts: str | None) -> str | None:
     return ts if (ts.endswith("Z") or "+" in ts) else ts + "Z"
 
 
+# --------------------------------------------------------- clock rebasing -----
+# The gym's world is frozen at SEED_DATE (server/apps/*/state.py). The mock UIs are
+# not: amazon_mock's Orders page filters against `new Date()` and defaults to the
+# "past 3 months" tab, gmail sorts and groups by real timestamps, and so on.
+#
+# So every dated artifact ages out of view as real time passes, silently. M111's
+# ORD-KT-111 is dated 2026-05-12 and is the whole premise of the task ("my kettle
+# never showed up" — it did, it's right there in Orders). At 90 days after the seed
+# date it drops off the default tab and the environment starts lying about itself,
+# with no error anywhere.
+#
+# Rebasing maps SEED_DATE -> today and shifts every projected timestamp by the same
+# delta, so relative ages ("delivered 9 days ago") stay exactly as designed and the
+# mocks' wall-clock logic behaves as it did on the day the wave was recorded. Absolute
+# dates then differ from the archived screenshots, which is the intended trade: an
+# order the annotator can see beats one whose printed date matches a screenshot.
+#
+# GYM_DATE_REBASE=0 turns it off (verbatim gym dates). GYM_DATE_REBASE=<YYYY-MM-DD>
+# pins "today" to a fixed day, which is what reproducing an archived run wants.
+SEED_DATE = "2026-05-21"
+
+
+def _rebase_target() -> "datetime.date | None":
+    import datetime
+    raw = os.environ.get("GYM_DATE_REBASE", "").strip().lower()
+    if raw in ("0", "false", "off", "no"):
+        return None
+    if raw and raw not in ("1", "true", "on", "yes"):
+        try:
+            return datetime.date.fromisoformat(raw)
+        except ValueError:
+            print(f"  !! GYM_DATE_REBASE={raw!r} is not YYYY-MM-DD — using today", file=sys.stderr)
+    return datetime.date.today()
+
+
+def _shift(ts: str | None, delta) -> str | None:
+    """Move one ISO-ish timestamp by `delta`, preserving its original format."""
+    import datetime
+    if not ts or delta is None or not delta:
+        return ts
+    raw = str(ts)
+    body = raw[:-1] if raw.endswith("Z") else raw
+    for fmt, out in (("%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S.%f"),
+                     ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S"),
+                     ("%Y-%m-%dT%H:%M", "%Y-%m-%dT%H:%M"),
+                     ("%Y-%m-%d", "%Y-%m-%d")):
+        try:
+            shifted = datetime.datetime.strptime(body, fmt) + delta
+        except ValueError:
+            continue
+        return shifted.strftime(out) + ("Z" if raw.endswith("Z") else "")
+    return raw                                   # unparseable -> leave it alone
+
+
+def _clock_delta():
+    """timedelta from the gym's frozen SEED_DATE to the rebase target, or None."""
+    import datetime
+    target = _rebase_target()
+    if target is None:
+        return None
+    return datetime.datetime.combine(target, datetime.time()) - \
+        datetime.datetime.strptime(SEED_DATE, "%Y-%m-%d")
+
+
 def transform_mail(mail: dict) -> dict:
     """gym MailState -> gmail_mock state (see CUA-Gym-Hub websites/gmail_mock/SCHEMA.md).
 
@@ -85,6 +149,10 @@ def transform_mail(mail: dict) -> dict:
     """
     account = mail.get("account_email") or ""
     name = mail.get("account_name") or _display_name(account)
+    # gmail_mock renders "3:42 PM" for today, "May 12" for this year and a full date
+    # beyond it, all against the real clock — so inbox timestamps need the same shift
+    # the shop's order dates get, or every seeded mail reads as months stale.
+    dt = _clock_delta()
     emails: list[dict] = []
     for folder in ("inbox", "sent", "drafts"):
         for e in (mail.get(folder) or {}).values():
@@ -98,7 +166,7 @@ def transform_mail(mail: dict) -> dict:
                 "bcc": [],
                 "subject": e.get("subject") or "",
                 "body": (e.get("body") or "").replace("\n", "<br>"),
-                "timestamp": _iso(e.get("received_at")),
+                "timestamp": _iso(_shift(e.get("received_at"), dt)),
                 "read": bool(e.get("read")),
                 "starred": False,
                 "important": False,
@@ -269,11 +337,15 @@ def transform_shop(shop: dict) -> dict:
 
     # returns: a gym ReturnRequest flips its order's amazon status to "Returned"
     returned_order_ids = {r.get("order_id") for r in (shop.get("returns") or {}).values()}
+    # Order dates drive amazon_mock's "past 3 months / 6 months / year" tabs, which run
+    # off the real clock — see the _shift notes above.
+    dt = _clock_delta()
     orders = []
     for o in (shop.get("orders") or {}).values():
         status = "Returned" if o.get("id") in returned_order_ids else \
             _AMZ_STATUS.get((o.get("status") or "").lower(), "Delivered")
-        orders.append({"id": o.get("id"), "date": o.get("placed_at") or "2024-01-01T00:00:00.000Z",
+        orders.append({"id": o.get("id"),
+                       "date": _shift(o.get("placed_at"), dt) or "2024-01-01T00:00:00.000Z",
                        "status": status, "total": o.get("total"),
                        "items": [{"productId": i.get("product_id"), "quantity": i.get("quantity") or 1}
                                  for i in (o.get("items") or [])],
@@ -281,7 +353,8 @@ def transform_shop(shop: dict) -> dict:
                        # tracking # + eta come from the order's first shipment so the
                        # realistic UI actually shows the live tracking an agent must read.
                        "trackingNumber": (o.get("shipments") or [{}])[0].get("tracking_number"),
-                       "estimatedDelivery": (o.get("shipments") or [{}])[0].get("estimated_delivery")})
+                       "estimatedDelivery": _shift(
+                           (o.get("shipments") or [{}])[0].get("estimated_delivery"), dt)})
 
     # promotions -> a strikethrough deal price on the targeted product (amazon's
     # only native deal field), plus the raw promos preserved for verification.
@@ -376,9 +449,12 @@ def transform_calendar(cal: dict) -> dict:
     email = ".".join(name.lower().split()) + "@example.com"
     user = {"id": "u1", "username": name, "email": email, "avatar": _picsum("user1", "100/100")}
     ordered = sorted((cal.get("events") or {}).values(), key=lambda e: (e.get("day", ""), e.get("start", "")))
+    # The calendar grid is drawn around currentDate; if the events sit months behind the
+    # real clock the default week view opens on an empty week.
+    dt = _clock_delta()
     events, current_date = [], None
     for e in ordered:
-        day = e.get("day")
+        day = _shift(e.get("day"), dt)
         if current_date is None:
             current_date = f"{day}T00:00:00.000Z"
         events.append({"id": e.get("id"), "calendarId": "c1", "title": e.get("title") or "(No Title)",
