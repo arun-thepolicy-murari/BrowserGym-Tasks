@@ -330,6 +330,62 @@ function seedVariationNote(e,keys){
     starting state, not as seed diversity.</div>`;
 }
 
+// The gym holds ONE global world, so exactly one (task, seed) can be bridged at a
+// time. That used to mean 13 of the 14 tasks fell back to the old ShopGym snapshots
+// and only whichever task you last passed to run_local.sh had the new UI. The bridge
+// exposes POST /bridge/reset and sends CORS wide open, so the annotator can do that
+// switch itself — no terminal round-trip, any task one click from live.
+const DEFAULT_BRIDGE="http://127.0.0.1:8090";
+// The bridge is plain http on loopback. A page served over https (GitHub Pages) cannot
+// talk to it — the browser blocks the request as mixed content before it leaves — and a
+// page on file:// has no usable origin for CORS either. In both cases the honest answer
+// is "there is no local stack here", so we skip the probe and go straight to snapshots.
+function bridgeReachableFromHere(){
+  const h=location.hostname;
+  return location.protocol==="http:" && (h==="127.0.0.1"||h==="localhost"||h==="[::1]");
+}
+const ROUTE_FOR={mail:"/inbox",market:"/",calendar:"/",food:"/"};
+function envRoute(app,startPath){ return app==="shop" ? (startPath||"/") : (ROUTE_FOR[app]||"/"); }
+
+// Mirrors url_for() in run_local.sh: route in both the path and the hash, so it lands
+// whether the mock is a BrowserRouter or a HashRouter build.
+function envUrl(base,sid,bridge,route,style){
+  const q=new URLSearchParams({sid,bridge}).toString();
+  base=String(base).replace(/\/$/,"");
+  if(!route||route==="/") return `${base}/?${q}`;
+  if(style==="hash") return `${base}/?${q}#${route}`;
+  if(style==="path") return `${base}${route}?${q}`;
+  return `${base}${route}?${q}#${route}`;
+}
+
+async function makeLive(t,sel,bridge){
+  const r=await fetch(bridge.replace(/\/$/,"")+"/bridge/reset",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({task_id:t.task_id,seed:Number(sel)})});
+  if(!r.ok) throw new Error(`bridge reset returned ${r.status}`);
+  const j=await r.json();
+  if(!j.ok) throw new Error(j.error||"bridge reset was not ok");
+  const startPath=(((t.env||{}).seeds||{})[sel]||{}).start_path||"/";
+  const style=(window.__envRouteStyle)||"dual";
+  const apps={},routes={};
+  for(const [app,sid] of Object.entries(j.sids||{})){
+    const base=(j.mocks||{})[app]; if(!base) continue;
+    routes[app]=envRoute(app,startPath);
+    apps[app]=envUrl(base,sid,bridge,routes[app],style);
+  }
+  // Same shape run_local.sh writes, so the render path below is identical either way.
+  const env={mnum:t.mnum,task_id:t.task_id,seed:Number(sel),mode:"bridged",
+             bridge,start_path:startPath,route_style:style,routes,sids:j.sids,apps};
+  // live_env.json is only ever written by run_local.sh, so after an in-app switch it
+  // is stale. Remember what WE reset to and prefer it, or tabbing away and back would
+  // claim the old task is live and hand back snapshots.
+  LIVE_OVERRIDE=env;
+  try{ sessionStorage.setItem("bg_live_env",JSON.stringify(env)); }catch(_){}
+  return env;
+}
+let LIVE_OVERRIDE=null;
+try{ LIVE_OVERRIDE=JSON.parse(sessionStorage.getItem("bg_live_env")||"null"); }catch(_){}
+
 // Chrome grants ONE popup per user gesture. Firing five window.open() calls from a
 // single click therefore opens the first and silently drops the rest, which is why
 // "Open all" appeared to need four clicks. Rather than fight that, the button tracks
@@ -411,17 +467,56 @@ function wireLaunch(t,sel,keys){
        For the clickable bridged CUA mocks, run the command below on a machine with the gym + hub, then reload.`);
   }
 
-  fetch("live_env.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(live=>{
-    if(!live) return renderSnapshot();
-    if(live.mnum!==t.mnum||String(live.seed)!==String(sel)){
-      // Wrong task live — still offer this seed's snapshot so Pages / multi-task review works.
-      renderSnapshot();
-      note.insertAdjacentHTML("beforeend",
-        `<div style="margin-top:6px">Local stack has <b>${esc(live.mnum)} seed ${esc(String(live.seed))}</b> bridged;
-         switch with the command below if you need the live engine for this task.</div>`);
-      return;
-    }
+  // Offer a one-click switch when the bridge is reachable but pointed elsewhere. The
+  // snapshot fallback stays for the case where there is no stack at all (GitHub Pages),
+  // but it should never be what you get merely because another task happens to be live.
+  function offerSwitch(live){
+    const bridge=(live&&live.bridge)||DEFAULT_BRIDGE;
+    if(live) window.__envRouteStyle=live.route_style||"dual";
+    renderSnapshot();
+    const who=live?`<b>${esc(live.mnum)} seed ${esc(String(live.seed))}</b> is bridged right now.`
+                  :`No task is bridged right now.`;
+    note.insertAdjacentHTML("afterbegin",
+      `<div style="margin-bottom:6px">${who} The gym holds one world at a time, so
+       ${esc(t.mnum)} seed ${esc(sel)} has to take it over.</div>`);
+    acts.insertAdjacentHTML("afterbegin",
+      `<button class="btn openall" id="makeLive">Make ${esc(t.mnum)} seed ${esc(sel)} live</button>`);
+    const b=document.getElementById("makeLive");
+    b.onclick=async()=>{
+      b.disabled=true; const was=b.textContent; b.textContent="Resetting the gym…";
+      try{
+        renderLive(await makeLive(t,sel,bridge));
+      }catch(err){
+        b.disabled=false; b.textContent=was;
+        set("down","bridge unreachable",
+          `Could not reach the bridge at <code>${esc(bridge)}</code> — ${esc(String(err.message||err))}.
+           Start the stack with the command below. The read-only snapshots above still work.`);
+      }
+    };
+  }
 
+  // An in-app switch this session beats the file on disk, which only run_local.sh writes.
+  Promise.resolve(LIVE_OVERRIDE ? LIVE_OVERRIDE
+    : fetch("live_env.json",{cache:"no-store"}).then(r=>r.ok?r.json():null)
+  ).then(live=>{
+    // No live_env.json at all: the stack may still be up (someone else started it), so
+    // probe the bridge before writing the whole thing off as offline. Not from an https
+    // origin though — GitHub Pages is https, the bridge is plain http on loopback, and
+    // the browser blocks that as mixed content. Probing there would throw on every
+    // Environment tab and litter the console for a request that can never succeed.
+    if(!live){
+      if(!bridgeReachableFromHere()) return renderSnapshot();
+      return fetch(DEFAULT_BRIDGE+"/bridge/actions",{cache:"no-store"})
+        .then(r=>{ if(!r.ok) throw 0; offerSwitch(null); })
+        .catch(()=>renderSnapshot());
+    }
+    if(live.mnum!==t.mnum||String(live.seed)!==String(sel)){
+      return bridgeReachableFromHere() ? offerSwitch(live) : renderSnapshot();
+    }
+    renderLive(live);
+  }).catch(()=>renderSnapshot());
+
+  function renderLive(live){
     const apps=live.apps||{};
     const ordered=APP_ORDER.filter(k=>apps[k]).concat(Object.keys(apps).filter(k=>!APP_ORDER.includes(k)));
     root.classList.remove("cold");
@@ -456,7 +551,7 @@ function wireLaunch(t,sel,keys){
       note.innerHTML=`The mock is seeded but disconnected from the engine, so nothing you do in it
         reaches the verifier. Re-run the command below to get a bridged session.`;
     }
-  }).catch(()=>renderSnapshot());
+  }
 }
 
 /* ---------- MODEL tab: steps → agent-level → outcome ---------- */

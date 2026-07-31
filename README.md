@@ -178,6 +178,18 @@ page. `run_local.sh` probes each deep path before printing it and falls back to 
 for any mock that doesn't serve the shell there. Force one form with `ROUTE_STYLE=hash`
 or `ROUTE_STYLE=path`.
 
+**One task is bridged at a time — switch from the app.** The gym holds a single global
+world, so only one `(task, seed)` can be live. Every other task's Environment tab shows a
+**Make `<task>` seed `<n>` live** button: it `POST`s `/bridge/reset` directly (the bridge
+sends CORS wide open), then rebuilds the app links from the sids it returns. No terminal
+round-trip, and every task is one click from the new UI rather than only whichever one you
+last passed to `run_local.sh`. The switch is remembered for the session, so tabbing between
+tasks doesn't resurrect the old one.
+
+Read-only `task_env/` snapshots remain the fallback for when no stack is reachable at all
+(e.g. served from GitHub Pages) — not for when the bridge is up and merely pointed at a
+different task.
+
 **Pop-ups.** Browsers allow one pop-up per click, so *Open all* opens one tab per click by
 default — the button re-labels itself to the remaining count so the progress is visible.
 Allow pop-ups for `127.0.0.1:8899` once (Chrome: the blocked-pop-up icon in the address
