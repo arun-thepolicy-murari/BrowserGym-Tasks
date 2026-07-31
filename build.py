@@ -216,11 +216,9 @@ def load_task_env(slug: str, meta: dict) -> dict:
     seeds = {}
     for seed_file in sorted((task_dir / "seed_data").glob("seed_[0-9].json")):
         seeds[seed_file.stem.rsplit("_", 1)[1]] = read_json(seed_file)
-    # Optional artifacts from export_env.py / export_verifiers.py; both are scoped to
-    # this task alone, so nothing here can carry another task's state.
-    pages = read_json(TASK_ENV / "index.json").get(slug.split("_", 1)[0], {}) if (TASK_ENV / "index.json").exists() else {}
+    # Old ShopGym HTML pages are retired. Environment opens env_ui/ CUA mocks.
     return {
-        "pages": pages,
+        "pages": {},
         "verifier_standalone": read_text(TASK_ENV / slug / "verifier_standalone.py"),
         "brief": read_text(task_dir / "brief.txt").strip(),
         "seed_factory_ref": seed_index.get("seed_factory") or meta.get("seed_source", ""),

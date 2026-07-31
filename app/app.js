@@ -448,37 +448,65 @@ function wireLaunch(t,sel,keys){
         note=document.getElementById("launchNote");
   const set=(cls,label,html)=>{ st.className="state "+cls; st.textContent=label; note.innerHTML=html; };
 
-  // Prefer the bridged stack (live_env.json from run_local.sh). When that isn't up —
-  // including on GitHub Pages — fall back to the per-seed static snapshots in task_env/
-  // so annotators can still open the seeded starting pages.
-  function renderSnapshot(){
-    const pages=((t.env||{}).pages||{})[sel]||[];
-    const start=pages.find(p=>p.start)||pages[0];
-    root.classList.add("cold");
-    if(!pages.length){
-      acts.innerHTML=`<button class="btn openall" disabled>Open seed</button>`;
-      return set("down","not running",
-        `Nothing is live and no seed snapshot is packaged. Run the command below locally for the bridged stack.`);
+  // Site root for relative env_ui/ links (works on GH Pages subpath and local /).
+  function siteRoot(){
+    const u=new URL(location.href);
+    u.hash=""; u.search="";
+    let path=u.pathname;
+    if(path.endsWith("index.html")) path=path.slice(0,-10);
+    if(!path.endsWith("/")) path=path.replace(/\/[^/]*$/,"/");
+    u.pathname=path;
+    return u.href;
+  }
+  function staticApps(){
+    const root=siteRoot();
+    const start=(((t.env||{}).seeds||{})[sel]||{}).start_path||"/cart";
+    const route={shop:start,mail:"/inbox",market:"/",food:"/"};
+    const apps={},routes={};
+    for(const app of ["shop","mail","market","food"]){
+      const sid=`static-${t.mnum}-${sel}-${app}`;
+      const seedUrl=`${root}env_ui/seeds/${t.mnum}/${sel}/${app}.json`;
+      const q=new URLSearchParams({sid,seed:seedUrl}).toString();
+      routes[app]=route[app];
+      apps[app]=`${root}env_ui/${app}/?${q}#${route[app]}`;
     }
-    acts.innerHTML=`<a class="btn openall" href="${esc(start.file)}" target="_blank" rel="noopener">▶ Open seed ${esc(sel)} · ${esc(start.path)}</a>`
-      +pages.slice(0,6).map(p=>`<a class="btn app" href="${esc(p.file)}" target="_blank" rel="noopener">${esc(p.path)}${p.start?' · start':''}</a>`).join("");
-    return set("snapshot","seed snapshot",
-      `Static seeded UI for seed <b>${esc(sel)}</b> (read-only ShopGym snapshot).
-       For the clickable bridged CUA mocks, run the command below on a machine with the gym + hub, then reload.`);
+    return {apps,routes,start_path:start};
   }
 
-  // Offer a one-click switch when the bridge is reachable but pointed elsewhere. The
-  // snapshot fallback stays for the case where there is no stack at all (GitHub Pages),
-  // but it should never be what you get merely because another task happens to be live.
+  // Packaged CUA mocks under env_ui/ (no old ShopGym task_env HTML).
+  function renderStaticEnv(extraNote){
+    const {apps,routes,start_path}=staticApps();
+    const ordered=APP_ORDER.filter(k=>apps[k]);
+    root.classList.remove("cold");
+    acts.innerHTML=`<button class="btn openall" id="openAll">Open all ${ordered.length} apps</button>`
+      +ordered.map(k=>{
+        const sub=routes[k]||"";
+        return `<a class="btn app" href="${esc(apps[k])}" target="_blank" rel="noopener"
+                >▶ ${esc(APP_LABEL[k]||k)}${sub&&sub!=="/"?`<span class="sub">${esc(sub)}</span>`:""}</a>`;
+      }).join("")
+      +`<button class="btn" id="copyUrls">Copy URLs</button>`;
+    openAllFor(t,sel,ordered,apps);
+    const cp=document.getElementById("copyUrls");
+    if(cp) cp.onclick=()=>{
+      const txt=ordered.map(k=>`${APP_LABEL[k]||k}: ${apps[k]}`).join("\n");
+      navigator.clipboard?.writeText(txt).then(()=>{cp.textContent="Copied";setTimeout(()=>cp.textContent="Copy URLs",1400);})
+        .catch(()=>{cp.textContent="Copy failed";setTimeout(()=>cp.textContent="Copy URLs",1400);});
+    };
+    set("snapshot","CUA mocks · static seed",
+      `New CUA-Gym UIs with seed <b>${esc(sel)}</b> loaded from packaged JSON (Amazon opens at
+       <b>${esc(start_path)}</b>). Clicks stay in the mock — for the gym-bridged engine run the
+       command below locally.${extraNote?` ${extraNote}`:""}`);
+  }
+
   function offerSwitch(live){
     const bridge=(live&&live.bridge)||DEFAULT_BRIDGE;
     if(live) window.__envRouteStyle=live.route_style||"dual";
-    renderSnapshot();
+    renderStaticEnv();
     const who=live?`<b>${esc(live.mnum)} seed ${esc(String(live.seed))}</b> is bridged right now.`
                   :`No task is bridged right now.`;
     note.insertAdjacentHTML("afterbegin",
       `<div style="margin-bottom:6px">${who} The gym holds one world at a time, so
-       ${esc(t.mnum)} seed ${esc(sel)} has to take it over.</div>`);
+       ${esc(t.mnum)} seed ${esc(sel)} has to take it over for a bridged session.</div>`);
     acts.insertAdjacentHTML("afterbegin",
       `<button class="btn openall" id="makeLive">Make ${esc(t.mnum)} seed ${esc(sel)} live</button>`);
     const b=document.getElementById("makeLive");
@@ -490,31 +518,25 @@ function wireLaunch(t,sel,keys){
         b.disabled=false; b.textContent=was;
         set("down","bridge unreachable",
           `Could not reach the bridge at <code>${esc(bridge)}</code> — ${esc(String(err.message||err))}.
-           Start the stack with the command below. The read-only snapshots above still work.`);
+           Start the stack with the command below. Static CUA mock links above still work.`);
       }
     };
   }
 
-  // An in-app switch this session beats the file on disk, which only run_local.sh writes.
   Promise.resolve(LIVE_OVERRIDE ? LIVE_OVERRIDE
     : fetch("live_env.json",{cache:"no-store"}).then(r=>r.ok?r.json():null)
   ).then(live=>{
-    // No live_env.json at all: the stack may still be up (someone else started it), so
-    // probe the bridge before writing the whole thing off as offline. Not from an https
-    // origin though — GitHub Pages is https, the bridge is plain http on loopback, and
-    // the browser blocks that as mixed content. Probing there would throw on every
-    // Environment tab and litter the console for a request that can never succeed.
     if(!live){
-      if(!bridgeReachableFromHere()) return renderSnapshot();
+      if(!bridgeReachableFromHere()) return renderStaticEnv();
       return fetch(DEFAULT_BRIDGE+"/bridge/actions",{cache:"no-store"})
         .then(r=>{ if(!r.ok) throw 0; offerSwitch(null); })
-        .catch(()=>renderSnapshot());
+        .catch(()=>renderStaticEnv());
     }
     if(live.mnum!==t.mnum||String(live.seed)!==String(sel)){
-      return bridgeReachableFromHere() ? offerSwitch(live) : renderSnapshot();
+      return bridgeReachableFromHere() ? offerSwitch(live) : renderStaticEnv();
     }
     renderLive(live);
-  }).catch(()=>renderSnapshot());
+  }).catch(()=>renderStaticEnv());
 
   function renderLive(live){
     const apps=live.apps||{};

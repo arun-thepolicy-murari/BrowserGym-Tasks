@@ -1,0 +1,145 @@
+{
+  "products": [
+    {
+      "id": "p_anc_headphones",
+      "title": "Active Noise-Cancelling Headphones",
+      "price": 129.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 2210,
+      "image": "https://picsum.photos/seed/p_anc_headphones/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_anc_headphones/400/400"
+      ],
+      "description": "Over-ear ANC headphones, 30-hr battery.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "AudioPeak",
+        "Emoji": "\ud83c\udfa7"
+      },
+      "category": "Electronics",
+      "brand": "AudioPeak",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 75,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_ext_warranty",
+      "title": "3-Year Extended Warranty",
+      "price": 29.99,
+      "originalPrice": null,
+      "rating": 0.0,
+      "reviewCount": 0,
+      "image": "https://picsum.photos/seed/p_ext_warranty/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_ext_warranty/400/400"
+      ],
+      "description": "Accidental-damage protection for 3 years.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "ShopGym",
+        "Emoji": "\ud83d\udee1\ufe0f"
+      },
+      "category": "Electronics",
+      "brand": "ShopGym",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 999,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "user": {
+    "id": "u1",
+    "name": "Alice Anderson",
+    "email": "alice@example.com",
+    "address": {
+      "id": "addr_home",
+      "label": "Home",
+      "name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "isDefault": true
+    },
+    "addresses": [
+      {
+        "id": "addr_home",
+        "label": "Home",
+        "name": "Alice Anderson",
+        "line1": "100 Park Avenue",
+        "line2": "Apt 4B",
+        "city": "Brooklyn",
+        "state": "NY",
+        "zip": "11201",
+        "isDefault": true
+      },
+      {
+        "id": "addr_work",
+        "label": "Work",
+        "name": "Alice Anderson",
+        "line1": "500 Madison Avenue",
+        "line2": "22nd Floor",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10022",
+        "isDefault": false
+      }
+    ],
+    "paymentMethod": {
+      "id": "pay_visa",
+      "type": "card",
+      "label": "Visa ****4242",
+      "last4": "4242",
+      "expiry": "04/26",
+      "isDefault": true
+    },
+    "paymentMethods": [
+      {
+        "id": "pay_visa",
+        "type": "card",
+        "label": "Visa ****4242",
+        "last4": "4242",
+        "expiry": "04/26",
+        "isDefault": true
+      },
+      {
+        "id": "pay_paypal",
+        "type": "paypal",
+        "label": "PayPal (alice@example.com)",
+        "last4": "4242",
+        "expiry": "",
+        "isDefault": false
+      }
+    ]
+  },
+  "cart": [
+    {
+      "productId": "p_anc_headphones",
+      "quantity": 1,
+      "lineId": "ci_headphones"
+    },
+    {
+      "productId": "p_ext_warranty",
+      "quantity": 1,
+      "lineId": "ci_warranty"
+    }
+  ],
+  "wishlist": [],
+  "savedForLater": [],
+  "orders": [],
+  "reviews": [],
+  "recentSearches": [],
+  "recentlyViewed": [
+    "p_anc_headphones",
+    "p_ext_warranty"
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "products": [
+    {
+      "id": "p_wool_socks",
+      "title": "Merino Wool Socks (3-pack)",
+      "price": 22.0,
+      "originalPrice": null,
+      "rating": 4.7,
+      "reviewCount": 1600,
+      "image": "https://picsum.photos/seed/p_wool_socks/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_wool_socks/400/400"
+      ],
+      "description": "Soft merino wool socks, 3 pairs.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "WarmFeet",
+        "Emoji": "\ud83e\udde6"
+      },
+      "category": "Electronics",
+      "brand": "WarmFeet",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 180,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_camp_mug",
+      "title": "Enamel Camp Mug",
+      "price": 16.0,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 940,
+      "image": "https://picsum.photos/seed/p_camp_mug/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_camp_mug/400/400"
+      ],
+      "description": "12oz enamel camping mug.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "TrailKit",
+        "Emoji": "\u2615"
+      },
+      "category": "Home & Kitchen",
+      "brand": "TrailKit",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 200,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "user": {
+    "id": "u1",
+    "name": "Alice Anderson",
+    "email": "alice@example.com",
+    "address": {
+      "id": "addr_home",
+      "label": "Home",
+      "name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "isDefault": true
+    },
+    "addresses": [
+      {
+        "id": "addr_home",
+        "label": "Home",
+        "name": "Alice Anderson",
+        "line1": "100 Park Avenue",
+        "line2": "Apt 4B",
+        "city": "Brooklyn",
+        "state": "NY",
+        "zip": "11201",
+        "isDefault": true
+      },
+      {
+        "id": "addr_work",
+        "label": "Work",
+        "name": "Alice Anderson",
+        "line1": "500 Madison Avenue",
+        "line2": "22nd Floor",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10022",
+        "isDefault": false
+      },
+      {
+        "id": "addr_bea",
+        "label": "Bea",
+        "name": "Bea Russo",
+        "line1": "71 Walnut St",
+        "line2": "",
+        "city": "Tucson",
+        "state": "AZ",
+        "zip": "85701",
+        "isDefault": false
+      },
+      {
+        "id": "addr_cy",
+        "label": "Cy",
+        "name": "Cy Park",
+        "line1": "9 Maple Row",
+        "line2": "",
+        "city": "Akron",
+        "state": "OH",
+        "zip": "44301",
+        "isDefault": false
+      }
+    ],
+    "paymentMethod": {
+      "id": "pay_visa",
+      "type": "card",
+      "label": "Visa ****4242",
+      "last4": "4242",
+      "expiry": "04/26",
+      "isDefault": true
+    },
+    "paymentMethods": [
+      {
+        "id": "pay_visa",
+        "type": "card",
+        "label": "Visa ****4242",
+        "last4": "4242",
+        "expiry": "04/26",
+        "isDefault": true
+      },
+      {
+        "id": "pay_paypal",
+        "type": "paypal",
+        "label": "PayPal (alice@example.com)",
+        "last4": "4242",
+        "expiry": "",
+        "isDefault": false
+      }
+    ]
+  },
+  "cart": [
+    {
+      "productId": "p_wool_socks",
+      "quantity": 1,
+      "lineId": "ci_socks"
+    },
+    {
+      "productId": "p_camp_mug",
+      "quantity": 1,
+      "lineId": "ci_campmug"
+    }
+  ],
+  "wishlist": [],
+  "savedForLater": [],
+  "orders": [],
+  "reviews": [],
+  "recentSearches": [],
+  "recentlyViewed": [
+    "p_wool_socks",
+    "p_camp_mug"
+  ]
+}

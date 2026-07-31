@@ -1,0 +1,156 @@
+{
+  "products": [
+    {
+      "id": "p_gift_watch",
+      "title": "Classic Analog Wristwatch",
+      "price": 89.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 640,
+      "image": "https://picsum.photos/seed/p_gift_watch/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_gift_watch/400/400"
+      ],
+      "description": "Stainless-steel analog watch with leather strap.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "Tempo",
+        "Emoji": "\u231a"
+      },
+      "category": "Electronics",
+      "brand": "Tempo",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 55,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_giftbox_upgrade",
+      "title": "Premium Gift-Box Upgrade",
+      "price": 12.99,
+      "originalPrice": null,
+      "rating": 0.0,
+      "reviewCount": 0,
+      "image": "https://picsum.photos/seed/p_giftbox_upgrade/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_giftbox_upgrade/400/400"
+      ],
+      "description": "Luxury rigid gift box with ribbon.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "ShopGym",
+        "Emoji": "\ud83c\udf81"
+      },
+      "category": "Electronics",
+      "brand": "ShopGym",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 999,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "user": {
+    "id": "u1",
+    "name": "Alice Anderson",
+    "email": "alice@example.com",
+    "address": {
+      "id": "addr_home",
+      "label": "Home",
+      "name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "isDefault": true
+    },
+    "addresses": [
+      {
+        "id": "addr_home",
+        "label": "Home",
+        "name": "Alice Anderson",
+        "line1": "100 Park Avenue",
+        "line2": "Apt 4B",
+        "city": "Brooklyn",
+        "state": "NY",
+        "zip": "11201",
+        "isDefault": true
+      },
+      {
+        "id": "addr_work",
+        "label": "Work",
+        "name": "Alice Anderson",
+        "line1": "500 Madison Avenue",
+        "line2": "22nd Floor",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10022",
+        "isDefault": false
+      },
+      {
+        "id": "addr_mom",
+        "label": "Mom",
+        "name": "Carol Anderson",
+        "line1": "78 Maple Court",
+        "line2": "",
+        "city": "Columbus",
+        "state": "OH",
+        "zip": "43215",
+        "isDefault": false
+      }
+    ],
+    "paymentMethod": {
+      "id": "pay_visa",
+      "type": "card",
+      "label": "Visa ****4242",
+      "last4": "4242",
+      "expiry": "04/26",
+      "isDefault": true
+    },
+    "paymentMethods": [
+      {
+        "id": "pay_visa",
+        "type": "card",
+        "label": "Visa ****4242",
+        "last4": "4242",
+        "expiry": "04/26",
+        "isDefault": true
+      },
+      {
+        "id": "pay_paypal",
+        "type": "paypal",
+        "label": "PayPal (alice@example.com)",
+        "last4": "4242",
+        "expiry": "",
+        "isDefault": false
+      }
+    ]
+  },
+  "cart": [
+    {
+      "productId": "p_gift_watch",
+      "quantity": 1,
+      "lineId": "ci_watch"
+    },
+    {
+      "productId": "p_giftbox_upgrade",
+      "quantity": 1,
+      "lineId": "ci_upgrade"
+    }
+  ],
+  "wishlist": [],
+  "savedForLater": [],
+  "orders": [],
+  "reviews": [],
+  "recentSearches": [],
+  "recentlyViewed": [
+    "p_gift_watch",
+    "p_giftbox_upgrade"
+  ]
+}

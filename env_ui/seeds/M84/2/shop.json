@@ -1,0 +1,147 @@
+{
+  "products": [
+    {
+      "id": "p_desk_lamp",
+      "title": "LED Desk Lamp (dimmable)",
+      "price": 34.99,
+      "originalPrice": null,
+      "rating": 4.5,
+      "reviewCount": 980,
+      "image": "https://picsum.photos/seed/p_desk_lamp/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_desk_lamp/400/400"
+      ],
+      "description": "Dimmable LED desk lamp with USB port.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "Lumos",
+        "Emoji": "\ud83d\udca1"
+      },
+      "category": "Home & Kitchen",
+      "brand": "Lumos",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 110,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_led_bulbs",
+      "title": "LED Bulbs (4-pack, A19)",
+      "price": 12.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 2100,
+      "image": "https://picsum.photos/seed/p_led_bulbs/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_led_bulbs/400/400"
+      ],
+      "description": "Warm-white A19 LED bulbs, 4-pack.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "Lumos",
+        "Emoji": "\ud83d\udd06"
+      },
+      "category": "Home & Kitchen",
+      "brand": "Lumos",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 300,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "user": {
+    "id": "u1",
+    "name": "Alice Anderson",
+    "email": "alice@example.com",
+    "address": {
+      "id": "addr_home",
+      "label": "Home",
+      "name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "isDefault": true
+    },
+    "addresses": [
+      {
+        "id": "addr_home",
+        "label": "Home",
+        "name": "Alice Anderson",
+        "line1": "100 Park Avenue",
+        "line2": "Apt 4B",
+        "city": "Brooklyn",
+        "state": "NY",
+        "zip": "11201",
+        "isDefault": true
+      },
+      {
+        "id": "addr_work",
+        "label": "Work",
+        "name": "Alice Anderson",
+        "line1": "500 Madison Avenue",
+        "line2": "22nd Floor",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10022",
+        "isDefault": false
+      }
+    ],
+    "paymentMethod": {
+      "id": "pay_visa",
+      "type": "card",
+      "label": "Visa ****4242",
+      "last4": "4242",
+      "expiry": "04/26",
+      "isDefault": true
+    },
+    "paymentMethods": [
+      {
+        "id": "pay_visa",
+        "type": "card",
+        "label": "Visa ****4242",
+        "last4": "4242",
+        "expiry": "04/26",
+        "isDefault": true
+      },
+      {
+        "id": "pay_paypal",
+        "type": "paypal",
+        "label": "PayPal (alice@example.com)",
+        "last4": "4242",
+        "expiry": "",
+        "isDefault": false
+      }
+    ]
+  },
+  "cart": [
+    {
+      "productId": "p_desk_lamp",
+      "quantity": 1,
+      "lineId": "ci_lamp"
+    },
+    {
+      "productId": "p_led_bulbs",
+      "quantity": 1,
+      "lineId": "ci_bulbs"
+    }
+  ],
+  "wishlist": [],
+  "savedForLater": [],
+  "orders": [],
+  "reviews": [],
+  "recentSearches": [],
+  "recentlyViewed": [
+    "p_desk_lamp",
+    "p_led_bulbs"
+  ]
+}

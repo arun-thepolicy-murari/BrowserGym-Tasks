@@ -12,9 +12,10 @@ alongside it.
 index.html    the platform — open in a browser (data is embedded, works over file://)
 data.json     the same data as a standalone file, for scripts and inspection
 screens/      443 screenshots, one folder per episode, referenced by relative path
-task_env/     per-task environment snapshots + per-task standalone verifiers
+env_ui/       CUA mock UIs (shop/mail/market/food) + per-task seed JSON
+task_env/     per-task standalone verifiers only (old ShopGym HTML removed)
 build.py      regenerates data.json + index.html + screens/
-export_env.py       regenerates task_env/<slug>/seed_N/*.html from the gym UI
+export_env_ui.py    builds env_ui/ mocks + seed JSON from new_samples/
 export_verifiers.py regenerates task_env/<slug>/verifier_standalone.py
 app/          app sources: shell.html (markup + CSS) and app.js (logic)
 new_samples/  the gpt-5.5 wave-1 handoff package (source data)
@@ -87,54 +88,27 @@ Each task opens as tabs: **one per model**, then **Environment**, **Verifiers**,
 - **Summary tab**: a per-run table (verifier result + your verdict + observed vein), a
   task-wide note, and the **Submit** button.
 
-## Per-task environments and verifiers (`task_env/`)
+## Environment UIs (`env_ui/`) and verifiers (`task_env/`)
 
-> **Status.** The static `task_env/*.html` snapshots are the **old ShopGym** UI and are no
-> longer linked from the Environment tab — the live bridged mocks replaced them. The files
-> and the exporter stay for provenance and for diffing a seed against what shipped; the
-> per-task **verifiers** below are still live and still consumed by `build.py`.
-
-Everything under `task_env/` is scoped to **one task**, so no task can show another
-task's state:
+The Environment tab opens the **new CUA-Gym mocks** under `env_ui/` (Amazon, Gmail, eBay,
+Uber Eats). Old ShopGym HTML snapshots are removed and are no longer linked.
 
 ```
+env_ui/
+  shop/  mail/  market/  food/     built Vite apps (HashRouter, relative base)
+  seeds/M73/0/shop.json            transformed seed for that task/seed
 task_env/
-  _static/                              shared css/js only — no task state
   M73_expired_card_checkout/
-    verifier_standalone.py              this task's suite + only the helpers it uses
-    seed_0/  cart.html  checkout_address.html  checkout_payment.html
-             checkout_review.html  account_payments.html  account_addresses.html …
-    seed_1/ …   seed_2/ …
-  M75_stale_gift_message/ …
+    verifier_standalone.py         this task's suite + only the helpers it uses
 ```
 
-**Environment pages.** The gym serves a single global world, so seeding one task
-overwrites the previous one. `export_env.py` therefore issues a fresh
-`/_harness/reset` immediately before rendering each `(task, seed)` and writes the
-result into that task's own folder — 366 pages in total. Each page is the real UI at
-the **seeded starting state** (what the agent saw at step 0), with a banner marking it
-as a read-only snapshot; links to pages outside the task's snapshot are inert rather
-than 404s. Order-confirmation pages are deliberately excluded, since those are
-artifacts an agent created during a run rather than part of the environment.
-
-Isolation is checked rather than assumed: for all 42 task/seed carts, every seeded item
-must be present and no product belonging exclusively to another task may appear.
-
-**Verifiers.** `server/verifiers.py` holds all 285 suites in one 14k-line file, and the
-wave-1 package only carried a non-runnable snippet of each. `export_verifiers.py` walks
-the AST from a task's `_suite_mNN` and pulls in exactly the module-level definitions it
-transitively uses, producing a ~190-line importable module per task with nothing from
-any other task. Each one is verified to build the same milestones — names, weights,
-required and forbidden flags — as both the gym's own `build_suite()` and the packaged
-`verifier.json`.
-
-Both exporters need the gym's Python (3.10+ with `fastapi`/`jinja2`) and the
-`browser-gym-seed-to-cua-gym` checkout beside this folder:
+On GitHub Pages the mocks load seed JSON via `?seed=` (no bridge). Locally,
+`./run_local.sh` still starts the bridged gym engine for click-through verification.
 
 ```bash
-_ref/venv/bin/python export_env.py        # -> task_env/<slug>/seed_N/*.html
+python3 export_env_ui.py                  # -> env_ui/ mocks + seeds (needs CUA-Gym-Hub symlink)
 _ref/venv/bin/python export_verifiers.py  # -> task_env/<slug>/verifier_standalone.py
-python3 build.py                          # folds both into data.json + index.html
+python3 build.py                          # folds verifiers into data.json + index.html
 ```
 
 ## Running a task locally (live, clickable)
@@ -186,9 +160,8 @@ round-trip, and every task is one click from the new UI rather than only whichev
 last passed to `run_local.sh`. The switch is remembered for the session, so tabbing between
 tasks doesn't resurrect the old one.
 
-Read-only `task_env/` snapshots remain the fallback for when no stack is reachable at all
-(e.g. served from GitHub Pages) — not for when the bridge is up and merely pointed at a
-different task.
+When no local bridge is reachable (e.g. GitHub Pages), Environment opens the packaged
+`env_ui/` CUA mocks with seed JSON — never the old ShopGym pages.
 
 **Pop-ups.** Browsers allow one pop-up per click, so *Open all* opens one tab per click by
 default — the button re-labels itself to the remaining count so the progress is visible.
@@ -327,15 +300,12 @@ Pushes to `main` deploy via `.github/workflows/pages.yml`. Live URLs:
 | What | URL |
 |---|---|
 | **Annotation platform** | https://amit-deccan.github.io/BrowserGym-Annotation-phase2/ |
-| **Seed snapshots** (Environment tab → Open seed) | same site, `task_env/<slug>/seed_N/*.html` |
+| **CUA env UIs** (Environment tab) | `env_ui/shop/` (+ mail/market/food) with `env_ui/seeds/<M>/<n>/` |
 | Vault UI reference | https://amit-deccan.github.io/BrowserGym-Annotation-phase2/task-review.html |
 
-On Pages, the Environment tab opens the **packaged seed snapshots** (read-only). The
-clickable bridged CUA mocks still need `./run_local.sh` locally (gym + hub). Relative
-image paths work as-is. Share the platform URL with the team; each person enters their
-name and pastes the same Sheet URL in ⚙.
-
-The environment pages load Tailwind/Alpine from a CDN, so they need internet access.
+On Pages, Environment opens the **new CUA mocks** seeded from packaged JSON. Gym-bridged
+clicks still need `./run_local.sh` locally. Share the platform URL with the team; each
+person enters their name and pastes the same Sheet URL in ⚙.
 
 ## Provenance
 

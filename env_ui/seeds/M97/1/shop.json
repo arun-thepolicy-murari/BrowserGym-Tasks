@@ -1,0 +1,158 @@
+{
+  "products": [
+    {
+      "id": "p_board_game",
+      "title": "Strategy Board Game",
+      "price": 34.99,
+      "originalPrice": null,
+      "rating": 4.6,
+      "reviewCount": 1250,
+      "image": "https://picsum.photos/seed/p_board_game/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_board_game/400/400"
+      ],
+      "description": "2-5 player strategy board game.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "TableTop",
+        "Emoji": "\ud83c\udfb2"
+      },
+      "category": "Electronics",
+      "brand": "TableTop",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 95,
+      "seller": "Amazon.com",
+      "badges": [
+        "Best Seller"
+      ],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "p_giftwrap_card",
+      "title": "Gift Wrap & Card",
+      "price": 6.99,
+      "originalPrice": null,
+      "rating": 0.0,
+      "reviewCount": 0,
+      "image": "https://picsum.photos/seed/p_giftwrap_card/400/400",
+      "images": [
+        "https://picsum.photos/seed/p_giftwrap_card/400/400"
+      ],
+      "description": "Gift wrapping plus a greeting card.",
+      "bulletPoints": [],
+      "specs": {
+        "Brand": "ShopGym",
+        "Emoji": "\ud83c\udf80"
+      },
+      "category": "Electronics",
+      "brand": "ShopGym",
+      "prime": true,
+      "inStock": true,
+      "stockCount": 999,
+      "seller": "Amazon.com",
+      "badges": [],
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "user": {
+    "id": "u1",
+    "name": "Alice Anderson",
+    "email": "alice@example.com",
+    "address": {
+      "id": "addr_home",
+      "label": "Home",
+      "name": "Alice Anderson",
+      "line1": "100 Park Avenue",
+      "line2": "Apt 4B",
+      "city": "Brooklyn",
+      "state": "NY",
+      "zip": "11201",
+      "isDefault": true
+    },
+    "addresses": [
+      {
+        "id": "addr_home",
+        "label": "Home",
+        "name": "Alice Anderson",
+        "line1": "100 Park Avenue",
+        "line2": "Apt 4B",
+        "city": "Brooklyn",
+        "state": "NY",
+        "zip": "11201",
+        "isDefault": true
+      },
+      {
+        "id": "addr_work",
+        "label": "Work",
+        "name": "Alice Anderson",
+        "line1": "500 Madison Avenue",
+        "line2": "22nd Floor",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10022",
+        "isDefault": false
+      },
+      {
+        "id": "addr_finn",
+        "label": "Finn",
+        "name": "Finn Walsh",
+        "line1": "88 Poplar Road",
+        "line2": "",
+        "city": "Boise",
+        "state": "ID",
+        "zip": "83702",
+        "isDefault": false
+      }
+    ],
+    "paymentMethod": {
+      "id": "pay_visa",
+      "type": "card",
+      "label": "Visa ****4242",
+      "last4": "4242",
+      "expiry": "08/27",
+      "isDefault": true
+    },
+    "paymentMethods": [
+      {
+        "id": "pay_visa",
+        "type": "card",
+        "label": "Visa ****4242",
+        "last4": "4242",
+        "expiry": "08/27",
+        "isDefault": true
+      },
+      {
+        "id": "pay_paypal",
+        "type": "paypal",
+        "label": "PayPal (alice@example.com)",
+        "last4": "4242",
+        "expiry": "",
+        "isDefault": false
+      }
+    ]
+  },
+  "cart": [
+    {
+      "productId": "p_board_game",
+      "quantity": 1,
+      "lineId": "ci_game",
+      "gift_message": "Happy 1st Birthday, little one! Love you lots.",
+      "ship_to_address_id": "addr_finn"
+    },
+    {
+      "productId": "p_giftwrap_card",
+      "quantity": 1,
+      "lineId": "ci_wrapcard"
+    }
+  ],
+  "wishlist": [],
+  "savedForLater": [],
+  "orders": [],
+  "reviews": [],
+  "recentSearches": [],
+  "recentlyViewed": [
+    "p_board_game",
+    "p_giftwrap_card"
+  ]
+}

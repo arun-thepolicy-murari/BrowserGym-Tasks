@@ -19,3 +19,9 @@ live_env.json
 # The wave-1 package ships its own copy of every screenshot; screens/ is the
 # published copy, so the duplicates stay out of the repo.
 new_samples/**/screenshots/
+
+# Old ShopGym HTML snapshots are retired — Environment uses env_ui/ (CUA mocks).
+task_env/**/seed_*/
+task_env/**/*.html
+task_env/index.json
+task_env/**/__pycache__/
