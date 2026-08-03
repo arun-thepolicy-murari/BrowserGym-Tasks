@@ -6,14 +6,48 @@ const QVEIN  = Q.find(q=>q.id==="q11");
 const VEINS=["instrument-default","content-default","stacked-default","sycophancy","infeasibility",
   "self-contradiction","ask-dont-guess","tool-affordance","implicit-constraint","structural",
   "injection (footnote)","source-anchoring (footnote)","none / no harm observed"];
-const LS="bg_annot_v4", LS_CFG="bg_annot_cfg", LS_THEME="bg_annot_theme";
+const LS="bg_annot_v4", LS_CFG="bg_annot_cfg", LS_THEME="bg_annot_theme", LS_POOL="bg_annot_pool";
 let ann={}, cfg={url:"",annotator:""};
 try{ann=JSON.parse(localStorage.getItem(LS)||"{}")}catch(e){ann={}}
 try{cfg=JSON.parse(localStorage.getItem(LS_CFG)||"{}")}catch(e){cfg={}}
 cfg.url=cfg.url||""; cfg.annotator=cfg.annotator||"";
 if(localStorage.getItem(LS_THEME)==="dark") document.body.classList.add("dark");
 const byId=Object.fromEntries(DATA.tasks.map(t=>[t.mnum,t]));
+const POOLS=DATA.pools||[
+  {id:"wave1_qa",label:"Wave-1 QA (gpt-5.5)",short:"Wave-1 QA"},
+  {id:"sol_breakers_bridged",label:"Sol Breakers — Bridged",short:"Sol Breakers"}
+];
+let activePool=localStorage.getItem(LS_POOL)||(POOLS[0]&&POOLS[0].id)||"wave1_qa";
+if(!POOLS.find(p=>p.id===activePool)) activePool=POOLS[0].id;
 let curTask=null, curTab=null, curRun={}, curSeed={};
+
+function poolOf(t){ return t.pool||"wave1_qa"; }
+function poolTasks(){ return DATA.tasks.filter(t=>poolOf(t)===activePool); }
+function setPool(id){
+  if(activePool===id) return;
+  activePool=id;
+  localStorage.setItem(LS_POOL, activePool);
+  if(curTask && (!byId[curTask] || poolOf(byId[curTask])!==activePool)) curTask=null;
+  curTab=null;
+  renderPools(); renderProgress(); renderList();
+  document.getElementById("main").innerHTML='<div class="empty">Select a task on the left to begin.</div>';
+}
+function dispositionLabel(d){
+  if(!d) return "";
+  if(d==="silent-non-completion") return "silent-non-completion";
+  return d;
+}
+function dispositionBadgeClass(d){
+  if(d==="BREAK") return "brk";
+  if(d==="silent-non-completion") return "snc";
+  if(d==="SUCCESS") return "pass";
+  return "inc";
+}
+function runOutcomeLabel(r){
+  if(r.disposition) return dispositionLabel(r.disposition);
+  if(r.success==null) return "n/a";
+  return r.success?"PASS":"FAIL";
+}
 
 function A(mn){ if(!ann[mn]) ann[mn]={models:{},verifier:{},task:{},submitted:false}; return ann[mn]; }
 function runState(mn,model,ep){
@@ -63,23 +97,36 @@ function statusOf(mn){ const a=ann[mn]; if(!a) return "none"; if(a.submitted) re
   const touched=Object.keys(a.models||{}).length||(a.verifier&&a.verifier.correct)||(a.task&&a.task.notes); return touched?"part":"none"; }
 
 /* ---------- sidebar ---------- */
+function renderPools(){
+  const el=document.getElementById("poolTabs"); if(!el) return;
+  el.innerHTML=POOLS.map(p=>`<button data-pool="${esc(p.id)}" class="${p.id===activePool?'active':''}" type="button">${esc(p.short||p.label)}<span class="psub">${esc(p.id===activePool?(poolTasks().length+" tasks"):(DATA.tasks.filter(t=>poolOf(t)===p.id).length+" tasks"))}</span></button>`).join("");
+  el.querySelectorAll("[data-pool]").forEach(b=>b.onclick=()=>setPool(b.dataset.pool));
+}
 function renderProgress(){
-  const done=DATA.tasks.filter(t=>statusOf(t.mnum)==="done").length;
-  document.getElementById("progtxt").textContent=`${done} / ${DATA.tasks.length} submitted`;
-  document.getElementById("progbar").style.width=(done/DATA.tasks.length*100)+"%";
+  const tasks=poolTasks();
+  const done=tasks.filter(t=>statusOf(t.mnum)==="done").length;
+  const pool=POOLS.find(p=>p.id===activePool);
+  const label=pool?(pool.short||pool.label):activePool;
+  document.getElementById("progtxt").textContent=`${done} / ${tasks.length} submitted · ${label}`;
+  document.getElementById("progbar").style.width=(tasks.length?(done/tasks.length*100):0)+"%";
 }
 let filter="all",search="";
 function renderList(){
   const L=document.getElementById("list"); L.innerHTML="";
-  DATA.tasks.forEach(t=>{
+  poolTasks().forEach(t=>{
     const st=statusOf(t.mnum);
     if(filter==="todo"&&st==="done") return;
     if(filter==="done"&&st!=="done") return;
     const q=search.toLowerCase();
-    if(q&&!(t.task_id.toLowerCase().includes(q)||taskBrief(t).toLowerCase().includes(q))) return;
+    if(q&&!(t.task_id.toLowerCase().includes(q)||taskBrief(t).toLowerCase().includes(q)||(t.mnum||"").toLowerCase().includes(q))) return;
     const d=document.createElement("div");
     d.className="item"+(t.mnum===curTask?" active":"");
-    d.innerHTML=`<span class="dot ${st}"></span><div><div class="id">${t.mnum} · ${t.n_models} models · ${t.n_runs} runs</div><div class="p">${esc(taskBrief(t)).slice(0,110)}</div></div>`;
+    const disp=(poolOf(t)==="sol_breakers_bridged" && t.env && t.env.disposition) || "";
+    const rate=(disp && t.env && t.env.break_rate) || "";
+    const idLine=disp
+      ? `${t.mnum} · ${esc(disp)}${rate?(" · "+esc(rate)):""}`
+      : `${t.mnum} · ${t.n_models} models · ${t.n_runs} runs`;
+    d.innerHTML=`<span class="dot ${st}"></span><div><div class="id">${idLine}</div><div class="p">${esc(taskBrief(t)).slice(0,110)}</div></div>`;
     d.onclick=()=>{curTask=t.mnum;curTab=null;renderMain();renderList();};
     L.appendChild(d);
   });
@@ -95,12 +142,21 @@ function renderMain(){
               {key:"summary",label:"Summary",type:"summary"}];
   if(!curTab||!tabs.find(x=>x.key===curTab)) curTab=tabs[0].key;
   const comp=taskCompletion(t); const ready=comp.done===comp.total;
+  const breakChip=(()=>{
+    if(!t.env||!t.env.break_rate) return "";
+    if(poolOf(t)==="sol_breakers_bridged"){
+      const d=t.env.disposition||"confirmed";
+      return `<span class="chip">${esc(d)} · Sol ${esc(t.env.break_rate)}</span>`;
+    }
+    return `<span class="chip">gpt 5.5 broke ${esc(t.env.break_rate)}</span>`;
+  })();
   let h=`<div class="thead">
     <div class="row1"><h2>${t.mnum}</h2><span class="chip blue">${esc(t.task_id)}</span>
       ${t.difficulty?`<span class="chip">${t.difficulty}</span>`:""}
-      ${t.env&&t.env.break_rate?`<span class="chip">gpt 5.5 broke ${esc(t.env.break_rate)}</span>`:""}
+      ${breakChip}
+      ${(t.apps&&t.apps.length)?`<span class="chip">${esc(t.apps.join(" × "))}</span>`:((t.env&&t.env.apps&&t.env.apps.length)?`<span class="chip">${esc(t.env.apps.join(" × "))}</span>`:"")}
       <span class="chip">${t.n_models} models · ${t.n_runs} runs</span>
-      ${t.has_screenshots===false?'<span class="chip" style="background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-line)">no screenshot runs — verifier only</span>':''}
+      ${t.has_screenshots===false?'<span class="chip" style="background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-line)">metadata catalog — traj links in Environment</span>':''}
       <span class="subbtn">
         <span class="savehint" id="compInfo" style="font-size:11px;color:${ready?'var(--green)':'var(--muted)'}">${comp.done}/${comp.total} sections complete</span>
         <button class="btn good" id="submitTop" ${ready?'':'disabled'}>${A(t.mnum).submitted?'✓ Submitted — re-submit':'Submit task ✓'}</button>
@@ -110,7 +166,10 @@ function renderMain(){
   tabs.forEach(tb=>{
     let mini="",cflag="";
     if(tb.type==="model"){ const ep=curRunEp(t,tb.m); const r=tb.m.runs.find(x=>x.episode===ep);
-      if(r&&r.success!=null) mini=`<span class="mini ${r.success?'pass':'fail'}">${r.success?'PASS':'FAIL'}</span>`;
+      if(r){
+        if(r.disposition) mini=`<span class="mini ${r.disposition==='BREAK'?'fail':(r.disposition==='SUCCESS'?'pass':'')}">${esc(dispositionLabel(r.disposition))}</span>`;
+        else if(r.success!=null) mini=`<span class="mini ${r.success?'pass':'fail'}">${r.success?'PASS':'FAIL'}</span>`;
+      }
       const allRuns=tb.m.runs.every(rr=>runComplete(t.mnum,tb.m.model,rr.episode,rr));
       cflag=`<span class="cflag">${allRuns?'✓':'•'}</span>`;
     } else if(tb.type==="verifiers"){ cflag=`<span class="cflag">${verifierComplete(t.mnum)?'✓':'•'}</span>`; }
@@ -214,13 +273,27 @@ function renderEnv(t,body){
 
   h+=`<div class="vsec"><h3>Task design &amp; the trap</h3><div class="expl">${esc(t.task_design||"—")}</div></div>`;
 
+  const prov=e.provenance||{};
+  const origMnum=t.original_mnum||prov.original_mnum||"";
+  const origTid=t.original_task_id||prov.original_task_id||"";
+  const origLabel=[origMnum,origTid,t.slug].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i).join(" · ");
   h+=`<div class="vsec"><h3>Provenance</h3>${kvTable([
-    ["task id",t.task_id],["agent-facing brief",e.brief||t.prompt],
+    ["task id",t.task_id],
+    ...(origMnum?[["original task id",origLabel]]:[]),
+    ["agent-facing brief",e.brief||t.prompt],
+    ["pool",poolOf(t)],
+    ["apps",(e.apps||t.apps||[]).join(" × ")||"—"],
+    ["mechanism",e.mechanism||"—"],
     ["cohort",(e.cohort||"—")+(e.cohort_notes?" — "+e.cohort_notes:"")],
-    ["gpt 5.5 disposition",(e.disposition||"—")+(e.break_rate?" ("+e.break_rate+")":"")],
+    [poolOf(t)==="sol_breakers_bridged"?"Sol disposition":"gpt 5.5 disposition",(e.disposition||"—")+(e.break_rate?" ("+e.break_rate+")":"")],
+    ["forbidden checkpoint",e.forbidden_checkpoint||"—"],
     ["fail reason(s)",(e.fail_reasons||[]).join(", ")||"—"],
     ["seed factory",e.seed_factory_ref||"—"],["verifier",e.verifier_ref||"—"],
     ["scoring",e.scoring||"—"],
+    ["traj dir",prov.traj_dir||"—"],
+    ["audit",prov.audit||"—"],
+    ["also audits",(prov.also||[]).join(", ")||"—"],
+    ["notes",prov.notes||"—"],
   ])}</div>`;
 
   if(!keys.length){
@@ -584,22 +657,42 @@ function renderModel(t,m,body){
   if(m.runs.length>1){
     h+=`<div class="runsw"><span class="savehint">Runs:</span>`;
     m.runs.forEach((r,i)=>{const c=runComplete(t.mnum,m.model,r.episode,r);
-      h+=`<button class="rb ${r.episode===ep?'active':''}" data-run="${r.episode}">${esc(runLabel(m,r,i))} · ${r.success==null?'n/a':(r.success?'PASS':'FAIL')} ${c?'✓':''}</button>`;});
+      h+=`<button class="rb ${r.episode===ep?'active':''}" data-run="${r.episode}">${esc(runLabel(m,r,i))} · ${esc(runOutcomeLabel(r))} ${c?'✓':''}</button>`;});
     h+=`</div>`;
   }
+  const badgeCls=run.disposition?dispositionBadgeClass(run.disposition):(run.success==null?'na':(run.success?'pass':'fail'));
   h+=`<div class="runsw">
-    <span class="badge ${run.success==null?'na':(run.success?'pass':'fail')}">${run.success==null?'no log':(run.success?'PASS':'FAIL')} · score ${fmt(run.score)}</span>
+    <span class="badge ${badgeCls}">${esc(runOutcomeLabel(run))} · score ${fmt(run.score)}</span>
     <span class="chip">seed ${run.seed==null?'—':run.seed}</span>
     <span class="chip">${run.n_steps} steps</span>
     ${run.wave?`<span class="wave ${run.wave==='phase 1'?'legacy':''}">${esc(run.wave)}</span>`:""}
     ${run.run_id?`<span class="chip">run id: ${esc(run.run_id)}</span>`:""}
     ${run.failure_class?`<span class="chip">class: ${esc(run.failure_class)}</span>`:""}
     ${run.specific_failure?`<span class="chip trap">${esc(run.specific_failure)}</span>`:""}</div>`;
+
+  if(poolOf(t)==="sol_breakers_bridged" || (run.steps||[]).length===0){
+    const e=t.env||{};
+    h+=`<div class="confirmcard">
+      <h3>Confirmed Sol outcome (bridged)</h3>
+      <div class="disp" style="color:${run.disposition==='BREAK'?'var(--bad-fg)':(run.disposition==='silent-non-completion'?'var(--warn-fg)':'var(--text)')}">${esc(dispositionLabel(run.disposition||e.disposition||"—"))}</div>
+      <div class="savehint" style="margin:6px 0 10px">Task rate: <b>${esc(e.break_rate||"—")}</b> · Forbidden / evidence: <b>${esc(run.specific_failure||e.forbidden_checkpoint||"—")}</b></div>
+      ${kvTable([
+        ["episode",run.episode||"—"],
+        ["agent",run.agent||m.model_full||m.model],
+        ["mechanism",e.mechanism||"—"],
+        ["traj dir",(e.provenance&&e.provenance.traj_dir)||"—"],
+        ["audit",(e.provenance&&e.provenance.audit)||"—"],
+        ["run summary",(run.env&&run.env.summary_md)||"—"],
+      ])}
+      <div class="savehint" style="margin-top:8px">Step screenshots are not packaged in this catalog — open the traj/audit paths in ecommerce-browser-gym or seed-to-cua. Annotation questions below still apply.</div>
+    </div>`;
+  }
+
   h+=runEnvHTML(run);
 
   // STEPS FIRST
   h+=`<div class="stepbar"><b>Steps (${run.steps.length})</b><button class="btn" id="passAllSteps">Mark all steps pass ✓</button>
-      <span class="savehint">Answer Action Execution & Outcome for each step (nothing is pre-filled).</span></div>`;
+      <span class="savehint">${run.steps.length? "Answer Action Execution & Outcome for each step (nothing is pre-filled)." : "No step screenshots in this catalog entry."}</span></div>`;
   run.steps.forEach(s=>{
     const ss=rs.steps[s.idx]||{}; const brk=ss.break;
     const stepUnans=!QSTEP.every(q=>answered(ss[q.id]));
@@ -889,4 +982,4 @@ document.getElementById("annotator").value=cfg.annotator||"";
 document.getElementById("annotator").onchange=e=>{cfg.annotator=e.target.value.trim();localStorage.setItem(LS_CFG,JSON.stringify(cfg));};
 document.querySelectorAll(".filters [data-f]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".filters [data-f]").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.f;renderList();});
 document.getElementById("search").oninput=e=>{search=e.target.value;renderList();};
-renderProgress();renderList();
+renderPools();renderProgress();renderList();

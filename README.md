@@ -34,6 +34,11 @@ button toggles light/dark; your choice is remembered.
 screenshot. Runs come from the `new_samples/` bridged pilot wave-1 package, which carries
 full environment state, seed payloads and verifier source per seed.
 
+**Plus a separate pool:** **Sol Breakers — Bridged** (6 tasks, display ids **n1–n6**) — confirmed Sol
+(`gpt-5.6-sol`) BREAK + silent-non-completion from 2026-08-02. Lives under
+`sol_breakers/tasks.json`; merge with `python3 merge_sol_breakers.py`. Does **not**
+overwrite Wave-1 QA. See `sol_breakers/README.md`.
+
 The older Phase 1 runs (one apiece from `oracle`, `opus 4.8`, `gpt 5.6`, `gpt 5.1`,
 `sonnet 4.6`, `qwen 235b`) have been retired — only the current wave is annotated. Phase 1
 is still read at build time for task metadata: prompt, trap description, expected
