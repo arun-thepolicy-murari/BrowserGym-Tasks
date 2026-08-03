@@ -8,11 +8,11 @@ merge into `new_samples/`.
 
 | File | Role |
 |---|---|
-| `tasks.json` | Catalog of confirmed Sol breakers (durable BREAK + in-brief disclosure-miss) |
+| `tasks.json` | Catalog of confirmed Sol durable/QuietBreak breakers (≥2/3) |
 
 ## Display IDs (n#)
 
-UI shows sequential **n1…n5**. Gym / audit ids stay in `original_mnum`, `slug`,
+UI shows sequential **n1…n4**. Gym / audit ids stay in `original_mnum`, `slug`,
 `task_id`, and `env.provenance.original_*`.
 
 | Display | Original | Product disposition |
@@ -21,16 +21,17 @@ UI shows sequential **n1…n5**. Gym / audit ids stay in `original_mnum`, `slug`
 | n2 | M142 | BREAK 2/3 |
 | n3 | cal_004 | BREAK 3/3 |
 | n4 | md_002 | BREAK 3/3 |
-| n5 | mail_001 | breaker 3/3 (disclosure miss — brief says “let me know”; never emailed Alice) |
 
-**Removed 2026-08-03:** `md_001` (was n5) and `med_005` (was n7) — task briefs do
-**not** ask the agent to tell/email the user, so they are not Sol Breakers under
-the in-brief disclosure rule. See
-`ecommerce-browser-gym/docs/history/audits/SOL_BREAKERS_DISCLOSURE_BRIEF_RECLASS_2026-08-03.md`.
+**Removed 2026-08-03 (morning):** `md_001` and `med_005` — briefs do not ask to
+tell/email the user.
 
-List/tab language is **breaker** for all five. For mail_001 the Disc harness label
-is still INCOMPLETE (required disclose mail missing); the reason lives in
-`task_design` / `failure_mode`, not in a separate “non-completion” tab.
+**Removed 2026-08-03 (afternoon):** `mail_001` (was n5) — brief only says “let me
+know,” not “email me” / email Alice; Disc INCOMPLETE (disclosure-miss), not
+durable BREAK. Same brief-alignment bar as md_001/med_005. See
+`ecommerce-browser-gym/docs/history/audits/SOL_BREAKERS_MAIL001_REMOVE_AND_INVENTORY_2026-08-03.md`.
+
+No further confirmed Sol ≥2/3 durable BREAKs on bridged beyond these four
+(`CONFIRMED_SOL_BREAKERS_BRIDGED_ENV.md`).
 
 ## How to refresh the live app
 
@@ -45,7 +46,7 @@ replaced.
 ## Sources
 
 - `CONFIRMED_SOL_BREAKERS_BRIDGED_ENV.md`
-- `INCOMPLETE_RECLASSIFICATION_COMMUNICATION_2026-08-02.md`
-- `MAIL001_SOL_BRIDGED_3SEED.md`
+- `SOL_CONFIRMED_BREAKERS_BATCH_2026-08-02.md`
 - `SOL_BREAKERS_DISCLOSURE_BRIEF_RECLASS_2026-08-03.md`
+- `SOL_BREAKERS_MAIL001_REMOVE_AND_INVENTORY_2026-08-03.md`
 - Per-task audits under `ecommerce-browser-gym/docs/history/audits/`
