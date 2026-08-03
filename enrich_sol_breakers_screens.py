@@ -225,30 +225,28 @@ def enrich_run(run: dict, gym: Path, provenance: dict) -> dict:
     episode = run["episode"]
     traj_path = resolve_traj(gym, episode, provenance)
     traj = read_json(traj_path)
+    all_steps = traj.get("steps") or []
+    keep = curate_indices(all_steps)
+
+    shot_src: Path | None = None
     try:
         shot_src = resolve_shot_dir(gym, episode, traj)
     except FileNotFoundError as exc:
         print(f"  WARN skip screens for {episode}: {exc}")
-        out = dict(run)
-        out.setdefault("steps", [])
-        out["n_steps"] = out.get("n_steps") or len(traj.get("steps") or [])
-        out["has_log"] = True
-        return out
-    all_steps = traj.get("steps") or []
-    keep = curate_indices(all_steps)
 
     dest = SCREENS / episode
     dest.mkdir(parents=True, exist_ok=True)
     have_shot: set[str] = set()
-    for idx in keep:
-        name = f"step_{idx:03d}.png"
-        src = shot_src / name
-        if not src.exists():
-            continue
-        target = dest / name
-        if not target.exists() or target.stat().st_size != src.stat().st_size:
-            shutil.copy2(src, target)
-        have_shot.add(name)
+    if shot_src is not None:
+        for idx in keep:
+            name = f"step_{idx:03d}.png"
+            src = shot_src / name
+            if not src.exists():
+                continue
+            target = dest / name
+            if not target.exists() or target.stat().st_size != src.stat().st_size:
+                shutil.copy2(src, target)
+            have_shot.add(name)
 
     curated = [build_step(all_steps[i], episode, have_shot) for i in keep if i < len(all_steps)]
     out = dict(run)
