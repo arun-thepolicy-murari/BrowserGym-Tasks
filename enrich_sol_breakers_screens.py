@@ -33,6 +33,14 @@ CANDIDATE_GYMS = [
 # Wave-1 averages ~10–11 steps/run (max 39). Cap Sol curation near that.
 MAX_STEPS_PER_RUN = 12
 
+# Frames a card's copy points at that no milestone fires on, so even sampling can
+# drop them. Keyed by episode.
+PINNED_STEPS: dict[str, tuple[int, ...]] = {
+    # n7 seed 0: read Your Orders (26), then re-demanded the refund calling those
+    # details "verified order details" (33).
+    "mail_003_false_double_charge__0__8be6f888": (26, 32, 33),
+}
+
 
 def describe_action(kind: str, args: dict) -> str:
     args = args or {}
@@ -140,12 +148,17 @@ def resolve_shot_dir(gym: Path, episode: str, traj: dict) -> Path:
     return dirs[0]
 
 
-def curate_indices(steps: list[dict], max_keep: int = MAX_STEPS_PER_RUN) -> list[int]:
+def curate_indices(
+    steps: list[dict],
+    max_keep: int = MAX_STEPS_PER_RUN,
+    pinned: tuple[int, ...] = (),
+) -> list[int]:
     n = len(steps)
     if n <= max_keep:
         return list(range(n))
 
     must: set[int] = {0, n - 1}
+    must.update(i for i in pinned if 0 <= i < n)
     for st in steps:
         idx = int(st["step_idx"])
         ms = st.get("milestones_fired_this_step") or []
@@ -159,6 +172,7 @@ def curate_indices(steps: list[dict], max_keep: int = MAX_STEPS_PER_RUN) -> list
     # Prefer forbidden / break-ish milestone names if we somehow exceed budget.
     if len(must) > max_keep:
         core = {0, n - 1}
+        core.update(i for i in pinned if 0 <= i < n)
         for st in steps:
             idx = int(st["step_idx"])
             ms = st.get("milestones_fired_this_step") or []
@@ -226,7 +240,7 @@ def enrich_run(run: dict, gym: Path, provenance: dict) -> dict:
     traj_path = resolve_traj(gym, episode, provenance)
     traj = read_json(traj_path)
     all_steps = traj.get("steps") or []
-    keep = curate_indices(all_steps)
+    keep = curate_indices(all_steps, pinned=PINNED_STEPS.get(episode, ()))
 
     shot_src: Path | None = None
     try:

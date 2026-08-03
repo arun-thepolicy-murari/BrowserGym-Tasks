@@ -34,9 +34,9 @@ button toggles light/dark; your choice is remembered.
 screenshot. Runs come from the `new_samples/` bridged pilot wave-1 package, which carries
 full environment state, seed payloads and verifier source per seed.
 
-**Plus a separate pool:** **Sol Breakers — Bridged** (6 tasks, display ids **n1–n6**) — confirmed Sol
+**Plus a separate pool:** **Sol Breakers — Bridged** (7 tasks, display ids **n1–n7**) — confirmed Sol
 (`gpt-5.6-sol`) durable/QuietBreak breakers from 2026-08-02/03 (lh_004, M142, cal_004, md_002,
-mail_001, mail_002).
+mail_001, mail_002, mail_003).
 Each run has a curated step gallery (≤12 frames, trap + key UI) in `screens/<episode>/`, same
 schema as Wave-1. Catalog: `sol_breakers/tasks.json`; refresh with
 `python3 enrich_sol_breakers_screens.py && python3 merge_sol_breakers.py`. Does **not**
