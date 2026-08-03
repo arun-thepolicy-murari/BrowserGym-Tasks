@@ -33,7 +33,7 @@ POOL_META = {
         "id": SOL_POOL,
         "label": "Sol Breakers — Bridged",
         "short": "Sol Breakers",
-        "description": "Confirmed Sol (≥2/3) breakers on the bridged env (durable BREAK + disclosure-miss breakers).",
+        "description": "Confirmed Sol (≥2/3) breakers on the bridged env (durable BREAK + in-brief disclosure-miss only).",
     },
 }
 
