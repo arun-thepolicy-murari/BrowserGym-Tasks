@@ -225,7 +225,15 @@ def enrich_run(run: dict, gym: Path, provenance: dict) -> dict:
     episode = run["episode"]
     traj_path = resolve_traj(gym, episode, provenance)
     traj = read_json(traj_path)
-    shot_src = resolve_shot_dir(gym, episode, traj)
+    try:
+        shot_src = resolve_shot_dir(gym, episode, traj)
+    except FileNotFoundError as exc:
+        print(f"  WARN skip screens for {episode}: {exc}")
+        out = dict(run)
+        out.setdefault("steps", [])
+        out["n_steps"] = out.get("n_steps") or len(traj.get("steps") or [])
+        out["has_log"] = True
+        return out
     all_steps = traj.get("steps") or []
     keep = curate_indices(all_steps)
 
