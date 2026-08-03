@@ -34,12 +34,13 @@ function setPool(id){
 }
 function dispositionLabel(d){
   if(!d) return "";
-  if(d==="silent-non-completion") return "silent-non-completion";
+  // Product/annotation label for Sol tab: disclosure-miss cases are breakers.
+  // Legacy catalog rows may still say silent-non-completion — map them here.
+  if(d==="silent-non-completion" || d==="breaker") return "breaker";
   return d;
 }
 function dispositionBadgeClass(d){
-  if(d==="BREAK") return "brk";
-  if(d==="silent-non-completion") return "snc";
+  if(d==="BREAK" || d==="breaker" || d==="silent-non-completion") return "brk";
   if(d==="SUCCESS") return "pass";
   return "inc";
 }
@@ -167,7 +168,11 @@ function renderMain(){
     let mini="",cflag="";
     if(tb.type==="model"){ const ep=curRunEp(t,tb.m); const r=tb.m.runs.find(x=>x.episode===ep);
       if(r){
-        if(r.disposition) mini=`<span class="mini ${r.disposition==='BREAK'?'fail':(r.disposition==='SUCCESS'?'pass':'')}">${esc(dispositionLabel(r.disposition))}</span>`;
+        if(r.disposition){
+          const dl=dispositionLabel(r.disposition);
+          const bad=dl==="BREAK"||dl==="breaker";
+          mini=`<span class="mini ${bad?'fail':(dl==='SUCCESS'?'pass':'')}">${esc(dl)}</span>`;
+        }
         else if(r.success!=null) mini=`<span class="mini ${r.success?'pass':'fail'}">${r.success?'PASS':'FAIL'}</span>`;
       }
       const allRuns=tb.m.runs.every(rr=>runComplete(t.mnum,tb.m.model,rr.episode,rr));
@@ -285,7 +290,9 @@ function renderEnv(t,body){
     ["apps",(e.apps||t.apps||[]).join(" × ")||"—"],
     ["mechanism",e.mechanism||"—"],
     ["cohort",(e.cohort||"—")+(e.cohort_notes?" — "+e.cohort_notes:"")],
-    [poolOf(t)==="sol_breakers_bridged"?"Sol disposition":"gpt 5.5 disposition",(e.disposition||"—")+(e.break_rate?" ("+e.break_rate+")":"")],
+    [poolOf(t)==="sol_breakers_bridged"?"Sol disposition":"gpt 5.5 disposition",dispositionLabel(e.disposition||"—")+(e.break_rate?" ("+e.break_rate+")":"")],
+    ...(e.failure_mode?[["failure mode",e.failure_mode]]:[]),
+    ...(e.disc_label?[["Disc / harness label",e.disc_label]]:[]),
     ["forbidden checkpoint",e.forbidden_checkpoint||"—"],
     ["fail reason(s)",(e.fail_reasons||[]).join(", ")||"—"],
     ["seed factory",e.seed_factory_ref||"—"],["verifier",e.verifier_ref||"—"],
@@ -674,7 +681,7 @@ function renderModel(t,m,body){
     const e=t.env||{};
     h+=`<div class="confirmcard">
       <h3>Confirmed Sol outcome (bridged)</h3>
-      <div class="disp" style="color:${run.disposition==='BREAK'?'var(--bad-fg)':(run.disposition==='silent-non-completion'?'var(--warn-fg)':'var(--text)')}">${esc(dispositionLabel(run.disposition||e.disposition||"—"))}</div>
+      <div class="disp" style="color:${(run.disposition==='BREAK'||run.disposition==='breaker'||run.disposition==='silent-non-completion')?'var(--bad-fg)':'var(--text)'}">${esc(dispositionLabel(run.disposition||e.disposition||"—"))}</div>
       <div class="savehint" style="margin:6px 0 10px">Task rate: <b>${esc(e.break_rate||"—")}</b> · Forbidden / evidence: <b>${esc(run.specific_failure||e.forbidden_checkpoint||"—")}</b></div>
       ${kvTable([
         ["episode",run.episode||"—"],
