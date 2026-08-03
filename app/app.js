@@ -677,10 +677,12 @@ function renderModel(t,m,body){
     ${run.failure_class?`<span class="chip">class: ${esc(run.failure_class)}</span>`:""}
     ${run.specific_failure?`<span class="chip trap">${esc(run.specific_failure)}</span>`:""}</div>`;
 
-  if(poolOf(t)==="sol_breakers_bridged" || (run.steps||[]).length===0){
+  // Empty-run fallback only — Sol Breakers with curated steps use the same
+  // step gallery as Wave-1 QA.
+  if((run.steps||[]).length===0){
     const e=t.env||{};
     h+=`<div class="confirmcard">
-      <h3>Confirmed Sol outcome (bridged)</h3>
+      <h3>${poolOf(t)==="sol_breakers_bridged"?"Confirmed Sol outcome (bridged)":"No step screenshots"}</h3>
       <div class="disp" style="color:${(run.disposition==='BREAK'||run.disposition==='breaker'||run.disposition==='silent-non-completion')?'var(--bad-fg)':'var(--text)'}">${esc(dispositionLabel(run.disposition||e.disposition||"—"))}</div>
       <div class="savehint" style="margin:6px 0 10px">Task rate: <b>${esc(e.break_rate||"—")}</b> · Forbidden / evidence: <b>${esc(run.specific_failure||e.forbidden_checkpoint||"—")}</b></div>
       ${kvTable([
@@ -691,7 +693,7 @@ function renderModel(t,m,body){
         ["audit",(e.provenance&&e.provenance.audit)||"—"],
         ["run summary",(run.env&&run.env.summary_md)||"—"],
       ])}
-      <div class="savehint" style="margin-top:8px">Step screenshots are not packaged in this catalog — open the traj/audit paths in ecommerce-browser-gym or seed-to-cua. Annotation questions below still apply.</div>
+      <div class="savehint" style="margin-top:8px">No step screenshots in this catalog entry — annotation questions below still apply.</div>
     </div>`;
   }
 

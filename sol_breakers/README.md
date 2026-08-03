@@ -33,10 +33,23 @@ durable BREAK. Same brief-alignment bar as md_001/med_005. See
 No further confirmed Sol ≥2/3 durable BREAKs on bridged beyond these four
 (`CONFIRMED_SOL_BREAKERS_BRIDGED_ENV.md`).
 
+## Screenshots
+
+Each run packages a curated step gallery (≤12 frames) into `screens/<episode>/`,
+same schema as Wave-1 QA (`steps[].img`, action, reasoning, world, milestones).
+Frames keep trap/forbidden milestone moments plus evenly spaced key UI. Source
+PNGs live under `browser-gym-seed-to-cua-gym/screenshots/`.
+
+```bash
+python3 enrich_sol_breakers_screens.py   # copy curated frames + rewrite tasks.json
+python3 merge_sol_breakers.py            # merge into data.json + rebuild index.html
+```
+
 ## How to refresh the live app
 
 ```bash
-python3 merge_sol_breakers.py   # merges into data.json + rebuilds index.html
+python3 enrich_sol_breakers_screens.py   # if screens need refresh
+python3 merge_sol_breakers.py            # merges into data.json + rebuilds index.html
 # open index.html  OR  python3 -m http.server 8899
 ```
 
