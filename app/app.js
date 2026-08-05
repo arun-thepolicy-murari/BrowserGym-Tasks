@@ -278,6 +278,23 @@ function renderEnv(t,body){
 
   h+=`<div class="vsec"><h3>Task design &amp; the trap</h3><div class="expl">${esc(t.task_design||"—")}</div></div>`;
 
+  const fairness=t.fairness_notes||e.fairness_notes||"";
+  if(fairness){
+    h+=`<div class="vsec"><h3>Fairness / Orchestrator ACCEPT</h3><div class="expl">${esc(fairness)}</div></div>`;
+  }
+
+  const meanSteps=t.mean_steps!=null?t.mean_steps:e.mean_steps;
+  const trueBySeed=t.true_n_steps_by_seed||e.true_n_steps_by_seed;
+  if(meanSteps!=null||(trueBySeed&&trueBySeed.length)){
+    h+=`<div class="vsec"><h3>Actual episode length</h3>
+      <div class="savehint" style="margin-bottom:8px">Curated gallery frames are review evidence only; lengths below are authoritative episode step counts.</div>
+      ${kvTable([
+        ...(trueBySeed&&trueBySeed.length?[["per-seed actual steps",trueBySeed.map((n,i)=>`s${i}=${n}`).join(" / ")]]:[]),
+        ...(meanSteps!=null?[["mean actual steps",String(meanSteps)]]:[]),
+        ...(e.steps_authority?[["authority",e.steps_authority]]:[]),
+      ])}</div>`;
+  }
+
   const prov=e.provenance||{};
   const origMnum=t.original_mnum||prov.original_mnum||"";
   const origTid=t.original_task_id||prov.original_task_id||"";
@@ -668,14 +685,24 @@ function renderModel(t,m,body){
     h+=`</div>`;
   }
   const badgeCls=run.disposition?dispositionBadgeClass(run.disposition):(run.success==null?'na':(run.success?'pass':'fail'));
+  const curatedFrames=(run.steps||[]).length || run.n_steps || 0;
+  const trueSteps=run.true_n_steps!=null?run.true_n_steps:((run.env&&run.env.true_n_steps!=null)?run.env.true_n_steps:null);
+  const meanSteps=t.mean_steps!=null?t.mean_steps:((t.env&&t.env.mean_steps!=null)?t.env.mean_steps:null);
   h+=`<div class="runsw">
     <span class="badge ${badgeCls}">${esc(runOutcomeLabel(run))} · score ${fmt(run.score)}</span>
     <span class="chip">seed ${run.seed==null?'—':run.seed}</span>
-    <span class="chip">${run.n_steps} steps</span>
+    <span class="chip">Curated gallery: ${curatedFrames} frames shown</span>
+    ${trueSteps!=null?`<span class="chip">Actual episode length: ${trueSteps} steps</span>`:(run.n_steps!=null?`<span class="chip">${run.n_steps} steps</span>`:"")}
+    ${meanSteps!=null?`<span class="chip">Task mean actual steps: ${meanSteps}</span>`:""}
     ${run.wave?`<span class="wave ${run.wave==='phase 1'?'legacy':''}">${esc(run.wave)}</span>`:""}
     ${run.run_id?`<span class="chip">run id: ${esc(run.run_id)}</span>`:""}
     ${run.failure_class?`<span class="chip">class: ${esc(run.failure_class)}</span>`:""}
     ${run.specific_failure?`<span class="chip trap">${esc(run.specific_failure)}</span>`:""}</div>`;
+
+  h+=`<div class="savehint" style="margin:-2px 0 12px;line-height:1.45">
+    <b>Score vs BREAK:</b> score reflects completion of required milestones; BREAK is triggered
+    independently by a forbidden milestone. A run can therefore show score 1.0 and still be a BREAK.
+  </div>`;
 
   // Empty-run fallback only — Sol Breakers with curated steps use the same
   // step gallery as Wave-1 QA.
@@ -700,8 +727,8 @@ function renderModel(t,m,body){
   h+=runEnvHTML(run);
 
   // STEPS FIRST
-  h+=`<div class="stepbar"><b>Steps (${run.steps.length})</b><button class="btn" id="passAllSteps">Mark all steps pass ✓</button>
-      <span class="savehint">${run.steps.length? "Answer Action Execution & Outcome for each step (nothing is pre-filled)." : "No step screenshots in this catalog entry."}</span></div>`;
+  h+=`<div class="stepbar"><b>Curated gallery (${run.steps.length} frames shown)</b><button class="btn" id="passAllSteps">Mark all steps pass ✓</button>
+      <span class="savehint">${run.steps.length? "Answer Action Execution & Outcome for each step (nothing is pre-filled). Curated frames are review evidence, not the full episode." : "No step screenshots in this catalog entry."}</span></div>`;
   run.steps.forEach(s=>{
     const ss=rs.steps[s.idx]||{}; const brk=ss.break;
     const stepUnans=!QSTEP.every(q=>answered(ss[q.id]));
@@ -825,6 +852,12 @@ function renderVerifier(t,body){
   const v=t.verifier; const vs=A(t.mnum).verifier;
   let h=`<div class="vsec"><h3>Expected correct behaviour (oracle gold path)</h3><div class="expl">${esc(t.expected_behaviour||"—")}</div></div>`;
   if(t.task_design) h+=`<div class="vsec"><h3>Task design &amp; the trap</h3><div class="expl">${esc(t.task_design)}</div></div>`;
+  const fairness=t.fairness_notes||(t.env&&t.env.fairness_notes)||"";
+  if(fairness) h+=`<div class="vsec"><h3>Fairness / Orchestrator ACCEPT</h3><div class="expl">${esc(fairness)}</div></div>`;
+  h+=`<div class="savehint" style="margin:0 0 12px;line-height:1.45">
+    <b>Score vs BREAK:</b> score reflects completion of required milestones; BREAK is triggered
+    independently by a forbidden milestone. A run can therefore show score 1.0 and still be a BREAK.
+  </div>`;
   h+=`<div class="vsec"><h3>Verifier</h3>
     <div class="expl" style="margin-bottom:8px"><b>Required to pass:</b> ${v.required.map(esc).join(", ")||"—"}<br>
     <b>Forbidden (the trap):</b> <span class="tagforb">${v.forbidden.map(esc).join(", ")||"—"}</span><br>

@@ -34,13 +34,23 @@ button toggles light/dark; your choice is remembered.
 screenshot. Runs come from the `new_samples/` bridged pilot wave-1 package, which carries
 full environment state, seed payloads and verifier source per seed.
 
-**Plus a separate pool:** **Sol Breakers — Bridged** (7 tasks, display ids **n1–n7**) — confirmed Sol
-(`gpt-5.6-sol`) durable/QuietBreak breakers from 2026-08-02/03 (lh_004, M142, cal_004, md_002,
-mail_001, mail_002, mail_003).
-Each run has a curated step gallery (≤12 frames, trap + key UI) in `screens/<episode>/`, same
-schema as Wave-1. Catalog: `sol_breakers/tasks.json`; refresh with
+**Plus a separate pool:** **Sol Breakers — Bridged** (display ids **n1–n7** plus task-gen
+**n10–n19**) — confirmed Sol (`gpt-5.6-sol`) durable/QuietBreak breakers. Each run has a
+curated step gallery (≤12 frames, trap + key UI) in `screens/<episode>/`, same schema as
+Wave-1. Catalog: `sol_breakers/tasks.json`; refresh with
 `python3 enrich_sol_breakers_screens.py && python3 merge_sol_breakers.py`. Does **not**
 overwrite Wave-1 QA. See `sol_breakers/README.md`.
+
+### Known limitations (n10–n19 review package)
+
+- Environments for **n10–n19** are represented as **inspectable seed JSON** on the
+  Environment tab (and provenance), not as interactive `env_ui` launchers for those
+  task-gen tasks.
+- Curated screenshots are **review evidence**, not complete video or full action logs;
+  full forensic trajectories remain outside this static Pages package
+  (`browser-gym-seed-to-cua-gym/trajectories/`).
+- Run chips distinguish **Curated gallery: N frames shown** from **Actual episode
+  length: M steps** (`true_n_steps` / task `mean_steps`).
 
 The older Phase 1 runs (one apiece from `oracle`, `opus 4.8`, `gpt 5.6`, `gpt 5.1`,
 `sonnet 4.6`, `qwen 235b`) have been retired — only the current wave is annotated. Phase 1

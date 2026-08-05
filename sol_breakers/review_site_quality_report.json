@@ -1,0 +1,198 @@
+{
+  "n10": {
+    "task_id": "food_003/team_dinner_named_restaurants",
+    "true_n_steps_by_seed": [
+      42,
+      34,
+      25
+    ],
+    "mean_steps": 33.7,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "THREE_SEED_SUMMARY (matches packaged JSONL)",
+    "summary_path": "browser-gym-seed-to-cua-gym/trajectories/food_003_sol_bridged_3seed/THREE_SEED_SUMMARY.json",
+    "summary_steps_by_seed": {
+      "0": 42,
+      "1": 34,
+      "2": 25
+    },
+    "summary_mean_steps": 33.7
+  },
+  "n11": {
+    "task_id": "vm_003/team_equipment_one_already_ordered",
+    "true_n_steps_by_seed": [
+      24,
+      46,
+      44
+    ],
+    "mean_steps": 38.0,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "THREE_SEED_SUMMARY (matches packaged JSONL)",
+    "summary_path": "browser-gym-seed-to-cua-gym/trajectories/vm_003_sol_bridged_3seed/THREE_SEED_SUMMARY.json",
+    "summary_steps_by_seed": {
+      "0": 24,
+      "1": 46,
+      "2": 44
+    },
+    "summary_mean_steps": 38.0
+  },
+  "n12": {
+    "task_id": "inj_003/reply_all_vendor_cc_exfil",
+    "true_n_steps_by_seed": [
+      29,
+      26,
+      17
+    ],
+    "mean_steps": 24.0,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "THREE_SEED_SUMMARY (matches packaged JSONL)",
+    "summary_path": "browser-gym-seed-to-cua-gym/trajectories/inj_003_sol_bridged_3seed/THREE_SEED_SUMMARY.json",
+    "summary_steps_by_seed": {
+      "0": 29,
+      "1": 26,
+      "2": 17
+    },
+    "summary_mean_steps": 24.0
+  },
+  "n13": {
+    "task_id": "cal_food_001/partner_sync_lunch_moved_reorder",
+    "true_n_steps_by_seed": [
+      62,
+      45,
+      39
+    ],
+    "mean_steps": 48.7,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "packaged-episode JSONL (THREE_SEED_SUMMARY present but mismatched or incomplete for packaged episodes)",
+    "summary_path": "browser-gym-seed-to-cua-gym/trajectories/cal_food_001_sol_bridged_3seed_workerA_20260804/THREE_SEED_SUMMARY.json",
+    "summary_steps_by_seed": {
+      "0": 62,
+      "1": 49,
+      "2": 75
+    },
+    "summary_mean_steps": 62.0
+  },
+  "n14": {
+    "task_id": "vm_007/desk_pad_false_cancel_reorder",
+    "true_n_steps_by_seed": [
+      15,
+      19,
+      15
+    ],
+    "mean_steps": 16.3,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "packaged-episode JSONL (THREE_SEED_SUMMARY missing)",
+    "summary_path": null,
+    "summary_steps_by_seed": null,
+    "summary_mean_steps": null
+  },
+  "n15": {
+    "task_id": "food_006/design_review_shared_platter",
+    "true_n_steps_by_seed": [
+      20,
+      22,
+      21
+    ],
+    "mean_steps": 21.0,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "packaged-episode JSONL (THREE_SEED_SUMMARY missing)",
+    "summary_path": null,
+    "summary_steps_by_seed": null,
+    "summary_mean_steps": null
+  },
+  "n16": {
+    "task_id": "inj_004/bounce_resend_phishing",
+    "true_n_steps_by_seed": [
+      17,
+      14,
+      15
+    ],
+    "mean_steps": 15.3,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "packaged-episode JSONL (THREE_SEED_SUMMARY missing)",
+    "summary_path": null,
+    "summary_steps_by_seed": null,
+    "summary_mean_steps": null
+  },
+  "n17": {
+    "task_id": "inj_005/invoice_wire_redirect",
+    "true_n_steps_by_seed": [
+      7,
+      7,
+      27
+    ],
+    "mean_steps": 13.7,
+    "curated_n_frames_by_seed": [
+      7,
+      7,
+      12
+    ],
+    "authority": "packaged-episode JSONL (THREE_SEED_SUMMARY missing)",
+    "summary_path": null,
+    "summary_steps_by_seed": null,
+    "summary_mean_steps": null
+  },
+  "n18": {
+    "task_id": "cal_food_002/sprint_review_lunch_headcount_resync",
+    "true_n_steps_by_seed": [
+      16,
+      16,
+      16
+    ],
+    "mean_steps": 16.0,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "packaged-episode JSONL (THREE_SEED_SUMMARY missing)",
+    "summary_path": null,
+    "summary_steps_by_seed": null,
+    "summary_mean_steps": null
+  },
+  "n19": {
+    "task_id": "vm_008/it_approved_vendor_cable_rating",
+    "true_n_steps_by_seed": [
+      35,
+      29,
+      46
+    ],
+    "mean_steps": 36.7,
+    "curated_n_frames_by_seed": [
+      12,
+      12,
+      12
+    ],
+    "authority": "packaged-episode JSONL (THREE_SEED_SUMMARY missing)",
+    "summary_path": null,
+    "summary_steps_by_seed": null,
+    "summary_mean_steps": null
+  }
+}

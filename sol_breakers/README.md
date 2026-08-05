@@ -90,7 +90,21 @@ cites that no milestone fires on — n7 seed 0's Your Orders read and its
 re-assertion afterwards — are held in `PINNED_STEPS` so even sampling cannot drop
 them.
 
+**Actual vs curated steps:** `n_steps` is the curated gallery frame count;
+`true_n_steps` (and task-level `mean_steps`) are authoritative episode lengths
+from packaged trajectory JSONL / `THREE_SEED_SUMMARY.json`. Refresh quality
+fields with `python3 patch_review_site_quality.py` (does not re-copy screens).
+
+### Known limitations (n10–n19)
+
+- Seed worlds are inspectable JSON in the Environment tab; interactive `env_ui`
+  launchers for these task-gen tasks are not part of the static Pages package.
+- Curated screenshots are review evidence only — not complete video or full
+  action logs. Forensic trajectories stay under
+  `browser-gym-seed-to-cua-gym/trajectories/`.
+
 ```bash
+python3 patch_review_site_quality.py     # true steps + fairness notes + id_scheme
 python3 enrich_sol_breakers_screens.py   # copy curated frames + rewrite tasks.json
 python3 merge_sol_breakers.py            # merge into data.json + rebuild index.html
 ```
