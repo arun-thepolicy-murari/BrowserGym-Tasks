@@ -41,6 +41,11 @@ Wave-1. Catalog: `sol_breakers/tasks.json`; refresh with
 `python3 enrich_sol_breakers_screens.py && python3 merge_sol_breakers.py`. Does **not**
 overwrite Wave-1 QA. See `sol_breakers/README.md`.
 
+**Plus Filtration 28/47:** Tencent Phase 2 dual-model confirmed breakers (Sol × Opus,
+credit-adjusted **28/47**). Two sections — Sample 20 (**10/20**) and Remaining 27
+(**18/27**). Metadata showcase (briefs + fail rates + domain/vein); catalog
+`phase2_dual_breakers/tasks.json`. Same merge script refreshes the pool.
+
 ### Known limitations (n10–n19 review package)
 
 - Environments for **n10–n19** are represented as **inspectable seed JSON** on the

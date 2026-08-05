@@ -12,25 +12,50 @@ try{ann=JSON.parse(localStorage.getItem(LS)||"{}")}catch(e){ann={}}
 try{cfg=JSON.parse(localStorage.getItem(LS_CFG)||"{}")}catch(e){cfg={}}
 cfg.url=cfg.url||""; cfg.annotator=cfg.annotator||"";
 if(localStorage.getItem(LS_THEME)==="dark") document.body.classList.add("dark");
-const byId=Object.fromEntries(DATA.tasks.map(t=>[t.mnum,t]));
+const PHASE2_POOL="phase2_dual_breakers";
+function poolOf(t){ return t.pool||"wave1_qa"; }
+const byId={};
+DATA.tasks.forEach(t=>{
+  const p=poolOf(t);
+  // Wave-1 / Sol Breakers win collisions on M* — Filtration showcase shares M ids.
+  if(p===PHASE2_POOL){ if(!byId[t.mnum]) byId[t.mnum]=t; }
+  else byId[t.mnum]=t;
+});
 const POOLS=DATA.pools||[
   {id:"wave1_qa",label:"Wave-1 QA (gpt-5.5)",short:"Wave-1 QA"},
-  {id:"sol_breakers_bridged",label:"Sol Breakers — Bridged",short:"Sol Breakers"}
+  {id:"sol_breakers_bridged",label:"Sol Breakers — Bridged",short:"Sol Breakers"},
+  {id:"phase2_dual_breakers",label:"Filtration 28/47 — Dual Breakers",short:"Filtration 28/47"}
 ];
 let activePool=localStorage.getItem(LS_POOL)||(POOLS[0]&&POOLS[0].id)||"wave1_qa";
 if(!POOLS.find(p=>p.id===activePool)) activePool=POOLS[0].id;
 let curTask=null, curTab=null, curRun={}, curSeed={};
 
-function poolOf(t){ return t.pool||"wave1_qa"; }
+function isPhase2Pool(id){ return (id||activePool)===PHASE2_POOL; }
 function poolTasks(){ return DATA.tasks.filter(t=>poolOf(t)===activePool); }
+/** Pool-scoped lookup — Wave-1 and Filtration both use M* ids. */
+function getTask(mn){
+  if(!mn) return null;
+  const inPool=DATA.tasks.find(t=>t.mnum===mn && poolOf(t)===activePool);
+  if(inPool) return inPool;
+  return DATA.tasks.find(t=>t.mnum===mn)||null;
+}
 function setPool(id){
   if(activePool===id) return;
   activePool=id;
   localStorage.setItem(LS_POOL, activePool);
-  if(curTask && (!byId[curTask] || poolOf(byId[curTask])!==activePool)) curTask=null;
+  const still=curTask && DATA.tasks.some(t=>t.mnum===curTask && poolOf(t)===activePool);
+  if(!still) curTask=null;
   curTab=null;
-  renderPools(); renderProgress(); renderList();
-  document.getElementById("main").innerHTML='<div class="empty">Select a task on the left to begin.</div>';
+  renderPools(); renderProgress(); renderList(); syncFilterChrome();
+  if(curTask) renderMain();
+  else if(isPhase2Pool()) renderPhase2Intro();
+  else document.getElementById("main").innerHTML='<div class="empty">Select a task on the left to begin.</div>';
+}
+function syncFilterChrome(){
+  const filters=document.querySelector(".filters");
+  const tools=document.querySelectorAll(".side-head .toolrow");
+  if(filters) filters.style.display=isPhase2Pool()?"none":"";
+  // Keep export/import; annotation progress is less relevant for showcase pool.
 }
 function dispositionLabel(d){
   if(!d) return "";
@@ -105,38 +130,120 @@ function renderPools(){
 }
 function renderProgress(){
   const tasks=poolTasks();
-  const done=tasks.filter(t=>statusOf(t.mnum)==="done").length;
   const pool=POOLS.find(p=>p.id===activePool);
   const label=pool?(pool.short||pool.label):activePool;
+  if(isPhase2Pool()){
+    const meta=DATA.phase2_meta||{};
+    document.getElementById("progtxt").textContent=`${tasks.length} dual confirmed · ${label}`;
+    document.getElementById("progbar").style.width="100%";
+    return;
+  }
+  const done=tasks.filter(t=>statusOf(t.mnum)==="done").length;
   document.getElementById("progtxt").textContent=`${done} / ${tasks.length} submitted · ${label}`;
   document.getElementById("progbar").style.width=(tasks.length?(done/tasks.length*100):0)+"%";
 }
 let filter="all",search="";
-function renderList(){
-  const L=document.getElementById("list"); L.innerHTML="";
-  poolTasks().forEach(t=>{
-    const st=statusOf(t.mnum);
+function appendListItem(L,t){
+  const st=statusOf(t.mnum);
+  if(!isPhase2Pool()){
     if(filter==="todo"&&st==="done") return;
     if(filter==="done"&&st!=="done") return;
-    const q=search.toLowerCase();
-    if(q&&!(t.task_id.toLowerCase().includes(q)||taskBrief(t).toLowerCase().includes(q)||(t.mnum||"").toLowerCase().includes(q))) return;
-    const d=document.createElement("div");
-    d.className="item"+(t.mnum===curTask?" active":"");
-    const disp=(poolOf(t)==="sol_breakers_bridged" && t.env && t.env.disposition) || "";
-    const rate=(disp && t.env && t.env.break_rate) || "";
-    const idLine=disp
-      ? `${t.mnum} · ${esc(disp)}${rate?(" · "+esc(rate)):""}`
-      : `${t.mnum} · ${t.n_models} models · ${t.n_runs} runs`;
-    d.innerHTML=`<span class="dot ${st}"></span><div><div class="id">${idLine}</div><div class="p">${esc(taskBrief(t)).slice(0,110)}</div></div>`;
-    d.onclick=()=>{curTask=t.mnum;curTab=null;renderMain();renderList();};
-    L.appendChild(d);
-  });
+  }
+  const q=search.toLowerCase();
+  if(q&&!(t.task_id.toLowerCase().includes(q)||taskBrief(t).toLowerCase().includes(q)||(t.mnum||"").toLowerCase().includes(q)||(t.panel||"").toLowerCase().includes(q)||(t.domain||"").toLowerCase().includes(q)||((t.env||{}).mechanism_family||"").toLowerCase().includes(q))) return;
+  const d=document.createElement("div");
+  d.className="item"+(t.mnum===curTask?" active":"");
+  let idLine;
+  if(poolOf(t)===PHASE2_POOL){
+    const sol=(t.env&&t.env.sol_fail_rate)||"?";
+    const opus=(t.env&&t.env.opus_fail_rate)||"?";
+    idLine=`${t.mnum} · dual · Sol ${esc(sol)} · Opus ${esc(opus)}`;
+  } else if(poolOf(t)==="sol_breakers_bridged" && t.env && t.env.disposition){
+    const rate=t.env.break_rate||"";
+    idLine=`${t.mnum} · ${esc(t.env.disposition)}${rate?(" · "+esc(rate)):""}`;
+  } else {
+    idLine=`${t.mnum} · ${t.n_models} models · ${t.n_runs} runs`;
+  }
+  const dot=isPhase2Pool()?'<span class="dot done"></span>':`<span class="dot ${st}"></span>`;
+  d.innerHTML=`${dot}<div><div class="id">${idLine}</div><div class="p">${esc(taskBrief(t)).slice(0,110)}</div></div>`;
+  d.onclick=()=>{curTask=t.mnum;curTab=null;renderMain();renderList();};
+  L.appendChild(d);
+}
+function renderList(){
+  const L=document.getElementById("list"); L.innerHTML="";
+  const tasks=poolTasks();
+  if(isPhase2Pool()){
+    const panels=[
+      {id:"sample20",label:"Sample 20",sub:"10/20 dual"},
+      {id:"remaining27",label:"Remaining 27",sub:"18/27 dual"}
+    ];
+    panels.forEach(p=>{
+      const rows=tasks.filter(t=>(t.panel||"")===p.id);
+      if(!rows.length) return;
+      const q=search.toLowerCase();
+      const visible=rows.filter(t=>{
+        if(!q) return true;
+        return t.task_id.toLowerCase().includes(q)||taskBrief(t).toLowerCase().includes(q)||(t.mnum||"").toLowerCase().includes(q)||(t.domain||"").toLowerCase().includes(q)||((t.env||{}).mechanism_family||"").toLowerCase().includes(q);
+      });
+      if(!visible.length) return;
+      const sec=document.createElement("div");
+      sec.className="list-sec";
+      sec.innerHTML=`${esc(p.label)}<span class="sec-n">${esc(p.sub)} · ${visible.length}</span>`;
+      L.appendChild(sec);
+      visible.forEach(t=>appendListItem(L,t));
+    });
+    return;
+  }
+  tasks.forEach(t=>appendListItem(L,t));
+}
+
+function renderPhase2Intro(){
+  const M=document.getElementById("main");
+  const meta=DATA.phase2_meta||{};
+  const tasks=poolTasks();
+  const s20=tasks.filter(t=>t.panel==="sample20");
+  const r27=tasks.filter(t=>t.panel==="remaining27");
+  const card=(t)=>`<button type="button" class="showcase-card" data-mn="${esc(t.mnum)}">
+    <div class="cid">${esc(t.mnum)}</div>
+    <div class="cslug">${esc((t.task_id||"").split("/").slice(1).join("/")||t.slug||"")}</div>
+    <div class="cbrief">${esc(taskBrief(t))}</div>
+    <div class="crow">
+      <span class="scorepill dual">dual confirmed</span>
+      <span class="scorepill sol">Sol ${esc((t.env||{}).sol_fail_rate||"?")}</span>
+      <span class="scorepill opus">Opus ${esc((t.env||{}).opus_fail_rate||"?")}</span>
+      ${(t.domain||(t.env||{}).domain)?`<span class="chip">${esc(t.domain||t.env.domain)}</span>`:""}
+      ${(t.vein||(t.env||{}).vein)?`<span class="chip">${esc(t.vein||t.env.vein)}</span>`:""}
+    </div>
+  </button>`;
+  M.innerHTML=`<div class="showcase-intro">
+    <h2>Filtration 28/47 — Dual Breakers</h2>
+    <p class="lead">${esc(meta.headline||"28/47 dual-model confirmed (Sol + Opus both ≥2/5, credit-adjusted).")} Pool outcomes: ${esc(meta.pool_outcomes||"28 dual / 14 Sol-only / 3 Opus-only / 2 INCONC")}. Showcase focuses on the <b>28</b>; M95/M366 remain INCONC and are not listed.</p>
+    <div class="showcase-stats">
+      <div class="stat"><div class="n">28/47</div><div class="l">dual confirmed</div></div>
+      <div class="stat"><div class="n">10/20</div><div class="l">Sample 20 panel</div></div>
+      <div class="stat"><div class="n">18/27</div><div class="l">Remaining 27 panel</div></div>
+      <div class="stat"><div class="n">Sol × Opus</div><div class="l">gpt-5.6-sol · claude-opus-5</div></div>
+    </div>
+  </div>
+  <div class="panel-banner"><h3>Sample 20</h3><span class="sub">credit-adjusted dual confirmed · ${s20.length}/20</span></div>
+  <div class="showcase-grid">${s20.map(card).join("")}</div>
+  <div class="panel-banner"><h3>Remaining 27</h3><span class="sub">dual confirmed · ${r27.length}/27</span></div>
+  <div class="showcase-grid">${r27.map(card).join("")}</div>`;
+  M.querySelectorAll("[data-mn]").forEach(b=>b.onclick=()=>{curTask=b.dataset.mn;curTab=null;renderMain();renderList();});
 }
 
 /* ---------- main ---------- */
 function renderMain(){
-  const t=byId[curTask], M=document.getElementById("main");
-  if(!t){M.innerHTML='<div class="empty">Select a task.</div>';return;}
+  const t=getTask(curTask), M=document.getElementById("main");
+  if(!t){
+    if(isPhase2Pool()){ renderPhase2Intro(); return; }
+    M.innerHTML='<div class="empty">Select a task.</div>';
+    return;
+  }
+  if(poolOf(t)===PHASE2_POOL || t.showcase_only){
+    renderPhase2Task(t, M);
+    return;
+  }
   const tabs=[...t.models.map(m=>({key:"m:"+m.model,label:m.model+(m.runs.length>1?" ×"+m.runs.length:""),type:"model",m})),
               {key:"env",label:"Environment",type:"env"},
               {key:"verifiers",label:"Verifiers",type:"verifiers"},
@@ -190,6 +297,72 @@ function renderMain(){
   else if(tb.type==="env") renderEnv(t,body);
   else if(tb.type==="verifiers") renderVerifier(t,body);
   else renderSummary(t,body);
+}
+
+function renderPhase2Task(t, M){
+  const e=t.env||{};
+  const panelLabel=t.panel==="sample20"?"Sample 20":(t.panel==="remaining27"?"Remaining 27":(t.panel||"—"));
+  const panelSub=t.panel==="sample20"?"10/20 dual":(t.panel==="remaining27"?"18/27 dual":"");
+  const wave1=t.wave1_overlap;
+  const audits=(e.provenance&&e.provenance.also)||[];
+  const primaryAudit=(e.provenance&&e.provenance.audit)||"";
+  M.innerHTML=`<div class="thead">
+    <div class="row1">
+      <h2>${esc(t.mnum)}</h2>
+      <span class="chip blue">${esc(t.task_id)}</span>
+      <span class="scorepill dual">dual confirmed</span>
+      <span class="chip">${esc(panelLabel)}${panelSub?` · ${esc(panelSub)}`:""}</span>
+      ${t.vein||e.vein?`<span class="chip">${esc(t.vein||e.vein)}</span>`:""}
+      ${t.domain||e.domain?`<span class="chip">${esc(t.domain||e.domain)}</span>`:""}
+      ${t.mechanism_family||e.mechanism_family?`<span class="chip">${esc(t.mechanism_family||e.mechanism_family)}</span>`:""}
+      <span class="subbtn">
+        <button class="btn" id="backGallery" type="button">← All 28</button>
+        ${wave1?`<button class="btn primary" id="openWave1" type="button">Open in Wave-1 QA</button>`:""}
+      </span>
+    </div>
+    <div class="prompt">${esc(taskBrief(t))}</div>
+  </div>
+  <div class="tbody">
+    <div class="confirmcard">
+      <h3>Phase 2 filtration outcome</h3>
+      <div class="disp" style="color:var(--accent-green-dark)">dual confirmed</div>
+      <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
+        <span class="scorepill sol">Sol fail ${esc(e.sol_fail_rate||"?")}</span>
+        <span class="scorepill opus">Opus fail ${esc(e.opus_fail_rate||"?")}</span>
+        <span class="chip">credit-adjusted · non-credit seeds</span>
+      </div>
+      <p style="margin:12px 0 0;color:var(--muted);line-height:1.5;font-size:12px">${esc(e.cohort_notes||"Sol BREAK ≥2/5 and Opus BREAK ≥2/5 on non-credit seeds.")}</p>
+    </div>
+    ${kvTable([
+      ["Task ID", t.task_id],
+      ["Panel", panelLabel+(panelSub?" ("+panelSub+")":"")],
+      ["Domain", t.domain||e.domain||"—"],
+      ["Mechanism family", t.mechanism_family||e.mechanism_family||"—"],
+      ["Vein", t.vein||e.vein||"—"],
+      ["Sol (gpt-5.6-sol)", e.sol_fail_rate||"—"],
+      ["Opus (claude-opus-5)", e.opus_fail_rate||"—"],
+      ["Disposition", "dual confirmed"],
+      ["Wave-1 QA package", wave1?"Yes — same M* in Wave-1 QA tab":"Not in Wave-1 QA package"],
+    ])}
+    <div class="confirmcard" style="margin-top:14px">
+      <h3>Provenance</h3>
+      <div style="font-size:12px;line-height:1.55;color:var(--muted)">
+        <div><b style="color:var(--text)">Primary audit:</b> ${esc(primaryAudit||"—")}</div>
+        ${audits.length?`<div style="margin-top:6px"><b style="color:var(--text)">Also:</b> ${audits.map(a=>esc(a)).join(" · ")}</div>`:""}
+        <div style="margin-top:6px"><b style="color:var(--text)">Brief source:</b> ${(e.provenance&&e.provenance.brief_source)||"ecommerce-browser-gym/server/tasks.py BRIEFS"}</div>
+        <div style="margin-top:6px">Metadata showcase only — full n10-style trajectory packaging not included for this pool.</div>
+      </div>
+    </div>
+  </div>`;
+  const back=document.getElementById("backGallery");
+  if(back) back.onclick=()=>{curTask=null;renderList();renderPhase2Intro();};
+  const ow=document.getElementById("openWave1");
+  if(ow) ow.onclick=()=>{
+    activePool="wave1_qa";
+    localStorage.setItem(LS_POOL, activePool);
+    curTask=t.mnum; curTab=null;
+    renderPools(); renderProgress(); renderList(); syncFilterChrome(); renderMain();
+  };
 }
 function curRunEp(t,m){ if(!curRun[t.mnum]) curRun[t.mnum]={}; if(!curRun[t.mnum][m.model]) curRun[t.mnum][m.model]=m.runs[0].episode; return curRun[t.mnum][m.model]; }
 
@@ -1024,4 +1197,6 @@ document.getElementById("annotator").value=cfg.annotator||"";
 document.getElementById("annotator").onchange=e=>{cfg.annotator=e.target.value.trim();localStorage.setItem(LS_CFG,JSON.stringify(cfg));};
 document.querySelectorAll(".filters [data-f]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".filters [data-f]").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.f;renderList();});
 document.getElementById("search").oninput=e=>{search=e.target.value;renderList();};
-renderPools();renderProgress();renderList();
+renderPools();renderProgress();renderList();syncFilterChrome();
+if(isPhase2Pool()&&!curTask) renderPhase2Intro();
+else document.getElementById("main").innerHTML='<div class="empty">Select a task on the left to begin.</div>';
