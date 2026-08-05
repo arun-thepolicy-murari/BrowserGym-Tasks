@@ -264,8 +264,19 @@ def enrich_run(run: dict, gym: Path, provenance: dict) -> dict:
 
     curated = [build_step(all_steps[i], episode, have_shot) for i in keep if i < len(all_steps)]
     out = dict(run)
+    # Authoritative episode length from the trajectory; do not confuse with
+    # curated gallery size. Prefer an already-patched true_n_steps, else the
+    # pre-enrich n_steps when it still reflected the full episode, else JSONL.
+    true_n = out.get("true_n_steps")
+    if true_n is None:
+        prior = out.get("n_steps")
+        if isinstance(prior, int) and prior > len(curated):
+            true_n = prior
+        else:
+            true_n = len(all_steps)
     out["steps"] = curated
-    out["n_steps"] = len(curated)
+    out["n_steps"] = len(curated)  # curated gallery frame count
+    out["true_n_steps"] = int(true_n)
     out["has_log"] = True
     # Preserve existing env summary; add traj bookends when missing.
     env = dict(out.get("env") or {})
@@ -275,6 +286,8 @@ def enrich_run(run: dict, gym: Path, provenance: dict) -> dict:
     env.setdefault("final_snapshot", traj.get("final_snapshot") or {})
     env.setdefault("ui_variant", traj.get("ui_variant"))
     env.setdefault("viewport", (traj.get("image_settings") or {}).get("viewport"))
+    env["true_n_steps"] = int(true_n)
+    env["curated_n_frames"] = len(curated)
     vr = traj.get("verifier_result") or {}
     if not env.get("all_milestones") and vr.get("all_milestones"):
         env["all_milestones"] = vr["all_milestones"]
