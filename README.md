@@ -342,15 +342,16 @@ not already have.
 
 ## Hosting on GitHub Pages
 
-Repo: [amit-deccan/BrowserGym-Annotation-phase2](https://github.com/amit-deccan/BrowserGym-Annotation-phase2)
+This fork: [arun-thepolicy-murari/BrowserGym-Tasks](https://github.com/arun-thepolicy-murari/BrowserGym-Tasks).
+Upstream Annotation reference: [amit-deccan/BrowserGym-Annotation-phase2](https://github.com/amit-deccan/BrowserGym-Annotation-phase2).
 
-Pushes to `main` deploy via `.github/workflows/pages.yml`. Live URLs:
+Pushes to `main` deploy via `.github/workflows/pages.yml`. Live URLs (once Pages is enabled):
 
 | What | URL |
 |---|---|
-| **Annotation platform** | https://amit-deccan.github.io/BrowserGym-Annotation-phase2/ |
+| **This fork (Tasks)** | https://arun-thepolicy-murari.github.io/BrowserGym-Tasks/ |
+| Upstream Annotation | https://amit-deccan.github.io/BrowserGym-Annotation-phase2/ |
 | **CUA env UIs** (Environment tab) | `env_ui/shop/` (+ mail/market/food) with `env_ui/seeds/<M>/<n>/` |
-| Vault UI reference | https://amit-deccan.github.io/BrowserGym-Annotation-phase2/task-review.html |
 
 On Pages, Environment opens the **new CUA mocks** seeded from packaged JSON. Gym-bridged
 clicks still need `./run_local.sh` locally. Share the platform URL with the team; each
