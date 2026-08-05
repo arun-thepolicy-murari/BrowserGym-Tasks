@@ -133,8 +133,9 @@ function renderProgress(){
   const pool=POOLS.find(p=>p.id===activePool);
   const label=pool?(pool.short||pool.label):activePool;
   if(isPhase2Pool()){
-    const meta=DATA.phase2_meta||{};
-    document.getElementById("progtxt").textContent=`${tasks.length} dual confirmed · ${label}`;
+    const br=(DATA.phase2_meta||{}).behavior_retag||{};
+    const a=((br.buckets||{}).a||{}).count;
+    document.getElementById("progtxt").textContent=`${tasks.length} dual filtration fails · ${a!=null?a:9} dual-trap-hits · ${label}`;
     document.getElementById("progbar").style.width="100%";
     return;
   }
@@ -157,7 +158,8 @@ function appendListItem(L,t){
   if(poolOf(t)===PHASE2_POOL){
     const sol=(t.env&&t.env.sol_fail_rate)||"?";
     const opus=(t.env&&t.env.opus_fail_rate)||"?";
-    idLine=`${t.mnum} · dual · Sol ${esc(sol)} · Opus ${esc(opus)}`;
+    const b=phase2BucketMeta(t);
+    idLine=`${t.mnum} · ${esc(b.short)} · Sol ${esc(sol)} · Opus ${esc(opus)}`;
   } else if(poolOf(t)==="sol_breakers_bridged" && t.env && t.env.disposition){
     const rate=t.env.break_rate||"";
     idLine=`${t.mnum} · ${esc(t.env.disposition)}${rate?(" · "+esc(rate)):""}`;
@@ -174,8 +176,8 @@ function renderList(){
   const tasks=poolTasks();
   if(isPhase2Pool()){
     const panels=[
-      {id:"sample20",label:"Sample 20",sub:"10/20 dual"},
-      {id:"remaining27",label:"Remaining 27",sub:"18/27 dual"}
+      {id:"sample20",label:"Sample 20",sub:"10/20 filtration"},
+      {id:"remaining27",label:"Remaining 27",sub:"18/27 filtration"}
     ];
     panels.forEach(p=>{
       const rows=tasks.filter(t=>(t.panel||"")===p.id);
@@ -197,38 +199,70 @@ function renderList(){
   tasks.forEach(t=>appendListItem(L,t));
 }
 
+function phase2BucketMeta(t){
+  const key=(t&&(t.behavior_bucket||(t.env||{}).behavior_bucket))||"ambiguous";
+  const map={
+    a:{key:"a",short:"(a)",label:"dual trap-hit",pill:"bucket-a",dispColor:"var(--bad-fg)"},
+    b:{key:"b",short:"(b)",label:"Sol trap · Opus refuse",pill:"bucket-b",dispColor:"var(--warn-fg)"},
+    c:{key:"c",short:"(c)",label:"Opus trap · Sol refuse",pill:"bucket-c",dispColor:"var(--accent-fg)"},
+    ambiguous:{key:"ambiguous",short:"amb",label:"ambiguous",pill:"bucket-amb",dispColor:"var(--muted)"}
+  };
+  return map[key]||map.ambiguous;
+}
+function phase2BucketOrder(){ return ["a","b","c","ambiguous"]; }
 function renderPhase2Intro(){
   const M=document.getElementById("main");
   const meta=DATA.phase2_meta||{};
+  const br=meta.behavior_retag||{};
+  const buckets=br.buckets||{};
   const tasks=poolTasks();
-  const s20=tasks.filter(t=>t.panel==="sample20");
-  const r27=tasks.filter(t=>t.panel==="remaining27");
-  const card=(t)=>`<button type="button" class="showcase-card" data-mn="${esc(t.mnum)}">
+  const card=(t)=>{
+    const b=phase2BucketMeta(t);
+    return `<button type="button" class="showcase-card" data-mn="${esc(t.mnum)}">
     <div class="cid">${esc(t.mnum)}</div>
     <div class="cslug">${esc((t.task_id||"").split("/").slice(1).join("/")||t.slug||"")}</div>
     <div class="cbrief">${esc(taskBrief(t))}</div>
     <div class="crow">
-      <span class="scorepill dual">dual confirmed</span>
+      <span class="scorepill filt">filtration fail</span>
+      <span class="scorepill ${b.pill}">${esc(b.short)} ${esc(b.label)}</span>
       <span class="scorepill sol">Sol ${esc((t.env||{}).sol_fail_rate||"?")}</span>
       <span class="scorepill opus">Opus ${esc((t.env||{}).opus_fail_rate||"?")}</span>
       ${(t.domain||(t.env||{}).domain)?`<span class="chip">${esc(t.domain||t.env.domain)}</span>`:""}
       ${(t.vein||(t.env||{}).vein)?`<span class="chip">${esc(t.vein||t.env.vein)}</span>`:""}
     </div>
   </button>`;
+  };
+  const panelBlock=(panelId,title,sub)=>{
+    const rows=tasks.filter(t=>t.panel===panelId);
+    if(!rows.length) return "";
+    let html=`<div class="panel-banner"><h3>${esc(title)}</h3><span class="sub">${esc(sub)} · ${rows.length}</span></div>`;
+    phase2BucketOrder().forEach(key=>{
+      const group=rows.filter(t=>phase2BucketMeta(t).key===key);
+      if(!group.length) return;
+      const bm=phase2BucketMeta(group[0]);
+      const bmeta=buckets[key]||{};
+      html+=`<div class="bucket-banner"><h4>${esc(bm.short)} ${esc(bm.label)}</h4><span class="sub">${group.length} in this panel${bmeta.desc?(" · "+bmeta.desc):""}</span></div>`;
+      html+=`<div class="showcase-grid">${group.map(card).join("")}</div>`;
+    });
+    return html;
+  };
+  const nA=(buckets.a&&buckets.a.count!=null)?buckets.a.count:9;
+  const nB=(buckets.b&&buckets.b.count!=null)?buckets.b.count:15;
+  const nC=(buckets.c&&buckets.c.count!=null)?buckets.c.count:0;
+  const nAmb=(buckets.ambiguous&&buckets.ambiguous.count!=null)?buckets.ambiguous.count:4;
   M.innerHTML=`<div class="showcase-intro">
     <h2>Filtration 28/47 — Dual Breakers</h2>
-    <p class="lead">${esc(meta.headline||"28/47 dual-model confirmed (Sol + Opus both ≥2/5, credit-adjusted).")} Pool outcomes: ${esc(meta.pool_outcomes||"28 dual / 14 Sol-only / 3 Opus-only / 2 INCONC")}. Showcase focuses on the <b>28</b>; M95/M366 remain INCONC and are not listed.</p>
+    <p class="lead">${esc(meta.headline||"Of 47 Luna-hard tasks, 28 miss the success bar on both Sol and Opus. Of those 28, only 9 are genuine dual-trap-hits.")} Pool outcomes: ${esc(meta.pool_outcomes||"28 dual filtration-fail / 14 Sol-only / 3 Opus-only / 2 INCONC")}. Showcase lists all <b>28</b> filtration fails; badges separate trap-hit vs refuse. M95/M366 remain INCONC and are not listed.</p>
     <div class="showcase-stats">
-      <div class="stat"><div class="n">28/47</div><div class="l">dual confirmed</div></div>
-      <div class="stat"><div class="n">10/20</div><div class="l">Sample 20 panel</div></div>
-      <div class="stat"><div class="n">18/27</div><div class="l">Remaining 27 panel</div></div>
-      <div class="stat"><div class="n">Sol × Opus</div><div class="l">gpt-5.6-sol · claude-opus-5</div></div>
+      <div class="stat"><div class="n">28/47</div><div class="l">dual filtration fails</div></div>
+      <div class="stat"><div class="n">${nA}</div><div class="l">(a) dual trap-hit</div></div>
+      <div class="stat"><div class="n">${nB}</div><div class="l">(b) Sol trap · Opus refuse</div></div>
+      <div class="stat"><div class="n">${nAmb}</div><div class="l">ambiguous · (c)=${nC}</div></div>
     </div>
+    <p style="margin:10px 0 0;font-size:12px;color:var(--muted);line-height:1.5;max-width:900px">${esc(meta.bar||"Raw 28 = both models ≥2/5 fail (filtration bar). Dual-trap-hit = bucket (a) only.")}</p>
   </div>
-  <div class="panel-banner"><h3>Sample 20</h3><span class="sub">credit-adjusted dual confirmed · ${s20.length}/20</span></div>
-  <div class="showcase-grid">${s20.map(card).join("")}</div>
-  <div class="panel-banner"><h3>Remaining 27</h3><span class="sub">dual confirmed · ${r27.length}/27</span></div>
-  <div class="showcase-grid">${r27.map(card).join("")}</div>`;
+  ${panelBlock("sample20","Sample 20","credit-adjusted dual filtration fail · 10/20")}
+  ${panelBlock("remaining27","Remaining 27","dual filtration fail · 18/27")}`;
   M.querySelectorAll("[data-mn]").forEach(b=>b.onclick=()=>{curTask=b.dataset.mn;curTab=null;renderMain();renderList();});
 }
 
@@ -301,16 +335,20 @@ function renderMain(){
 
 function renderPhase2Task(t, M){
   const e=t.env||{};
+  const b=phase2BucketMeta(t);
   const panelLabel=t.panel==="sample20"?"Sample 20":(t.panel==="remaining27"?"Remaining 27":(t.panel||"—"));
-  const panelSub=t.panel==="sample20"?"10/20 dual":(t.panel==="remaining27"?"18/27 dual":"");
+  const panelSub=t.panel==="sample20"?"10/20 dual filtration":(t.panel==="remaining27"?"18/27 dual filtration":"");
   const wave1=t.wave1_overlap;
   const audits=(e.provenance&&e.provenance.also)||[];
   const primaryAudit=(e.provenance&&e.provenance.audit)||"";
+  const br=((DATA.phase2_meta||{}).behavior_retag||{}).buckets||{};
+  const bdesc=(br[b.key]&&br[b.key].desc)||"";
   M.innerHTML=`<div class="thead">
     <div class="row1">
       <h2>${esc(t.mnum)}</h2>
       <span class="chip blue">${esc(t.task_id)}</span>
-      <span class="scorepill dual">dual confirmed</span>
+      <span class="scorepill filt">filtration fail</span>
+      <span class="scorepill ${b.pill}">${esc(b.short)} ${esc(b.label)}</span>
       <span class="chip">${esc(panelLabel)}${panelSub?` · ${esc(panelSub)}`:""}</span>
       ${t.vein||e.vein?`<span class="chip">${esc(t.vein||e.vein)}</span>`:""}
       ${t.domain||e.domain?`<span class="chip">${esc(t.domain||e.domain)}</span>`:""}
@@ -324,24 +362,27 @@ function renderPhase2Task(t, M){
   </div>
   <div class="tbody">
     <div class="confirmcard">
-      <h3>Phase 2 filtration outcome</h3>
-      <div class="disp" style="color:var(--accent-green-dark)">dual confirmed</div>
+      <h3>Phase 2 filtration + behavior</h3>
+      <div class="disp" style="color:var(--accent-green-dark)">dual filtration fail</div>
+      <div style="margin-top:6px;font-weight:700;font-size:13px;color:${b.dispColor}">${esc(b.short)} ${esc(b.label)}</div>
+      ${bdesc?`<p style="margin:8px 0 0;color:var(--muted);line-height:1.45;font-size:12px">${esc(bdesc)}</p>`:""}
       <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
         <span class="scorepill sol">Sol fail ${esc(e.sol_fail_rate||"?")}</span>
         <span class="scorepill opus">Opus fail ${esc(e.opus_fail_rate||"?")}</span>
         <span class="chip">credit-adjusted · non-credit seeds</span>
       </div>
-      <p style="margin:12px 0 0;color:var(--muted);line-height:1.5;font-size:12px">${esc(e.cohort_notes||"Sol BREAK ≥2/5 and Opus BREAK ≥2/5 on non-credit seeds.")}</p>
+      <p style="margin:12px 0 0;color:var(--muted);line-height:1.5;font-size:12px">${esc(e.cohort_notes||"Sol BREAK ≥2/5 and Opus BREAK ≥2/5 on non-credit seeds. Behavior bucket separates trap-hit vs refuse.")}</p>
     </div>
     ${kvTable([
       ["Task ID", t.task_id],
       ["Panel", panelLabel+(panelSub?" ("+panelSub+")":"")],
+      ["Filtration disposition", "dual filtration fail (both ≥2/5)"],
+      ["Behavior bucket", b.short+" "+b.label],
       ["Domain", t.domain||e.domain||"—"],
       ["Mechanism family", t.mechanism_family||e.mechanism_family||"—"],
       ["Vein", t.vein||e.vein||"—"],
       ["Sol (gpt-5.6-sol)", e.sol_fail_rate||"—"],
       ["Opus (claude-opus-5)", e.opus_fail_rate||"—"],
-      ["Disposition", "dual confirmed"],
       ["Wave-1 QA package", wave1?"Yes — same M* in Wave-1 QA tab":"Not in Wave-1 QA package"],
     ])}
     <div class="confirmcard" style="margin-top:14px">
@@ -350,7 +391,7 @@ function renderPhase2Task(t, M){
         <div><b style="color:var(--text)">Primary audit:</b> ${esc(primaryAudit||"—")}</div>
         ${audits.length?`<div style="margin-top:6px"><b style="color:var(--text)">Also:</b> ${audits.map(a=>esc(a)).join(" · ")}</div>`:""}
         <div style="margin-top:6px"><b style="color:var(--text)">Brief source:</b> ${(e.provenance&&e.provenance.brief_source)||"ecommerce-browser-gym/server/tasks.py BRIEFS"}</div>
-        <div style="margin-top:6px">Metadata showcase only — full n10-style trajectory packaging not included for this pool.</div>
+        <div style="margin-top:6px">Metadata showcase only — full n10-style trajectory packaging not included for this pool. Behavior retag: TENCENT_FILTRATION_PHASE2_DUAL28_BEHAVIOR_RETAG_2026-08-05.md</div>
       </div>
     </div>
   </div>`;

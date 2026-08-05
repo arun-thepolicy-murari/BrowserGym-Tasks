@@ -41,7 +41,7 @@ POOL_META = {
         "id": PHASE2_POOL,
         "label": "Filtration 28/47 — Dual Breakers",
         "short": "Filtration 28/47",
-        "description": "Tencent filtration Phase 2 dual-model confirmed (Sol + Opus both ≥2/5, credit-adjusted). Sample20 10/20 + Remaining27 18/27.",
+        "description": "Tencent filtration Phase 2 dual filtration fails (Sol + Opus both ≥2/5, credit-adj). Of 28: 9 dual-trap-hit, 15 Sol-trap/Opus-refuse, 4 ambiguous. Sample20 10/20 + Remaining27 18/27.",
     },
 }
 
@@ -123,6 +123,8 @@ def main() -> None:
         "panels": phase2_pkg.get("panels"),
         "inconclusive_not_shown": phase2_pkg.get("inconclusive_not_shown"),
         "models": phase2_pkg.get("models"),
+        "behavior_retag": phase2_pkg.get("behavior_retag"),
+        "notes": phase2_pkg.get("notes"),
     }
 
     emit(data)
