@@ -41,12 +41,13 @@ Wave-1. Catalog: `sol_breakers/tasks.json`; refresh with
 `python3 enrich_sol_breakers_screens.py && python3 merge_sol_breakers.py`. Does **not**
 overwrite Wave-1 QA. See `sol_breakers/README.md`.
 
-**Plus Filtration 25/47:** Tencent Phase 2 dual **filtration fails** (Sol × Opus,
-credit-adjusted **25/47** after refuse-credit verifier fix; was 28). Behavior retag among
-remaining duals: **9** dual-trap-hit · **11** Sol-trap/Opus-refuse · **4** ambiguous
-(not “25 = both fell for it”). Two panels — Sample 20 (**8/20**) and Remaining 27 (**15/27**).
-M39/M40/M213/M220 left the dual bar (rebadged); M117 stays. Metadata showcase; catalog
-`phase2_dual_breakers/tasks.json`. Same merge script refreshes the pool.
+**Plus Filtration 21/47:** Tencent Phase 2 dual **filtration fails** (Sol × Opus,
+credit-corrected **21/47** after refuse-credit verifier fix + Opus credit re-audit; was
+28→24→21). Behavior retag among remaining duals: **9** dual-trap-hit · **11**
+Sol-trap/Opus-refuse · **1** ambiguous (M210) (not “21 = both fell for it”). Two panels —
+Sample 20 (**9/20**) and Remaining 27 (**12/27**). Left-dual kept: refuse-credit
+M39/M40/M213/M220; credit-death M103/M104/M227 (re-run pending). M117 stays. Metadata
+showcase; catalog `phase2_dual_breakers/tasks.json`. Same merge script refreshes the pool.
 
 ### Known limitations (n10–n19 review package)
 
