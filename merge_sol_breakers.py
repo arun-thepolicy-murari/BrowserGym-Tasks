@@ -39,9 +39,9 @@ POOL_META = {
     },
     PHASE2_POOL: {
         "id": PHASE2_POOL,
-        "label": "Filtration 28/47 — Dual Breakers",
-        "short": "Filtration 28/47",
-        "description": "Tencent filtration Phase 2 dual filtration fails (Sol + Opus both ≥2/5, credit-adj). Of 28: 9 dual-trap-hit, 15 Sol-trap/Opus-refuse, 4 ambiguous. Sample20 10/20 + Remaining27 18/27.",
+        "label": "Filtration 25/47 — Dual Breakers",
+        "short": "Filtration 25/47",
+        "description": "Tencent filtration Phase 2 dual filtration fails after refuse-credit fix (Sol + Opus both ≥2/5, credit-adj). Of 25: 9 dual-trap-hit, 11 Sol-trap/Opus-refuse, 4 ambiguous. Sample20 8/20 + Remaining27 15/27. M39/M40/M213/M220 left dual bar (kept as left-dual); M117 stays.",
     },
 }
 
