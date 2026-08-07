@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Merge Sol Breakers + Phase 2 Dual Breakers into data.json + index.html.
+"""Merge Sol Breakers + Phase 2 Dual Breakers + Eligible Task Suite into data.json + index.html.
 
 Does NOT rebuild wave-1 QA from Phase 1 / new_samples. Existing wave-1 tasks stay
-intact; they are tagged ``pool: wave1_qa`` if missing. Sol / Phase-2 pools replace
-only their own prior rows.
+intact; they are tagged ``pool: wave1_qa`` if missing. Sol / Phase-2 / Eligible
+pools replace only their own prior rows.
 
 Usage:
   python3 merge_sol_breakers.py
@@ -19,10 +19,12 @@ ROOT = Path(__file__).resolve().parent
 APP = ROOT / "app"
 SOL = ROOT / "sol_breakers" / "tasks.json"
 PHASE2 = ROOT / "phase2_dual_breakers" / "tasks.json"
+ELIGIBLE = ROOT / "eligible_task_suite" / "tasks.json"
 
 WAVE1_POOL = "wave1_qa"
 SOL_POOL = "sol_breakers_bridged"
 PHASE2_POOL = "phase2_dual_breakers"
+ELIGIBLE_POOL = "eligible_task_suite"
 
 POOL_META = {
     WAVE1_POOL: {
@@ -42,6 +44,12 @@ POOL_META = {
         "label": "Filtration 21/47 — Dual Breakers",
         "short": "Filtration 21/47",
         "description": "Tencent filtration Phase 2 dual filtration fails after refuse-credit fix + Opus credit re-audit (Sol + Opus both ≥2/5 on valid seeds). Of 21: 9 dual-trap-hit, 11 Sol-trap/Opus-refuse, 1 ambiguous (M210). Sample20 9/20 + Remaining27 12/27. Left-dual: refuse-credit M39/M40/M213/M220 + credit-death M103/M104/M227; M117 stays.",
+    },
+    ELIGIBLE_POOL: {
+        "id": ELIGIBLE_POOL,
+        "label": "Eligible Task Suite",
+        "short": "Eligible Suite",
+        "description": "Three Sol seed-0 eligibility candidates (mp_033 mom-deals, Lumos warranty, Team dinner) with full step screenshot galleries.",
     },
 }
 
@@ -78,12 +86,13 @@ def main() -> None:
     data = read_json(ROOT / "data.json")
     sol_pkg = read_json(SOL)
     phase2_pkg = read_json(PHASE2) if PHASE2.exists() else {"tasks": []}
+    eligible_pkg = read_json(ELIGIBLE) if ELIGIBLE.exists() else {"tasks": []}
 
-    # Preserve wave-1 QA; drop prior sol + phase2 rows (rebuilt below).
+    # Preserve wave-1 QA; drop prior sol + phase2 + eligible rows (rebuilt below).
     wave1 = []
     for t in data.get("tasks") or []:
         p = t.get("pool") or WAVE1_POOL
-        if p in (SOL_POOL, PHASE2_POOL):
+        if p in (SOL_POOL, PHASE2_POOL, ELIGIBLE_POOL):
             continue
         tt = dict(t)
         tt.setdefault("pool", WAVE1_POOL)
@@ -97,15 +106,21 @@ def main() -> None:
     for t in phase2_tasks:
         t["pool"] = PHASE2_POOL
 
-    data["tasks"] = wave1 + sol_tasks + phase2_tasks
+    eligible_tasks = [finalize_task(t) for t in eligible_pkg.get("tasks") or []]
+    for t in eligible_tasks:
+        t["pool"] = ELIGIBLE_POOL
+
+    data["tasks"] = wave1 + sol_tasks + phase2_tasks + eligible_tasks
     data["n_tasks"] = len(data["tasks"])
     data["n_wave1"] = len(wave1)
     data["n_sol_breakers"] = len(sol_tasks)
     data["n_phase2_dual"] = len(phase2_tasks)
+    data["n_eligible_suite"] = len(eligible_tasks)
     data["pools"] = [
         POOL_META[WAVE1_POOL],
         POOL_META[SOL_POOL],
         POOL_META[PHASE2_POOL],
+        POOL_META[ELIGIBLE_POOL],
     ]
     data["generated"] = date.today().isoformat()
     src = dict(data.get("source") or {})
@@ -115,6 +130,8 @@ def main() -> None:
     src["phase2_dual_package"] = "phase2_dual_breakers/tasks.json"
     src["phase2_dual_headline"] = phase2_pkg.get("headline", "")
     src["phase2_dual_notes"] = phase2_pkg.get("notes", "")
+    src["eligible_task_suite_package"] = "eligible_task_suite/tasks.json"
+    src["eligible_task_suite_notes"] = eligible_pkg.get("notes", "")
     data["source"] = src
     data["phase2_meta"] = {
         "headline": phase2_pkg.get("headline"),
@@ -125,6 +142,11 @@ def main() -> None:
         "models": phase2_pkg.get("models"),
         "behavior_retag": phase2_pkg.get("behavior_retag"),
         "notes": phase2_pkg.get("notes"),
+    }
+    data["eligible_meta"] = {
+        "headline": eligible_pkg.get("label") or "Eligible Task Suite",
+        "notes": eligible_pkg.get("notes"),
+        "model": eligible_pkg.get("model"),
     }
 
     emit(data)
@@ -143,6 +165,14 @@ def main() -> None:
         print(
             f"  {t['mnum']:<5} {t.get('panel','?'):<12} "
             f"Sol {e.get('sol_fail_rate','?')} · Opus {e.get('opus_fail_rate','?')}"
+        )
+    print(f"eligible_task_suite: {len(eligible_tasks)} tasks")
+    for t in eligible_tasks:
+        e = t.get("env") or {}
+        print(
+            f"  {t['mnum']:<4} ← {(t.get('original_mnum') or '?'):<10} "
+            f"{e.get('disposition','?'):<8} score={(t.get('models') or [{}])[0].get('runs',[{}])[0].get('score','?')} "
+            f"steps={(t.get('models') or [{}])[0].get('runs',[{}])[0].get('true_n_steps','?')}"
         )
     size = (ROOT / "index.html").stat().st_size / 1e6
     print(f"index.html: {size:.1f} MB")

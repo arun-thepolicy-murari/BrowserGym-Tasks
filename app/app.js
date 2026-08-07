@@ -13,7 +13,14 @@ try{cfg=JSON.parse(localStorage.getItem(LS_CFG)||"{}")}catch(e){cfg={}}
 cfg.url=cfg.url||""; cfg.annotator=cfg.annotator||"";
 if(localStorage.getItem(LS_THEME)==="dark") document.body.classList.add("dark");
 const PHASE2_POOL="phase2_dual_breakers";
+const ELIGIBLE_POOL="eligible_task_suite";
 function poolOf(t){ return t.pool||"wave1_qa"; }
+function isEligiblePool(id){ return (id||activePool)===ELIGIBLE_POOL; }
+function isFullGallery(t, run){
+  if(run&&run.gallery_mode==="full") return true;
+  if(t&&t.gallery_mode==="full") return true;
+  return poolOf(t)===ELIGIBLE_POOL;
+}
 const byId={};
 DATA.tasks.forEach(t=>{
   const p=poolOf(t);
@@ -24,7 +31,8 @@ DATA.tasks.forEach(t=>{
 const POOLS=DATA.pools||[
   {id:"wave1_qa",label:"Wave-1 QA (gpt-5.5)",short:"Wave-1 QA"},
   {id:"sol_breakers_bridged",label:"Sol Breakers — Bridged",short:"Sol Breakers"},
-  {id:"phase2_dual_breakers",label:"Filtration 21/47 — Dual Breakers",short:"Filtration 21/47"}
+  {id:"phase2_dual_breakers",label:"Filtration 21/47 — Dual Breakers",short:"Filtration 21/47"},
+  {id:"eligible_task_suite",label:"Eligible Task Suite",short:"Eligible Suite"}
 ];
 let activePool=localStorage.getItem(LS_POOL)||(POOLS[0]&&POOLS[0].id)||"wave1_qa";
 if(!POOLS.find(p=>p.id===activePool)) activePool=POOLS[0].id;
@@ -49,6 +57,7 @@ function setPool(id){
   renderPools(); renderProgress(); renderList(); syncFilterChrome();
   if(curTask) renderMain();
   else if(isPhase2Pool()) renderPhase2Intro();
+  else if(isEligiblePool()) renderEligibleIntro();
   else document.getElementById("main").innerHTML='<div class="empty">Select a task on the left to begin.</div>';
 }
 function syncFilterChrome(){
@@ -230,6 +239,12 @@ function renderProgress(){
     document.getElementById("progbar").style.width="100%";
     return;
   }
+  if(isEligiblePool()){
+    const fullN=tasks.reduce((n,t)=>n+((t.models||[]).reduce((m,mod)=>m+((mod.runs||[]).reduce((r,run)=>r+(run.true_n_steps||(run.steps||[]).length||0),0)),0)),0);
+    document.getElementById("progtxt").textContent=`${tasks.length} Sol seed0 · ${fullN} full screenshot steps · ${label}`;
+    document.getElementById("progbar").style.width="100%";
+    return;
+  }
   const done=tasks.filter(t=>statusOf(t.mnum)==="done").length;
   document.getElementById("progtxt").textContent=`${done} / ${tasks.length} submitted · ${label}`;
   document.getElementById("progbar").style.width=(tasks.length?(done/tasks.length*100):0)+"%";
@@ -251,9 +266,10 @@ function appendListItem(L,t){
     const opus=(t.env&&t.env.opus_fail_rate)||"?";
     const b=phase2BucketMeta(t);
     idLine=`${t.mnum} · ${esc(b.short)} · Sol ${esc(sol)} · Opus ${esc(opus)}`;
-  } else if(poolOf(t)==="sol_breakers_bridged" && t.env && t.env.disposition){
+  } else if((poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL) && t.env && t.env.disposition){
     const rate=t.env.break_rate||"";
-    idLine=`${t.mnum} · ${esc(t.env.disposition)}${rate?(" · "+esc(rate)):""}`;
+    const orig=t.original_mnum?` · ${esc(t.original_mnum)}`:"";
+    idLine=`${t.mnum}${orig} · ${esc(t.env.disposition)}${rate?(" · "+esc(rate)):""}`;
   } else {
     idLine=`${t.mnum} · ${t.n_models} models · ${t.n_runs} runs`;
   }
@@ -316,6 +332,42 @@ function phase2BucketOrder(){ return ["a","b","c","ambiguous","left_dual"]; }
 function phase2IsLeftDual(t){
   return !!(t&&(t.left_dual_bar||(t.env||{}).left_dual_bar||phase2BucketMeta(t).key==="left_dual"));
 }
+function renderEligibleIntro(){
+  const M=document.getElementById("main");
+  const meta=DATA.eligible_meta||{};
+  const tasks=poolTasks();
+  const card=(t)=>{
+    const run=(((t.models||[])[0]||{}).runs||[])[0]||{};
+    const steps=run.true_n_steps!=null?run.true_n_steps:(run.steps||[]).length;
+    return `<button type="button" class="showcase-card" data-mn="${esc(t.mnum)}">
+    <div class="cid">${esc(t.mnum)} · ${esc(t.original_mnum||t.task_id||"")}</div>
+    <div class="cslug">${esc(t.task_id||t.slug||"")}</div>
+    <div class="cbrief">${esc(taskBrief(t))}</div>
+    <div class="crow">
+      <span class="scorepill sol">${esc(dispositionLabel((t.env||{}).disposition||run.disposition||"BREAK"))}</span>
+      <span class="scorepill">score ${esc(String(run.score!=null?run.score:"—"))}</span>
+      <span class="chip">${steps} full steps</span>
+      ${(t.apps&&t.apps.length)?`<span class="chip">${esc(t.apps.join(" × "))}</span>`:""}
+    </div>
+  </button>`;
+  };
+  const totalSteps=tasks.reduce((n,t)=>{
+    const run=(((t.models||[])[0]||{}).runs||[])[0]||{};
+    return n+(run.true_n_steps!=null?run.true_n_steps:(run.steps||[]).length||0);
+  },0);
+  M.innerHTML=`<div class="showcase-intro">
+    <h2>Eligible Task Suite</h2>
+    <p class="lead">${esc(meta.notes||"Three Sol seed-0 eligibility candidates with full step-by-step screenshot galleries (every frame the agent took).")} Score vs BREAK: required milestones drive score; forbidden milestones trigger BREAK independently (QuietBreak can show score 1.0 and still BREAK).</p>
+    <div class="showcase-stats">
+      <div class="stat"><div class="n">${tasks.length}</div><div class="l">tasks</div></div>
+      <div class="stat"><div class="n">${totalSteps}</div><div class="l">full screenshot steps</div></div>
+      <div class="stat"><div class="n">Sol</div><div class="l">${esc((meta.model||"gpt-5.6-sol").replace("openai_pixel[","").replace("]","") )}</div></div>
+    </div>
+  </div>
+  <div class="showcase-grid">${tasks.map(card).join("")||'<div class="empty">No eligible tasks packaged yet.</div>'}</div>`;
+  M.querySelectorAll("[data-mn]").forEach(el=>el.onclick=()=>{curTask=el.dataset.mn;curTab=null;renderMain();renderList();});
+}
+
 function renderPhase2Intro(){
   const M=document.getElementById("main");
   const meta=DATA.phase2_meta||{};
@@ -384,6 +436,7 @@ function renderMain(){
   const t=getTask(curTask), M=document.getElementById("main");
   if(!t){
     if(isPhase2Pool()){ renderPhase2Intro(); return; }
+    if(isEligiblePool()){ renderEligibleIntro(); return; }
     M.innerHTML='<div class="empty">Select a task.</div>';
     return;
   }
@@ -399,7 +452,7 @@ function renderMain(){
   const comp=taskCompletion(t); const ready=comp.done===comp.total;
   const breakChip=(()=>{
     if(!t.env||!t.env.break_rate) return "";
-    if(poolOf(t)==="sol_breakers_bridged"){
+    if(poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL){
       const d=t.env.disposition||"confirmed";
       return `<span class="chip">${esc(d)} · Sol ${esc(t.env.break_rate)}</span>`;
     }
@@ -644,11 +697,19 @@ function renderEnv(t,body){
 
   const meanSteps=t.mean_steps!=null?t.mean_steps:e.mean_steps;
   const trueBySeed=t.true_n_steps_by_seed||e.true_n_steps_by_seed;
-  if(meanSteps!=null||(trueBySeed&&trueBySeed.length)){
+  const trueSeedRows=Array.isArray(trueBySeed)
+    ? trueBySeed.map((n,i)=>`s${i}=${n}`).join(" / ")
+    : (trueBySeed&&typeof trueBySeed==="object"
+      ? Object.keys(trueBySeed).sort().map(k=>`s${k}=${trueBySeed[k]}`).join(" / ")
+      : "");
+  if(meanSteps!=null||trueSeedRows){
+    const fullHint=isFullGallery(t,null)
+      ? "This pool packages the full episode gallery — step count below matches every screenshot shown."
+      : "Curated gallery frames are review evidence only; lengths below are authoritative episode step counts.";
     h+=`<div class="vsec"><h3>Actual episode length</h3>
-      <div class="savehint" style="margin-bottom:8px">Curated gallery frames are review evidence only; lengths below are authoritative episode step counts.</div>
+      <div class="savehint" style="margin-bottom:8px">${fullHint}</div>
       ${kvTable([
-        ...(trueBySeed&&trueBySeed.length?[["per-seed actual steps",trueBySeed.map((n,i)=>`s${i}=${n}`).join(" / ")]]:[]),
+        ...(trueSeedRows?[["per-seed actual steps",trueSeedRows]]:[]),
         ...(meanSteps!=null?[["mean actual steps",String(meanSteps)]]:[]),
         ...(e.steps_authority?[["authority",e.steps_authority]]:[]),
       ])}</div>`;
@@ -666,7 +727,7 @@ function renderEnv(t,body){
     ["apps",(e.apps||t.apps||[]).join(" × ")||"—"],
     ["mechanism",e.mechanism||"—"],
     ["cohort",(e.cohort||"—")+(e.cohort_notes?" — "+e.cohort_notes:"")],
-    [poolOf(t)==="sol_breakers_bridged"?"Sol disposition":"gpt 5.5 disposition",dispositionLabel(e.disposition||"—")+(e.break_rate?" ("+e.break_rate+")":"")],
+    [(poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL)?"Sol disposition":"gpt 5.5 disposition",dispositionLabel(e.disposition||"—")+(e.break_rate?" ("+e.break_rate+")":"")],
     ...(e.failure_mode?[["failure mode",e.failure_mode]]:[]),
     ...(e.disc_label?[["Disc / harness label",e.disc_label]]:[]),
     ["forbidden checkpoint",e.forbidden_checkpoint||"—"],
@@ -1047,12 +1108,13 @@ function renderModel(t,m,body){
   const curatedFrames=(run.steps||[]).length || run.n_steps || 0;
   const trueSteps=run.true_n_steps!=null?run.true_n_steps:((run.env&&run.env.true_n_steps!=null)?run.env.true_n_steps:null);
   const meanSteps=t.mean_steps!=null?t.mean_steps:((t.env&&t.env.mean_steps!=null)?t.env.mean_steps:null);
+  const fullGal=isFullGallery(t, run);
   h+=`<div class="runsw">
     <span class="badge ${badgeCls}">${esc(runOutcomeLabel(run))} · score ${fmt(run.score)}</span>
     <span class="chip">seed ${run.seed==null?'—':run.seed}</span>
-    <span class="chip">Curated gallery: ${curatedFrames} frames shown</span>
-    ${trueSteps!=null?`<span class="chip">Actual episode length: ${trueSteps} steps</span>`:(run.n_steps!=null?`<span class="chip">${run.n_steps} steps</span>`:"")}
-    ${meanSteps!=null?`<span class="chip">Task mean actual steps: ${meanSteps}</span>`:""}
+    <span class="chip">${fullGal?`Full gallery: ${curatedFrames} steps (every screenshot)`:`Curated gallery: ${curatedFrames} frames shown`}</span>
+    ${(!fullGal && trueSteps!=null)?`<span class="chip">Actual episode length: ${trueSteps} steps</span>`:((!fullGal && run.n_steps!=null)?`<span class="chip">${run.n_steps} steps</span>`:"")}
+    ${(!fullGal && meanSteps!=null)?`<span class="chip">Task mean actual steps: ${meanSteps}</span>`:""}
     ${run.wave?`<span class="wave ${run.wave==='phase 1'?'legacy':''}">${esc(run.wave)}</span>`:""}
     ${run.run_id?`<span class="chip">run id: ${esc(run.run_id)}</span>`:""}
     ${run.failure_class?`<span class="chip">class: ${esc(run.failure_class)}</span>`:""}
@@ -1062,6 +1124,10 @@ function renderModel(t,m,body){
     <b>Score vs BREAK:</b> score reflects completion of required milestones; BREAK is triggered
     independently by a forbidden milestone. A run can therefore show score 1.0 and still be a BREAK.
   </div>`;
+  if((t.env&&t.env.why_broke)||(run.env&&run.env.summary_md)){
+    h+=`<div class="confirmcard" style="margin-bottom:12px"><h3>Why it broke</h3>
+      <div class="expl" style="line-height:1.45">${esc((t.env&&t.env.why_broke)||(run.env&&run.env.summary_md)||"")}</div></div>`;
+  }
 
   // Empty-run fallback only — Sol Breakers with curated steps use the same
   // step gallery as Wave-1 QA.
@@ -1087,8 +1153,12 @@ function renderModel(t,m,body){
 
   // STEPS FIRST
   const brkTrigger=breakTriggerStep(t, run);
-  h+=`<div class="stepbar"><b>Curated gallery (${run.steps.length} frames shown)</b><button class="btn" id="passAllSteps">Mark all steps pass ✓</button>
-      <span class="savehint">${run.steps.length? "Answer Action Execution & Outcome for each step (nothing is pre-filled). Curated frames are review evidence, not the full episode." : "No step screenshots in this catalog entry."}
+  const galTitle=fullGal?`Full gallery (${run.steps.length} steps — every agent screenshot)`:`Curated gallery (${run.steps.length} frames shown)`;
+  const galHint=fullGal
+    ? "Step through every screenshot the agent took (prev/next via scroll). Answer Action Execution & Outcome for each step (nothing is pre-filled)."
+    : "Answer Action Execution & Outcome for each step (nothing is pre-filled). Curated frames are review evidence, not the full episode.";
+  h+=`<div class="stepbar"><b>${galTitle}</b><button class="btn" id="passAllSteps">Mark all steps pass ✓</button>
+      <span class="savehint">${run.steps.length? galHint : "No step screenshots in this catalog entry."}
       ${brkTrigger!=null?` · Verifier BREAK trigger at <b>step ${brkTrigger}</b>`:""}</span></div>`;
   run.steps.forEach((s,si)=>{
     const ss=rs.steps[s.idx]||{};
