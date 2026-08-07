@@ -197,6 +197,27 @@
   table.mtab th,table.mtab td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   table.mtab th{color:var(--muted);font-size:10px;text-transform:uppercase}
   .tagreq{color:var(--ok-fg)}.tagforb{color:var(--bad-fg);font-weight:600}
+  .vtable-wrap{overflow:auto;max-width:100%;margin:8px 0 12px;border:1px solid var(--line);border-radius:8px}
+  table.mtab.vfire{margin:0;font-size:11.5px}
+  table.mtab.vfire th,table.mtab.vfire td{padding:7px 9px;white-space:nowrap}
+  table.mtab.vfire td.mdesc{white-space:normal;min-width:140px;max-width:260px;color:var(--muted);font-size:11px;line-height:1.4}
+  table.mtab.vfire .mname code{font-size:11px}
+  table.mtab.vfire .mhuman{font-size:10px;color:var(--muted);margin-top:2px;text-transform:capitalize}
+  table.mtab.vfire tr.row-forb{background:var(--bad-bg)}
+  table.mtab.vfire tr.row-forb td{border-bottom-color:rgba(206,44,49,.18)}
+  table.mtab.vfire tr.row-req td:first-child{box-shadow:inset 3px 0 0 var(--accent-green)}
+  .fire{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:10px;border:1px solid transparent;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+  .fire.ok{background:var(--ok-bg);color:var(--ok-fg)}
+  .fire.ok-quiet{background:var(--chip);color:var(--muted);font-weight:500;border-color:var(--line)}
+  .fire.brk{background:var(--bad-bg);color:var(--bad-fg);border-color:var(--bad-bg)}
+  .fire.miss{background:var(--bad-bg);color:var(--bad-fg);opacity:.92}
+  .fire.prog{background:var(--chip);color:var(--muted);border-color:var(--line);font-weight:500}
+  .fire.none{color:var(--muted);font-weight:500;font-family:inherit;padding:0}
+  .seedsum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:4px 0 8px}
+  .seedsum{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+  .seedsum-h{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-bottom:6px}
+  .seedsum-ul{margin:0;padding-left:16px;font-size:12px;line-height:1.45;color:var(--text)}
+  .seedsum-ul li{margin:3px 0}
   .expl{line-height:1.55}
   .veinsel{min-width:220px}
   .sumtab td .verd{font-weight:600}

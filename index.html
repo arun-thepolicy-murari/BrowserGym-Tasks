@@ -197,6 +197,27 @@
   table.mtab th,table.mtab td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   table.mtab th{color:var(--muted);font-size:10px;text-transform:uppercase}
   .tagreq{color:var(--ok-fg)}.tagforb{color:var(--bad-fg);font-weight:600}
+  .vtable-wrap{overflow:auto;max-width:100%;margin:8px 0 12px;border:1px solid var(--line);border-radius:8px}
+  table.mtab.vfire{margin:0;font-size:11.5px}
+  table.mtab.vfire th,table.mtab.vfire td{padding:7px 9px;white-space:nowrap}
+  table.mtab.vfire td.mdesc{white-space:normal;min-width:140px;max-width:260px;color:var(--muted);font-size:11px;line-height:1.4}
+  table.mtab.vfire .mname code{font-size:11px}
+  table.mtab.vfire .mhuman{font-size:10px;color:var(--muted);margin-top:2px;text-transform:capitalize}
+  table.mtab.vfire tr.row-forb{background:var(--bad-bg)}
+  table.mtab.vfire tr.row-forb td{border-bottom-color:rgba(206,44,49,.18)}
+  table.mtab.vfire tr.row-req td:first-child{box-shadow:inset 3px 0 0 var(--accent-green)}
+  .fire{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:10px;border:1px solid transparent;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+  .fire.ok{background:var(--ok-bg);color:var(--ok-fg)}
+  .fire.ok-quiet{background:var(--chip);color:var(--muted);font-weight:500;border-color:var(--line)}
+  .fire.brk{background:var(--bad-bg);color:var(--bad-fg);border-color:var(--bad-bg)}
+  .fire.miss{background:var(--bad-bg);color:var(--bad-fg);opacity:.92}
+  .fire.prog{background:var(--chip);color:var(--muted);border-color:var(--line);font-weight:500}
+  .fire.none{color:var(--muted);font-weight:500;font-family:inherit;padding:0}
+  .seedsum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:4px 0 8px}
+  .seedsum{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+  .seedsum-h{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-bottom:6px}
+  .seedsum-ul{margin:0;padding-left:16px;font-size:12px;line-height:1.45;color:var(--text)}
+  .seedsum-ul li{margin:3px 0}
   .expl{line-height:1.55}
   .veinsel{min-width:220px}
   .sumtab td .verd{font-weight:600}
@@ -1535,8 +1556,165 @@ function refreshHead(){
   if(sb){ sb.disabled=!ready; }
 }
 
+/** Human-readable milestone label from snake_case id (UI only — id stays canonical). */
+function humanizeMilestone(name){
+  return String(name||"").replace(/_/g," ").replace(/\s+/g," ").trim()||"—";
+}
+/** All packaged runs for a task, in model×seed order. */
+function collectSeedRuns(t){
+  const rows=[];
+  (t.models||[]).forEach(m=>{
+    (m.runs||[]).forEach((r,i)=>{
+      const seed=r.seed==null?"—":r.seed;
+      const multiModel=(t.models||[]).length>1;
+      rows.push({
+        model:m.model,
+        seed:r.seed,
+        run:r,
+        key:(m.model||"run")+":"+String(r.seed==null?i:r.seed),
+        label:multiModel?(`${m.model} · seed ${seed}`):(`Seed ${seed}`)
+      });
+    });
+  });
+  return rows;
+}
+/**
+ * Full milestone catalog for the Verifiers tab: task verifier rows ∪ required/forbidden
+ * lists ∪ every run's all_milestones / missed / specific_failure. Does not invent firings.
+ */
+function milestoneCatalog(t){
+  const by={};
+  const add=(m)=>{
+    if(!m||!m.name) return;
+    const n=String(m.name).trim(); if(!n) return;
+    const cur=by[n]||{name:n,forbidden:false,required:false,weight:null,hint:"",check_source:"",fired_any:false};
+    by[n]={
+      name:n,
+      forbidden:!!(m.forbidden||cur.forbidden),
+      required:!!(m.required||cur.required),
+      weight:m.weight!=null?m.weight:cur.weight,
+      hint:(m.hint!=null&&m.hint!=="")?m.hint:cur.hint,
+      check_source:(m.check_source!=null&&m.check_source!=="")?m.check_source:cur.check_source
+    };
+  };
+  const v=t.verifier||{};
+  (v.milestones||[]).forEach(add);
+  (v.required||[]).forEach(n=>add({name:n,required:true}));
+  (v.forbidden||[]).forEach(n=>add({name:n,forbidden:true}));
+  collectSeedRuns(t).forEach(({run})=>{
+    ((run.env&&run.env.all_milestones)||[]).forEach(add);
+    (run.missed_milestones||[]).forEach(n=>add({name:n,required:true}));
+    String(run.specific_failure||"").split("+").forEach(part=>{
+      const n=part.trim(); if(n) add({name:n,forbidden:true});
+    });
+  });
+  return Object.values(by).sort((a,b)=>{
+    const rank=m=>m.forbidden?0:(m.required?1:2);
+    const d=rank(a)-rank(b);
+    return d||a.name.localeCompare(b.name);
+  });
+}
+/** Per-run lookup of scored milestones (name → row). Empty when not packaged. */
+function runMilestoneMap(run){
+  const by={};
+  (((run||{}).env||{}).all_milestones||[]).forEach(m=>{
+    if(!m||!m.name) return;
+    by[m.name]=m;
+  });
+  return by;
+}
+function milestoneDesc(m){
+  const hint=(m.hint||"").trim();
+  if(hint && !/^return\b|^def\b|^for\b|^if\b/i.test(hint) && hint.length<160)
+    return hint;
+  if(hint && hint.length<120) return hint;
+  return "";
+}
+/** Cell HTML: fired@N / missed / — / no data. Forbidden fire = BREAK trigger styling. */
+function seedFireCellHTML(meta, run){
+  if(!run) return `<span class="fire none" title="No run packaged for this seed">—</span>`;
+  const map=runMilestoneMap(run);
+  const hasMap=Object.keys(map).length>0;
+  const row=map[meta.name];
+  const missedList=run.missed_milestones||[];
+  const sfParts=String(run.specific_failure||"").split("+").map(s=>s.trim()).filter(Boolean);
+  const isBreakName=sfParts.includes(meta.name);
+  if(!hasMap){
+    // No all_milestones array — surface only what specific_failure / missed lists say.
+    if(isBreakName)
+      return `<span class="fire brk" title="Named in specific_failure (no step array packaged)">✗ BREAK</span>`;
+    if(missedList.includes(meta.name))
+      return `<span class="fire miss" title="Listed in missed_milestones">✗ missed</span>`;
+    return `<span class="fire none" title="No per-seed milestone array packaged for this run">—</span>`;
+  }
+  if(!row){
+    if(isBreakName)
+      return `<span class="fire brk" title="Named in specific_failure but absent from all_milestones">✗ BREAK</span>`;
+    if(meta.required || missedList.includes(meta.name))
+      return `<span class="fire miss" title="Required / missed; not present on this run's scoreboard">✗ missed</span>`;
+    return `<span class="fire none" title="Not on this run's all_milestones scoreboard">—</span>`;
+  }
+  const step=row.fired_at_step;
+  const fired=step!=null && step>=0;
+  if(meta.forbidden || row.forbidden){
+    if(fired)
+      return `<span class="fire brk" title="Forbidden milestone fired — BREAK trigger">✗ BREAK @${step}</span>`;
+    // Some packaged runs name the trap in specific_failure while fired_at_step stays -1.
+    if(isBreakName)
+      return `<span class="fire brk" title="Named in specific_failure (fired_at_step not set)">✗ BREAK</span>`;
+    return `<span class="fire ok-quiet" title="Forbidden trap did not fire">—</span>`;
+  }
+  if(meta.required || row.required){
+    if(fired)
+      return `<span class="fire ok" title="Required milestone fired">✓ @${step}</span>`;
+    return `<span class="fire miss" title="Required milestone never fired">✗ missed</span>`;
+  }
+  if(fired)
+    return `<span class="fire prog" title="Progress milestone fired">✓ @${step}</span>`;
+  return `<span class="fire none" title="Progress milestone never fired">—</span>`;
+}
+function seedSummaryHTML(t, seedRow){
+  const run=seedRow.run;
+  const map=runMilestoneMap(run);
+  const hasMap=Object.keys(map).length>0;
+  const brk=breakTriggerStep(t, run);
+  const forbFired=Object.values(map).filter(m=>m.forbidden && m.fired_at_step!=null && m.fired_at_step>=0);
+  const reqMissed=missedRequiredNames(t, run);
+  const disp=runOutcomeLabel(run);
+  const badgeCls=run.disposition?dispositionBadgeClass(run.disposition):(run.success==null?'na':(run.success?'pass':'fail'));
+  let lines=`<div class="seedsum">
+    <div class="seedsum-h"><span class="badge ${badgeCls}">${esc(disp)} · score ${fmt(run.score)}</span>
+      <span class="chip">${esc(seedRow.label)}</span>
+      ${run.specific_failure?`<span class="chip trap">break: ${esc(run.specific_failure)}</span>`:""}
+      ${brk!=null?`<span class="chip trap">trigger @ step ${brk}</span>`:""}</div>`;
+  if(!hasMap && !run.specific_failure && !(run.missed_milestones||[]).length){
+    lines+=`<div class="savehint">No per-seed milestone firings packaged for this run.</div></div>`;
+    return lines;
+  }
+  lines+=`<ul class="seedsum-ul">`;
+  if(forbFired.length)
+    lines+=`<li><span class="tagforb">Forbidden fired (BREAK):</span> ${forbFired.map(m=>`${esc(m.name)} @${m.fired_at_step}`).join(", ")}</li>`;
+  else if(run.specific_failure)
+    lines+=`<li><span class="tagforb">Break evidence:</span> ${esc(run.specific_failure)}${hasMap?"":" <span class=\"savehint\">(no all_milestones array)</span>"}</li>`;
+  else
+    lines+=`<li>Forbidden: none fired</li>`;
+  if(reqMissed.length)
+    lines+=`<li><span class="tagforb">Required missed:</span> ${reqMissed.map(esc).join(", ")}</li>`;
+  else
+    lines+=`<li>Required missed: none</li>`;
+  const firedOk=Object.values(map).filter(m=>!m.forbidden && m.fired_at_step!=null && m.fired_at_step>=0);
+  if(firedOk.length)
+    lines+=`<li>Fired (non-forbidden): ${firedOk.map(m=>`${esc(m.name)} @${m.fired_at_step}`).join(", ")}</li>`;
+  lines+=`</ul></div>`;
+  return lines;
+}
+
 function renderVerifier(t,body){
-  const v=t.verifier; const vs=A(t.mnum).verifier;
+  const v=t.verifier||{}; const vs=A(t.mnum).verifier;
+  const required=v.required||[];
+  const forbidden=v.forbidden||[];
+  const catalog=milestoneCatalog(t);
+  const seedRows=collectSeedRuns(t);
   let h=`<div class="vsec"><h3>Expected correct behaviour (oracle gold path)</h3><div class="expl">${esc(t.expected_behaviour||"—")}</div></div>`;
   if(t.task_design) h+=`<div class="vsec"><h3>Task design &amp; the trap</h3><div class="expl">${esc(t.task_design)}</div></div>`;
   const fairness=t.fairness_notes||(t.env&&t.env.fairness_notes)||"";
@@ -1544,18 +1722,55 @@ function renderVerifier(t,body){
   h+=`<div class="savehint" style="margin:0 0 12px;line-height:1.45">
     <b>Score vs BREAK:</b> score reflects completion of required milestones; BREAK is triggered
     independently by a forbidden milestone. A run can therefore show score 1.0 and still be a BREAK.
+    Cells below use packaged <code>fired_at_step</code> when present — empty cells mean the run
+    had no milestone array, not that a firing was invented.
   </div>`;
-  h+=`<div class="vsec"><h3>Verifier</h3>
-    <div class="expl" style="margin-bottom:8px"><b>Required to pass:</b> ${v.required.map(esc).join(", ")||"—"}<br>
-    <b>Forbidden (the trap):</b> <span class="tagforb">${v.forbidden.map(esc).join(", ")||"—"}</span><br>
-    <b>Release:</b> ${esc(v.release_status||"—")}</div>
-    <table class="mtab"><tr><th>Milestone</th><th>Weight</th><th>Role</th><th>How it is checked</th></tr>
-    ${v.milestones.map(m=>`<tr><td>${esc(m.name)}</td><td>${m.weight}</td>
-      <td>${m.forbidden?'<span class="tagforb">forbidden</span>':(m.required?'<span class="tagreq">required</span>':'progress')}</td>
-      <td>${m.check_source?`<pre class="code">${esc(m.check_source.replace(/\s+$/,''))}</pre>`
-        :`<span class="savehint">${esc(m.hint||'')}</span>`}</td></tr>`).join("")}</table>
-    <div class="savehint" style="margin-top:8px">${esc(v.scoring)}</div>
-    ${v.scoring_notes?`<div class="savehint" style="margin-top:6px">${esc(v.scoring_notes)}</div>`:""}</div>`;
+
+  h+=`<div class="vsec"><h3>Verifier milestones — full list &amp; per-seed triggers</h3>
+    <div class="expl" style="margin-bottom:10px"><b>Required to pass:</b> ${required.length?required.map(n=>`<code>${esc(n)}</code>`).join(", "):"—"}<br>
+    <b>Forbidden (the trap):</b> ${forbidden.length?forbidden.map(n=>`<span class="tagforb"><code>${esc(n)}</code></span>`).join(", "):"—"}<br>
+    <b>Release:</b> ${esc(v.release_status||"—")}</div>`;
+
+  if(!catalog.length){
+    h+=`<div class="savehint">No verifier milestones were packaged for this task (common on Filtration showcase rows without run scoreboards).</div>`;
+  } else {
+    const headSeeds=seedRows.length
+      ? seedRows.map(s=>`<th title="${esc(s.model||"")}">${esc(s.label)}</th>`).join("")
+      : `<th>Runs</th>`;
+    h+=`<div class="vtable-wrap"><table class="mtab vfire">
+      <tr><th>Milestone</th><th>Role</th><th>Weight</th><th>Description</th>${headSeeds}</tr>`;
+    catalog.forEach(m=>{
+      const role=m.forbidden?'<span class="tagforb">forbidden</span>':(m.required?'<span class="tagreq">required</span>':'<span style="color:var(--muted)">progress</span>');
+      const desc=milestoneDesc(m);
+      const nameCell=`<div class="mname"><code>${esc(m.name)}</code><div class="mhuman">${esc(humanizeMilestone(m.name))}</div></div>`;
+      const cells=seedRows.length
+        ? seedRows.map(s=>`<td>${seedFireCellHTML(m, s.run)}</td>`).join("")
+        : `<td><span class="fire none" title="No model runs packaged">—</span></td>`;
+      const rowCls=m.forbidden?"row-forb":(m.required?"row-req":"");
+      h+=`<tr class="${rowCls}"><td>${nameCell}</td><td>${role}</td><td>${m.weight!=null?esc(String(m.weight)):"—"}</td>
+        <td class="mdesc">${desc?esc(desc):'<span class="savehint">—</span>'}</td>${cells}</tr>`;
+    });
+    h+=`</table></div>`;
+  }
+
+  if(seedRows.length){
+    h+=`<div class="seedsum-grid">${seedRows.map(s=>seedSummaryHTML(t,s)).join("")}</div>`;
+  }
+
+  const withSrc=catalog.filter(m=>m.check_source);
+  if(withSrc.length){
+    h+=fold("How each milestone is checked (source)",
+      `<table class="mtab"><tr><th>Milestone</th><th>Check source</th></tr>
+      ${withSrc.map(m=>`<tr><td><code>${esc(m.name)}</code></td>
+        <td><pre class="code">${esc(String(m.check_source).replace(/\s+$/,''))}</pre></td></tr>`).join("")}</table>`);
+  } else if((v.milestones||[]).some(m=>m.hint)){
+    h+=`<div class="savehint" style="margin-top:8px">Hints only (no check_source packaged):
+      ${(v.milestones||[]).filter(m=>m.hint).map(m=>`<div><code>${esc(m.name)}</code> — ${esc(m.hint)}</div>`).join("")}</div>`;
+  }
+  if(v.scoring) h+=`<div class="savehint" style="margin-top:8px">${esc(v.scoring)}</div>`;
+  if(v.scoring_notes) h+=`<div class="savehint" style="margin-top:6px">${esc(v.scoring_notes)}</div>`;
+  h+=`</div>`;
+
   h+=`<div class="qwrap"><div class="qhead"><h3>Verifier check (task-wide)</h3></div>
     <div class="q ${vs.correct?'':'unans'}" id="vq"><div class="qtop"><div class="qtxt"><div class="qsec">V. Verifier correctness</div>
       <div class="qq">Is the verifier / milestone design correct and correctly scored for this task?</div></div>
