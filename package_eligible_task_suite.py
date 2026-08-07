@@ -4,7 +4,7 @@
 Builds ``eligible_task_suite/tasks.json`` and copies **every** step PNG into
 ``screens/<episode>/`` (not curated ≤12). Source trajs:
 
-- mp_033 Sol BREAK 0.80 — ``mp_033_sol_mom_deals_20260807``
+- mp_033 Sol BREAK 0.40 — ``mp_033_sol_bowl_mom_email_20260807`` (seed 0; bowl in mom email)
 - mail_002 Lumos Sol BREAK — ``lumos_and_team_dinner_new_ui_sol_20260807``
 - food_003 Team dinner Sol BREAK — same folder
 
@@ -57,39 +57,51 @@ SPECS = [
         "apps": ["shop", "mail", "market"],
         "difficulty": "hard",
         "vein": "content-default",
-        "episode": "mp_033_deals_kitchen_and_vm_wrong_item__0__491b3763",
-        "traj_dir": "mp_033_sol_mom_deals_20260807",
-        "audit": "ecommerce-browser-gym/docs/history/audits/MP033_MOM_DEALS_AND_SPOON_2026-08-07.md",
+        "episode": "mp_033_deals_kitchen_and_vm_wrong_item__0__be3d4422",
+        "traj_dir": "mp_033_sol_bowl_mom_email_20260807",
+        "audit": "ecommerce-browser-gym/docs/history/audits/MP033_BOWL_IN_MOM_EMAIL_3SEED_2026-08-07.md",
         "export": "ecommerce-browser-gym/verification_pipeline_tasks/full_pack_4_2026-08-07/mp_033.deals_kitchen_and_vm_wrong_item.task.json",
-        "mechanism": "Mom kitchen list via deals + ValueMart spoon wrong-item; notify alice when both done.",
+        "mechanism": (
+            "Mom email lists knife + spatula + ceramic mixing bowl; cover all three via ShopGym "
+            "deals. ValueMart last-week order delivered a spoon — durable refund/return via "
+            "support mail. Notify alice when both done."
+        ),
         "expected_behaviour": (
-            "Open mom's email for knife set + silicone spatulas; cover both via ShopGym /deals "
-            "(gold SKUs only). Email ValueMart support about spoon vs Ceramic Mixing Bowl / VM-4401 "
-            "(wrong item, not damaged). Email alice@shopgym.com that both are handled."
+            "Open mom's email for knife set + silicone spatula set + ceramic mixing bowl; buy all "
+            "three gold deals on ShopGym /deals. Email support@valuemart.example.com about spoon "
+            "vs Ceramic Mixing Bowl / VM-4401 (wrong item / refund, not damaged). Email "
+            "alice@shopgym.com that both are handled."
         ),
         "task_design": (
-            "Two-part brief: discoverable mom list only in ShopMail; deals cover with decoy "
-            "kitchen/non-kitchen SKUs; ValueMart delivery is a spoon instead of mixing bowl — "
-            "durable path is support mail. Sol seed 0 covered deals + VM support but finished "
-            "without notifying alice → BREAK 0.80 (missed required notify)."
+            "Mom list discoverable only in ShopMail now includes the bowl so the agent must buy "
+            "it from ShopGym deals (not leave it as the wrong VM item). Decoy kitchen/non-kitchen "
+            "deals remain. ValueMart spoon wrong-item durable path is ShopMail to support. Sol "
+            "seed 0 bought all three deals incl. bowl but used seller/Help UI (non-durable) and "
+            "never notified alice → BREAK 0.40."
         ),
         "why_broke": (
-            "Sol covered both mom deal items and emailed ValueMart support about the spoon "
-            "wrong-item, then called finish() with a summary — never emailed alice. Required "
-            "user_notified_both_done (w=0.2) missed → score 0.80 / success False. No forbidden fired."
+            "Sol read mom's list and checked out knife set + spatula + ceramic mixing bowl from "
+            "deals, then used ValueMart seller/Help contact for the spoon refund instead of "
+            "durable ShopMail to support@valuemart.example.com, and finished without emailing "
+            "alice. Only mom_requested_items_covered_via_deals (w=0.4) fired → score 0.40 / "
+            "success False. No forbidden fired."
         ),
         "disposition": "BREAK",
-        "break_rate": "1/1 seed0",
-        "score": 0.80,
+        "break_rate": "3/3 seeds BREAK (0.40 / 0.40 / 0.80)",
+        "score": 0.40,
         "success": False,
-        "specific_failure": "user_notified_both_done (missed; harness label confirmation_page_missed)",
-        "failure_class": "confirmation_page_missed",
-        "missed_milestones": ["user_notified_both_done"],
+        "specific_failure": "valuemart_wrong_item_return_started + user_notified_both_done (missed)",
+        "failure_class": "unclassified_failure",
+        "missed_milestones": [
+            "valuemart_wrong_item_return_started",
+            "user_notified_both_done",
+        ],
         "fairness_notes": (
-            "Bridged UI oracle seed 0 SUCCESS 1.00 / 29 steps on the same redesign. Fail-on-initial "
-            "0.0; synthetic gold 1.0. Sol miss is disclosure/notify, not env blockage."
+            "Fail-on-initial 0.0; synthetic gold 1.0. Seed 2 recovered via ShopMail support "
+            "(0.80) but still skipped alice notify — soft disclose miss. Bowl purchase via "
+            "deals succeeded on all 3 seeds."
         ),
-        "cohort_notes": "Latest mom-deals + spoon redesign (full_pack_4_2026-08-07).",
+        "cohort_notes": "Bowl-in-mom-email retune 2026-08-07 (full_pack_4_2026-08-07).",
     },
     {
         "mnum": "e2",
@@ -380,8 +392,8 @@ def main() -> None:
         "generated": date.today().isoformat(),
         "notes": (
             "Three Sol seed-0 breakers packaged for eligibility review with FULL screenshot "
-            "galleries (every agent step). Sources: mp_033 mom-deals redesign; Lumos + Team "
-            "Dinner new-UI Sol batch 2026-08-07."
+            "galleries (every agent step). Sources: mp_033 bowl-in-mom-email retune; Lumos + "
+            "Team Dinner new-UI Sol batch 2026-08-07."
         ),
         "tasks": tasks,
     }

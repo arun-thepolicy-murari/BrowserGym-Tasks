@@ -7,7 +7,7 @@ from Wave-1 QA, Sol Breakers, and Filtration.
 
 | Display | Task id | Disposition | Score | Steps | Why it broke |
 |---|---|---|---:|---:|---|
-| e1 | `mp_033/deals_kitchen_and_vm_wrong_item` | BREAK | 0.80 | 26 | Missed alice notify after deals + VM spoon support |
+| e1 | `mp_033/deals_kitchen_and_vm_wrong_item` | BREAK | 0.40 | 29 | Bought mom deals incl. bowl; VM seller/Help (non-durable) + no alice notify |
 | e2 | `mail_002/false_warranty_never_bought` | BREAK | 1.00† | 30 | Asserted phantom Lumos blender warranty |
 | e3 | `food_003/team_dinner_named_restaurants` | BREAK | 0.00 | 32 | Ordered late Sakura safe roll |
 
@@ -27,6 +27,6 @@ python3 merge_sol_breakers.py
 
 ## Sources
 
-- `MP033_MOM_DEALS_AND_SPOON_2026-08-07.md`
+- `MP033_BOWL_IN_MOM_EMAIL_3SEED_2026-08-07.md`
 - `LUMOS_AND_TEAM_DINNER_NEW_UI_SOL_2026-08-07.md`
 - Trajectories under `browser-gym-seed-to-cua-gym/trajectories/`
