@@ -75,6 +75,94 @@ function runOutcomeLabel(r){
   return r.success?"PASS":"FAIL";
 }
 
+/** Milestone roles for chip/fact styling. Prefer run-scored rows; fall back to task verifier. */
+function milestoneIndex(t, run){
+  const by={};
+  const add=m=>{
+    if(!m||!m.name) return;
+    const cur=by[m.name]||{name:m.name,forbidden:false,required:false,fired_at_step:-1};
+    by[m.name]={
+      name:m.name,
+      forbidden:!!(m.forbidden||cur.forbidden),
+      required:!!(m.required||cur.required),
+      fired_at_step:m.fired_at_step!=null?m.fired_at_step:cur.fired_at_step,
+      weight:m.weight!=null?m.weight:cur.weight
+    };
+  };
+  ((t&&t.verifier&&t.verifier.milestones)||[]).forEach(add);
+  ((run&&run.env&&run.env.all_milestones)||[]).forEach(add);
+  ((t&&t.verifier&&t.verifier.forbidden)||[]).forEach(n=>{
+    by[n]=by[n]||{name:n,forbidden:false,required:false,fired_at_step:-1};
+    by[n].forbidden=true;
+  });
+  ((t&&t.verifier&&t.verifier.required)||[]).forEach(n=>{
+    by[n]=by[n]||{name:n,forbidden:false,required:false,fired_at_step:-1};
+    by[n].required=true;
+  });
+  return by;
+}
+function factMilestoneName(key){
+  const i=String(key||"").indexOf(".");
+  return i>=0?String(key).slice(i+1):String(key||"");
+}
+/** Earliest step where a forbidden milestone fired (BREAK trigger step). */
+function breakTriggerStep(t, run){
+  const idx=milestoneIndex(t, run);
+  let best=null;
+  Object.values(idx).forEach(m=>{
+    if(m.forbidden && m.fired_at_step!=null && m.fired_at_step>=0)
+      if(best==null || m.fired_at_step<best) best=m.fired_at_step;
+  });
+  if(best==null && run&&run.specific_failure && idx[run.specific_failure]){
+    const f=idx[run.specific_failure].fired_at_step;
+    if(f!=null && f>=0) best=f;
+  }
+  return best;
+}
+function milestoneChipHTML(name, meta, opts){
+  meta=meta||{}; opts=opts||{};
+  if(opts.missed){
+    return `<span class="m miss" title="Required milestone not fired">✗ missed: ${esc(name)}</span>`;
+  }
+  if(meta.forbidden){
+    const tag=opts.breakTrigger?" · BREAK trigger":"";
+    return `<span class="m forb" title="Forbidden milestone fired — this is the BREAK trap">✗ forbidden: ${esc(name)}${tag}</span>`;
+  }
+  if(meta.required){
+    return `<span class="m ok" title="Required milestone met">✓ ${esc(name)}</span>`;
+  }
+  return `<span class="m prog" title="Progress milestone">✓ ${esc(name)}</span>`;
+}
+function missedRequiredNames(t, run){
+  if(run&&Array.isArray(run.missed_milestones)&&run.missed_milestones.length)
+    return run.missed_milestones.slice();
+  return Object.values(milestoneIndex(t, run))
+    .filter(m=>m.required && (m.fired_at_step==null || m.fired_at_step<0))
+    .map(m=>m.name);
+}
+/** Verifier chips under model reasoning — green=required met, red=forbidden/missed. */
+function stepMilestonesHTML(t, run, step, opts){
+  opts=opts||{};
+  const idx=milestoneIndex(t, run);
+  const brkStep=breakTriggerStep(t, run);
+  const fired=step.milestones||[];
+  const chips=fired.map(name=>{
+    const meta=idx[name]||{};
+    return milestoneChipHTML(name, meta, {
+      breakTrigger:!!(meta.forbidden && brkStep!=null && step.idx===brkStep)
+    });
+  });
+  if(opts.showMissed){
+    const seen=new Set(fired);
+    missedRequiredNames(t, run).forEach(name=>{
+      if(seen.has(name)) return;
+      chips.push(milestoneChipHTML(name, idx[name]||{required:true}, {missed:true}));
+    });
+  }
+  if(!chips.length) return "";
+  return `<div class="ms">${chips.join("")}</div>`;
+}
+
 function A(mn){ if(!ann[mn]) ann[mn]={models:{},verifier:{},task:{},submitted:false}; return ann[mn]; }
 function runState(mn,model,ep){
   const a=A(mn); a.models[model]=a.models[model]||{};
@@ -473,20 +561,33 @@ function runEnvHTML(run){
   if(e.all_milestones&&e.all_milestones.length){
     inner+=`<div class="envcard" style="margin-top:12px"><h4>Milestones as scored in this run</h4>
       <table class="mtab"><tr><th>Milestone</th><th>Role</th><th>Fired at step</th></tr>
-      ${e.all_milestones.map(m=>`<tr><td>${esc(m.name)}</td>
-        <td>${m.forbidden?'<span class="tagforb">forbidden</span>':(m.required?'<span class="tagreq">required</span>':'progress')}</td>
-        <td>${m.fired_at_step===-1?'<span style="color:var(--muted)">never</span>':'step '+m.fired_at_step}</td></tr>`).join("")}</table></div>`;
+      ${e.all_milestones.map(m=>{
+        const fired=m.fired_at_step!=null&&m.fired_at_step>=0;
+        const role=m.forbidden?'<span class="tagforb">forbidden</span>':(m.required?'<span class="tagreq">required</span>':'progress');
+        const when=fired?('step '+m.fired_at_step):(m.required?'<span class="tagforb">never (missed)</span>':'<span style="color:var(--muted)">never</span>');
+        const name=m.forbidden&&fired?`<span class="tagforb">${esc(m.name)}</span>`:(m.required&&!fired?`<span class="tagforb">${esc(m.name)}</span>`:esc(m.name));
+        return `<tr><td>${name}</td><td>${role}</td><td>${when}</td></tr>`;
+      }).join("")}</table></div>`;
   }
   if(e.summary_md) inner+=fold("Run summary (markdown)",`<pre class="code">${esc(e.summary_md)}</pre>`);
   return chips+fold("Environment for this run — start / end state, milestone firing",inner);
 }
 // Per-step environment: what the action actually changed in the world.
-function stepEnvHTML(s){
+function stepEnvHTML(s, t, run){
   let h="";
   const facts=s.facts&&Object.keys(s.facts).length?s.facts:null;
   if(facts){
-    h+=`<div class="facts">${Object.entries(facts).map(([k,v])=>
-      `<span class="f ${v===true?'t':''}">${esc(k)}: ${String(v)}</span>`).join("")}</div>`;
+    const idx=(t&&run)?milestoneIndex(t, run):{};
+    h+=`<div class="facts">${Object.entries(facts).map(([k,v])=>{
+      const meta=idx[factMilestoneName(k)]||{};
+      let cls="f";
+      if(v===true){
+        if(meta.forbidden) cls+=" forb";
+        else if(meta.required) cls+=" ok";
+        else cls+=" t";
+      }
+      return `<span class="${cls}">${esc(k)}: ${String(v)}</span>`;
+    }).join("")}</div>`;
   }
   const bits=[];
   if(s.snapshot&&Object.keys(s.snapshot).length)
@@ -985,23 +1086,28 @@ function renderModel(t,m,body){
   h+=runEnvHTML(run);
 
   // STEPS FIRST
+  const brkTrigger=breakTriggerStep(t, run);
   h+=`<div class="stepbar"><b>Curated gallery (${run.steps.length} frames shown)</b><button class="btn" id="passAllSteps">Mark all steps pass ✓</button>
-      <span class="savehint">${run.steps.length? "Answer Action Execution & Outcome for each step (nothing is pre-filled). Curated frames are review evidence, not the full episode." : "No step screenshots in this catalog entry."}</span></div>`;
-  run.steps.forEach(s=>{
-    const ss=rs.steps[s.idx]||{}; const brk=ss.break;
+      <span class="savehint">${run.steps.length? "Answer Action Execution & Outcome for each step (nothing is pre-filled). Curated frames are review evidence, not the full episode." : "No step screenshots in this catalog entry."}
+      ${brkTrigger!=null?` · Verifier BREAK trigger at <b>step ${brkTrigger}</b>`:""}</span></div>`;
+  run.steps.forEach((s,si)=>{
+    const ss=rs.steps[s.idx]||{};
+    const autoBrk=brkTrigger!=null && s.idx===brkTrigger;
+    const brk=!!(ss.break||autoBrk);
+    const isLast=si===run.steps.length-1;
     const stepUnans=!QSTEP.every(q=>answered(ss[q.id]));
-    h+=`<div class="step ${brk?'flagged':''} ${stepUnans?'unans':''}" data-step="${s.idx}">
+    h+=`<div class="step ${brk?'flagged':''} ${autoBrk?'break-trigger':''} ${stepUnans?'unans':''}" data-step="${s.idx}">
       <div class="shot">${s.img?`<img loading="lazy" src="${s.img}" onclick="zoom(this.src)">`:`<div class="noimg">no screenshot</div>`}
-        <span class="stepnum">step ${s.idx}${s.action_kind?' · '+esc(s.action_kind):''}</span></div>
+        <span class="stepnum">step ${s.idx}${autoBrk?' · BREAK':''}${s.action_kind?' · '+esc(s.action_kind):''}</span></div>
       <div class="side">
         <div class="kv"><div class="k">Action</div><div class="action">${esc(s.action||'—')}</div></div>
         <div class="kv"><div class="k">Model reasoning</div><div class="reason">${esc(s.reasoning||'(none)')}</div></div>
-        ${s.milestones&&s.milestones.length?`<div class="ms">${s.milestones.map(x=>`<span class="m">✓ ${esc(x)}</span>`).join("")}</div>`:""}
+        ${stepMilestonesHTML(t, run, s, {showMissed:isLast||autoBrk})}
         ${s.error?`<div class="savehint" style="color:var(--red)">action error: ${esc(s.error)}</div>`:""}
-        ${stepEnvHTML(s)}
+        ${stepEnvHTML(s, t, run)}
         <div class="stepq">
           <div class="line"><span class="qlab">Break step?</span>
-            <button class="brk ${brk?'on':''}" data-brk="${s.idx}">${brk?'🚩 marked as break step':'⚑ mark break step'}</button></div>`;
+            <button class="brk ${brk?'on':''}" data-brk="${s.idx}">${brk?(autoBrk&&!ss.break?'🚩 BREAK trigger step':'🚩 marked as break step'):'⚑ mark break step'}</button></div>`;
     QSTEP.forEach(q=>{ h+=stepQuestionHTML(q, qGet(ss,q.id), s.idx); });
     h+=`<textarea class="qcomment" data-scomment="${s.idx}" placeholder="Step comment (optional)">${esc(ss.comment||"")}</textarea>
         </div></div></div>`;
