@@ -191,6 +191,16 @@ function kvTable(rows){ return `<table class="kvtab">${rows.map(r=>`<tr><td>${es
 // paraphrase and drifts from it on 13 of the 14 tasks, so the brief wins wherever a
 // human is grading the agent against its instructions.
 function taskBrief(t){ return ((t.env||{}).brief||"").trim()||t.prompt||""; }
+/** Short human sidebar/card title — prefers packaged ``title``, else a readable slug. */
+function taskTitle(t){
+  const explicit=((t&&t.title)||(t&&t.env&&t.env.title)||"").trim();
+  if(explicit) return explicit;
+  const raw=(t&&(t.slug||t.task_id)||"").toString();
+  const leaf=raw.includes("/")?raw.split("/").pop():raw.replace(/^[a-z]+_?\d+_?/i,"");
+  const nice=String(leaf||"").replace(/_/g," ").replace(/\s+/g," ").trim();
+  if(!nice) return "";
+  return nice.replace(/\b\w/g,c=>c.toUpperCase());
+}
 function runLabel(m,r,i){
   const seed=r.seed==null?"—":r.seed;
   return (r.wave&&r.wave!=="phase 1"? "seed "+seed : "run "+(i+1)+" · seed "+seed);
@@ -257,24 +267,31 @@ function appendListItem(L,t){
     if(filter==="done"&&st!=="done") return;
   }
   const q=search.toLowerCase();
-  if(q&&!(t.task_id.toLowerCase().includes(q)||taskBrief(t).toLowerCase().includes(q)||(t.mnum||"").toLowerCase().includes(q)||(t.panel||"").toLowerCase().includes(q)||(t.domain||"").toLowerCase().includes(q)||((t.env||{}).mechanism_family||"").toLowerCase().includes(q))) return;
+  const title=taskTitle(t);
+  if(q&&!(t.task_id.toLowerCase().includes(q)||taskBrief(t).toLowerCase().includes(q)||title.toLowerCase().includes(q)||(t.mnum||"").toLowerCase().includes(q)||(t.panel||"").toLowerCase().includes(q)||(t.domain||"").toLowerCase().includes(q)||((t.env||{}).mechanism_family||"").toLowerCase().includes(q))) return;
   const d=document.createElement("div");
   d.className="item"+(t.mnum===curTask?" active":"");
   let idLine;
+  let subLine;
   if(poolOf(t)===PHASE2_POOL){
     const sol=(t.env&&t.env.sol_fail_rate)||"?";
     const opus=(t.env&&t.env.opus_fail_rate)||"?";
     const b=phase2BucketMeta(t);
     idLine=`${t.mnum} · ${esc(b.short)} · Sol ${esc(sol)} · Opus ${esc(opus)}`;
+    subLine=title||taskBrief(t).slice(0,110);
   } else if((poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL) && t.env && t.env.disposition){
     const rate=t.env.break_rate||"";
-    const orig=t.original_mnum?` · ${esc(t.original_mnum)}`:"";
-    idLine=`${t.mnum}${orig} · ${esc(t.env.disposition)}${rate?(" · "+esc(rate)):""}`;
+    const label=title||(t.original_mnum||"");
+    idLine=label
+      ? `${t.mnum} · ${esc(label)}`
+      : `${t.mnum}${t.original_mnum?` · ${esc(t.original_mnum)}`:""}`;
+    subLine=`${t.env.disposition}${rate?(" · "+rate):""}`;
   } else {
     idLine=`${t.mnum} · ${t.n_models} models · ${t.n_runs} runs`;
+    subLine=title||taskBrief(t).slice(0,110);
   }
   const dot=isPhase2Pool()?'<span class="dot done"></span>':`<span class="dot ${st}"></span>`;
-  d.innerHTML=`${dot}<div><div class="id">${idLine}</div><div class="p">${esc(taskBrief(t)).slice(0,110)}</div></div>`;
+  d.innerHTML=`${dot}<div><div class="id">${idLine}</div><div class="p">${esc(subLine)}</div></div>`;
   d.onclick=()=>{curTask=t.mnum;curTab=null;renderMain();renderList();};
   L.appendChild(d);
 }
@@ -340,7 +357,7 @@ function renderEligibleIntro(){
     const run=(((t.models||[])[0]||{}).runs||[])[0]||{};
     const steps=run.true_n_steps!=null?run.true_n_steps:(run.steps||[]).length;
     return `<button type="button" class="showcase-card" data-mn="${esc(t.mnum)}">
-    <div class="cid">${esc(t.mnum)} · ${esc(t.original_mnum||t.task_id||"")}</div>
+    <div class="cid">${esc(t.mnum)} · ${esc(taskTitle(t)||t.original_mnum||t.task_id||"")}</div>
     <div class="cslug">${esc(t.task_id||t.slug||"")}</div>
     <div class="cbrief">${esc(taskBrief(t))}</div>
     <div class="crow">
@@ -459,7 +476,7 @@ function renderMain(){
     return `<span class="chip">gpt 5.5 broke ${esc(t.env.break_rate)}</span>`;
   })();
   let h=`<div class="thead">
-    <div class="row1"><h2>${t.mnum}</h2><span class="chip blue">${esc(t.task_id)}</span>
+    <div class="row1"><h2>${t.mnum}</h2>${taskTitle(t)?`<span class="chip">${esc(taskTitle(t))}</span>`:""}<span class="chip blue">${esc(t.task_id)}</span>
       ${t.difficulty?`<span class="chip">${t.difficulty}</span>`:""}
       ${breakChip}
       ${(t.apps&&t.apps.length)?`<span class="chip">${esc(t.apps.join(" × "))}</span>`:((t.env&&t.env.apps&&t.env.apps.length)?`<span class="chip">${esc(t.env.apps.join(" × "))}</span>`:"")}
