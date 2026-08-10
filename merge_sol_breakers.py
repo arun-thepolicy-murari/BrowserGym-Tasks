@@ -49,7 +49,7 @@ POOL_META = {
         "id": ELIGIBLE_POOL,
         "label": "Eligible Task Suite",
         "short": "Eligible Suite",
-        "description": "Two Sol seed-0 breaker eligibility candidates (mp_033 mom-deals, Lumos warranty) with full step screenshot galleries. Breakers-only.",
+        "description": "Sol breaker eligibility candidates with full step screenshot galleries (e1 mp_033, e2 mail_002, e3 md_002, e4 food_006). Breakers-only.",
     },
 }
 

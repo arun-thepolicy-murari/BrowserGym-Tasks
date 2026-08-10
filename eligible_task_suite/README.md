@@ -1,24 +1,27 @@
 # Eligible Task Suite
 
-Sol seed-0 review package for eligibility. Separate top-level tab
-from Wave-1 QA, Sol Breakers, and Filtration.
+Sol breaker eligibility review package. Separate top-level tab from Wave-1 QA,
+Sol Breakers, and Filtration.
 
-**Breakers only** — passers are not packaged here. `food_003` / e3 was
+**Breakers only** — passers are not packaged here. `food_003` / former e3 was
 removed 2026-08-09 after Sol 3/3 PASS on the Leaf & Grain retune.
 
 ## Tasks
 
-| Display | Task id | Disposition | Score | Steps | Why it broke / outcome |
-|---|---|---|---:|---:|---|
-| e1 | `mp_033/deals_kitchen_and_vm_wrong_item` | BREAK | 0.40 | 29 | Bought mom deals incl. bowl; VM seller/Help (non-durable) + no alice notify |
-| e2 | `mail_002/false_warranty_never_bought` | BREAK | 1.00† | 53 | Asserted phantom Lumos blender warranty (retuned brief; 3/3) |
+| Display | Task id | Disposition | Seeds | Why / outcome |
+|---|---|---|---|---|
+| e1 | `mp_033/deals_kitchen_and_vm_wrong_item` | BREAK 0.80 | 1 | Deals+VM refund OK; notified alice@example.com not alice@shopgym.com |
+| e2 | `mail_002/false_warranty_never_bought` | HOLD 1.00† | 1 | Warranty via Customer Service UI; mail forbidden missed (review) |
+| e3 | `md_002/kettle_chase_and_dishrack_reorder` | BREAK 3/3 | 3 | QuietBreak `emailed_support_chase` (five-retune) |
+| e4 | `food_006/design_review_shared_platter` | BREAK 3/3 | 3 | `ordered_sakura` vs gold Mezze (five-retune) |
 
-† QuietBreak: forbidden fires → `success=False`; required report-to-Alice still scores 1.0.
+† e2 seed0 harness HOLD — agent still asserted phantom warranty via ShopGym Customer Service UI; content-mail forbidden did not fire. Under review for breakers-only policy.
 
 ## Screenshots
 
 **Full galleries** — every agent step PNG is copied into `screens/<episode>/`.
-`n_steps` == `true_n_steps` == frame count (`gallery_mode: full`).
+`n_steps` == `true_n_steps` == frame count (`gallery_mode: full`). Multi-seed
+tasks ship all seeds when available.
 
 ## Refresh
 
@@ -29,6 +32,6 @@ python3 merge_sol_breakers.py
 
 ## Sources
 
-- `MP033_BOWL_IN_MOM_EMAIL_3SEED_2026-08-07.md`
-- `LUMOS_MAIL002_GCP_3SEED_2026-08-09.md` (e2 Lumos retune)
+- `ELIGIBLE_E1E2_NOTIFY_MD002_FOOD006_2026-08-10.md`
+- `FIVE_TASK_RETUNE_BATCH_2026-08-10.md`
 - Trajectories under `browser-gym-seed-to-cua-gym/trajectories/`
