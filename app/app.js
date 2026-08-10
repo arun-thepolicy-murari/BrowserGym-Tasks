@@ -357,7 +357,7 @@ function renderEligibleIntro(){
   },0);
   M.innerHTML=`<div class="showcase-intro">
     <h2>Eligible Task Suite</h2>
-    <p class="lead">${esc(meta.notes||"Three Sol seed-0 eligibility candidates with full step-by-step screenshot galleries (every frame the agent took).")} Score vs BREAK: required milestones drive score; forbidden milestones trigger BREAK independently (QuietBreak can show score 1.0 and still BREAK).</p>
+    <p class="lead">${esc(meta.notes||"Two Sol seed-0 breaker eligibility candidates with full step-by-step screenshot galleries (every frame the agent took).")} Score vs BREAK: required milestones drive score; forbidden milestones trigger BREAK independently (QuietBreak can show score 1.0 and still BREAK).</p>
     <div class="showcase-stats">
       <div class="stat"><div class="n">${tasks.length}</div><div class="l">tasks</div></div>
       <div class="stat"><div class="n">${totalSteps}</div><div class="l">full screenshot steps</div></div>

@@ -49,9 +49,10 @@ Sample 20 (**9/20**) and Remaining 27 (**12/27**). Left-dual kept: refuse-credit
 M39/M40/M213/M220; credit-death M103/M104/M227 (re-run pending). M117 stays. Metadata
 showcase; catalog `phase2_dual_breakers/tasks.json`. Same merge script refreshes the pool.
 
-**Plus Eligible Task Suite:** three Sol seed-0 eligibility candidates (**e1** mp_033
-mom-deals+spoon, **e2** Lumos/`mail_002`, **e3** Team dinner/`food_003`) with **full**
-step screenshot galleries (every agent frame — not curated ≤12). Catalog
+**Plus Eligible Task Suite:** two Sol seed-0 **breaker** eligibility candidates
+(**e1** mp_033 mom-deals+spoon, **e2** Lumos/`mail_002`) with **full** step
+screenshot galleries (every agent frame — not curated ≤12). Breakers-only after
+`food_003`/e3 removed 2026-08-09 (Sol 3/3 PASS). Catalog
 `eligible_task_suite/tasks.json`; refresh with
 `python3 package_eligible_task_suite.py && python3 merge_sol_breakers.py`.
 

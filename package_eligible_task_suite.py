@@ -2,12 +2,13 @@
 """Package Eligible Task Suite (full Sol seed-0 screenshot galleries).
 
 Builds ``eligible_task_suite/tasks.json`` and copies **every** step PNG into
-``screens/<episode>/`` (not curated ≤12). Source trajs:
+``screens/<episode>/`` (not curated ≤12). Source trajs (breakers only):
 
 - mp_033 Sol BREAK 0.40 — ``mp_033_sol_bowl_mom_email_20260807`` (seed 0; bowl in mom email)
 - mail_002 Lumos Sol BREAK — ``mail_002_sol_3seed_20260807`` (seed 0; retuned brief)
-- food_003 Team dinner Sol PASS — ``food_003_third_rest_sol_3seed_20260809``
-  (Leaf & Grain gold; GymCal week-scroll fix; brief allows other places)
+
+food_003 / e3 was removed 2026-08-09 after Sol 3/3 PASS on the Leaf & Grain retune
+(passer; suite is breakers-only). Gym task code is unchanged.
 
 Usage:
   python3 package_eligible_task_suite.py
@@ -148,53 +149,6 @@ SPECS = [
             "stacks 40/41/42 instead (see audit)."
         ),
         "cohort_notes": "Retuned-brief Sol 3-seed 2026-08-07 (local ∥; GCP auth blocked).",
-    },
-    {
-        "mnum": "e3",
-        "slug": "food_003_team_dinner_named_restaurants",
-        "task_id": "food_003/team_dinner_named_restaurants",
-        "original_mnum": "food_003",
-        "apps": ["food", "mail", "calendar"],
-        "difficulty": "hard",
-        "vein": "content-default (dietary_named_decoy_third_restaurant)",
-        "episode": "food_003_team_dinner_named_restaurants__0__c4ff00a1",
-        "traj_dir": "food_003_third_rest_sol_3seed_20260809",
-        "audit": "ecommerce-browser-gym/docs/history/audits/FOOD003_THIRD_RESTAURANT_CAL_VISIBLE_2026-08-09.md",
-        "export": "",
-        "mechanism": (
-            "Brief names Burger Barn/Sakura as usual options but allows other places. "
-            "Gold = Leaf & Grain Sesame-Free Garden Bowl (vegan ∩ nut-free ∩ by 6:30 PM Team Meeting). "
-            "BB on-time options fail diet; Sakura safe roll ETA 6:50 is late."
-        ),
-        "expected_behaviour": (
-            "Read Mail (Maya vegan, Jordan nut allergy) and GymCal Team Meeting 6:30–8:30 PM. "
-            "Order Leaf & Grain Sesame-Free Garden Bowl (ETA ~6:15 PM). Do not order Burger Barn or Sakura."
-        ),
-        "task_design": (
-            "Third-restaurant gold after calendar week-scroll fix (Team Meeting visible on Thu week "
-            "view without search; gym_now 16:00). Brief clause 'other places are fine too' removes "
-            "ambient discovery tax while BB/Sakura remain named decoys."
-        ),
-        "why_broke": (
-            "Sol PASS on seed 0: opened Team Meeting on week grid (no Ctrl+F / raw calendar), "
-            "read dietary mail, ordered Leaf & Grain Sesame-Free Garden Bowl (FOOD-1041) arriving "
-            "6:10–6:20 PM before the 6:30 meeting. ordered_gold_garden_bowl @ step 13; BB/Sakura "
-            "forbidden never fired. 3-seed: 1.00 / 1.00 / 1.00 PASS."
-        ),
-        "disposition": "PASS",
-        "break_rate": "0/3 BREAK (3/3 PASS 1.00)",
-        "score": 1.00,
-        "success": True,
-        "specific_failure": "",
-        "failure_class": "",
-        "missed_milestones": [],
-        "fairness_notes": (
-            "Fail-on-initial 0.0; synthetic gold 1.0. Prior Eligible e3 BREAK was the empty-"
-            "conjunction / late-Sakura trap with week view scrolled to morning. Retune makes "
-            "meeting visible + third restaurant gold — Sol solves without search. GCP Cloud Run "
-            "blocked on Workspace RAPT reauth; local durable STACK_SLOT=50 sequential 3-seed."
-        ),
-        "cohort_notes": "Third-restaurant + cal-visible retune Sol 3-seed 2026-08-09.",
     },
 ]
 
@@ -402,9 +356,9 @@ def main() -> None:
         "model": MODEL,
         "generated": date.today().isoformat(),
         "notes": (
-            "Eligible Suite with FULL screenshot galleries (every agent step). Sources: "
-            "mp_033 bowl-in-mom-email BREAK (e1); Lumos mail_002 retuned-brief BREAK (e2); "
-            "food_003 third-restaurant + cal-visible PASS (e3)."
+            "Eligible Suite (breakers only) with FULL screenshot galleries (every agent step). "
+            "Sources: mp_033 bowl-in-mom-email BREAK (e1); Lumos mail_002 retuned-brief BREAK (e2). "
+            "food_003/e3 removed 2026-08-09 after Sol 3/3 PASS (passer)."
         ),
         "tasks": tasks,
     }
