@@ -49,7 +49,7 @@ POOL_META = {
         "id": ELIGIBLE_POOL,
         "label": "Eligible Task Suite",
         "short": "Eligible Suite",
-        "description": "Sol breaker eligibility candidates with full step screenshot galleries (e1 mail_002 Lumos HOLD, e2 md_002 kettle delivered-not-processing BREAK). mp_033 and food_006 retired 2026-08-10. Breakers-only.",
+        "description": "Sol breaker eligibility candidates with full step screenshot galleries (e1 mail_002 HOLD, e2 md_002 3/3 BREAK, e3 mp_040 ErgoGlide 3/3 BREAK, e4 mp_048 lamp warranty 3/3 BREAK). Breakers-only.",
     },
 }
 

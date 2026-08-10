@@ -251,7 +251,8 @@ function renderProgress(){
   }
   if(isEligiblePool()){
     const fullN=tasks.reduce((n,t)=>n+((t.models||[]).reduce((m,mod)=>m+((mod.runs||[]).reduce((r,run)=>r+(run.true_n_steps||(run.steps||[]).length||0),0)),0)),0);
-    document.getElementById("progtxt").textContent=`${tasks.length} Sol seed0 · ${fullN} full screenshot steps · ${label}`;
+    const seedN=tasks.reduce((n,t)=>n+((t.models||[]).reduce((m,mod)=>m+((mod.runs||[]).length),0)),0);
+    document.getElementById("progtxt").textContent=`${tasks.length} tasks · ${seedN} Sol seeds · ${fullN} full screenshot steps · ${label}`;
     document.getElementById("progbar").style.width="100%";
     return;
   }
@@ -279,13 +280,24 @@ function appendListItem(L,t){
     const b=phase2BucketMeta(t);
     idLine=`${t.mnum} · ${esc(b.short)} · Sol ${esc(sol)} · Opus ${esc(opus)}`;
     subLine=title||taskBrief(t).slice(0,110);
-  } else if((poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL) && t.env && t.env.disposition){
-    const rate=t.env.break_rate||"";
-    const label=title||(t.original_mnum||"");
-    idLine=label
-      ? `${t.mnum} · ${esc(label)}`
-      : `${t.mnum}${t.original_mnum?` · ${esc(t.original_mnum)}`:""}`;
-    subLine=`${t.env.disposition}${rate?(" · "+rate):""}`;
+  } else if(poolOf(t)===ELIGIBLE_POOL && t.env && t.env.disposition){
+    // Clean Sol-Breakers-style sidebar: "e2 · 3/3 BREAK" / "e1 · HOLD"
+    const disp=dispositionLabel(t.env.disposition||"");
+    const rate=String(t.env.break_rate||"").trim();
+    const cleanRate=/^\d+\/\d+$/.test(rate)?rate:"";
+    idLine=cleanRate
+      ? `${t.mnum} · ${esc(cleanRate)} ${esc(disp)}`
+      : `${t.mnum} · ${esc(disp)}`;
+    subLine=title||t.original_mnum||taskBrief(t).slice(0,110);
+  } else if(poolOf(t)==="sol_breakers_bridged" && t.env && t.env.disposition){
+    // Match Eligible clean style: "n1 · 3/3 BREAK"
+    const disp=dispositionLabel(t.env.disposition||"");
+    const rate=String(t.env.break_rate||"").trim();
+    const cleanRate=/^\d+\/\d+$/.test(rate)?rate:"";
+    idLine=cleanRate
+      ? `${t.mnum} · ${esc(cleanRate)} ${esc(disp)}`
+      : `${t.mnum} · ${esc(disp)}`;
+    subLine=title||t.original_mnum||taskBrief(t).slice(0,110);
   } else {
     idLine=`${t.mnum} · ${t.n_models} models · ${t.n_runs} runs`;
     subLine=title||taskBrief(t).slice(0,110);
@@ -354,23 +366,28 @@ function renderEligibleIntro(){
   const meta=DATA.eligible_meta||{};
   const tasks=poolTasks();
   const card=(t)=>{
-    const run=(((t.models||[])[0]||{}).runs||[])[0]||{};
-    const steps=run.true_n_steps!=null?run.true_n_steps:(run.steps||[]).length;
+    const runs=(((t.models||[])[0]||{}).runs||[]);
+    const run=runs[0]||{};
+    const steps=runs.reduce((n,r)=>n+(r.true_n_steps!=null?r.true_n_steps:(r.steps||[]).length||0),0);
+    const disp=dispositionLabel((t.env||{}).disposition||run.disposition||"BREAK");
+    const rate=String((t.env||{}).break_rate||"").trim();
+    const cleanRate=/^\d+\/\d+$/.test(rate)?rate:"";
+    const cid=cleanRate?`${t.mnum} · ${cleanRate} ${disp}`:`${t.mnum} · ${disp}`;
     return `<button type="button" class="showcase-card" data-mn="${esc(t.mnum)}">
-    <div class="cid">${esc(t.mnum)} · ${esc(taskTitle(t)||t.original_mnum||t.task_id||"")}</div>
-    <div class="cslug">${esc(t.task_id||t.slug||"")}</div>
+    <div class="cid">${esc(cid)}</div>
+    <div class="cslug">${esc(taskTitle(t)||t.original_mnum||t.task_id||"")}</div>
     <div class="cbrief">${esc(taskBrief(t))}</div>
     <div class="crow">
-      <span class="scorepill sol">${esc(dispositionLabel((t.env||{}).disposition||run.disposition||"BREAK"))}</span>
+      <span class="scorepill sol">${esc(disp)}</span>
       <span class="scorepill">score ${esc(String(run.score!=null?run.score:"—"))}</span>
-      <span class="chip">${steps} full steps</span>
+      <span class="chip">${steps} full steps${runs.length>1?` · ${runs.length} seeds`:""}</span>
       ${(t.apps&&t.apps.length)?`<span class="chip">${esc(t.apps.join(" × "))}</span>`:""}
     </div>
   </button>`;
   };
   const totalSteps=tasks.reduce((n,t)=>{
-    const run=(((t.models||[])[0]||{}).runs||[])[0]||{};
-    return n+(run.true_n_steps!=null?run.true_n_steps:(run.steps||[]).length||0);
+    const runs=(((t.models||[])[0]||{}).runs||[]);
+    return n+runs.reduce((m,r)=>m+(r.true_n_steps!=null?r.true_n_steps:(r.steps||[]).length||0),0);
   },0);
   M.innerHTML=`<div class="showcase-intro">
     <h2>Eligible Task Suite</h2>
