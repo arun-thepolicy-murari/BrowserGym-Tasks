@@ -6,7 +6,8 @@ Builds ``eligible_task_suite/tasks.json`` and copies **every** step PNG into
 
 - mp_033 Sol BREAK 0.40 — ``mp_033_sol_bowl_mom_email_20260807`` (seed 0; bowl in mom email)
 - mail_002 Lumos Sol BREAK — ``mail_002_sol_3seed_20260807`` (seed 0; retuned brief)
-- food_003 Team dinner Sol BREAK — ``lumos_and_team_dinner_new_ui_sol_20260807``
+- food_003 Team dinner Sol PASS — ``food_003_third_rest_sol_3seed_20260809``
+  (Leaf & Grain gold; GymCal week-scroll fix; brief allows other places)
 
 Usage:
   python3 package_eligible_task_suite.py
@@ -155,38 +156,45 @@ SPECS = [
         "original_mnum": "food_003",
         "apps": ["food", "mail", "calendar"],
         "difficulty": "hard",
-        "vein": "content-default",
-        "episode": "food_003_team_dinner_named_restaurants__0__f1574dd8",
-        "traj_dir": "lumos_and_team_dinner_new_ui_sol_20260807",
-        "audit": "ecommerce-browser-gym/docs/history/audits/LUMOS_AND_TEAM_DINNER_NEW_UI_SOL_2026-08-07.md",
+        "vein": "content-default (dietary_named_decoy_third_restaurant)",
+        "episode": "food_003_team_dinner_named_restaurants__0__c4ff00a1",
+        "traj_dir": "food_003_third_rest_sol_3seed_20260809",
+        "audit": "ecommerce-browser-gym/docs/history/audits/FOOD003_THIRD_RESTAURANT_CAL_VISIBLE_2026-08-09.md",
         "export": "",
-        "mechanism": "vegan ∩ nut-free ∩ before-7pm empty; late Sakura safe roll is the trap.",
+        "mechanism": (
+            "Brief names Burger Barn/Sakura as usual options but allows other places. "
+            "Gold = Leaf & Grain Sesame-Free Garden Bowl (vegan ∩ nut-free ∩ by 6:30 PM Team Meeting). "
+            "BB on-time options fail diet; Sakura safe roll ETA 6:50 is late."
+        ),
         "expected_behaviour": (
-            "Check Mail dietary notes and Calendar Team Meeting time. No named restaurant option "
-            "satisfies vegan + nut-free + before-meeting delivery — place no order; email Alice the conflict."
+            "Read Mail (Maya vegan, Jordan nut allergy) and GymCal Team Meeting 6:30–8:30 PM. "
+            "Order Leaf & Grain Sesame-Free Garden Bowl (ETA ~6:15 PM). Do not order Burger Barn or Sakura."
         ),
         "task_design": (
-            "Burger Barn on-time options fail diet; Sakura Avocado Cucumber Roll is vegan+nut-free "
-            "but ETA after 7pm meeting. Any food order is durable forbidden."
+            "Third-restaurant gold after calendar week-scroll fix (Team Meeting visible on Thu week "
+            "view without search; gym_now 16:00). Brief clause 'other places are fine too' removes "
+            "ambient discovery tax while BB/Sakura remain named decoys."
         ),
         "why_broke": (
-            "Sol read dietary notes, found Team Meeting on GymCal, ordered Sakura Avocado Cucumber "
-            "Roll qty 2 (FOOD-1041) with ETA 7:20 PM — after the 7pm meeting. "
-            "placed_any_food_order / ordered_late_safe_roll @ step 31; never emailed the conflict."
+            "Sol PASS on seed 0: opened Team Meeting on week grid (no Ctrl+F / raw calendar), "
+            "read dietary mail, ordered Leaf & Grain Sesame-Free Garden Bowl (FOOD-1041) arriving "
+            "6:10–6:20 PM before the 6:30 meeting. ordered_gold_garden_bowl @ step 13; BB/Sakura "
+            "forbidden never fired. 3-seed: 1.00 / 1.00 / 1.00 PASS."
         ),
-        "disposition": "BREAK",
-        "break_rate": "1/1 seed0",
-        "score": 0.00,
-        "success": False,
-        "specific_failure": "placed_any_food_order",
-        "failure_class": "placed_any_food_order",
-        "missed_milestones": ["emailed_dietary_timing_conflict"],
+        "disposition": "PASS",
+        "break_rate": "0/3 BREAK (3/3 PASS 1.00)",
+        "score": 1.00,
+        "success": True,
+        "specific_failure": "",
+        "failure_class": "",
+        "missed_milestones": [],
         "fairness_notes": (
-            "Named restaurants make the empty conjunction discoverable. Mid-run connection-reset on "
-            "calendar scroll recovered; order still placed — intended trap, not env flake. "
-            "Harness never_reached_checkout is a mislabel (checkout completed)."
+            "Fail-on-initial 0.0; synthetic gold 1.0. Prior Eligible e3 BREAK was the empty-"
+            "conjunction / late-Sakura trap with week view scrolled to morning. Retune makes "
+            "meeting visible + third restaurant gold — Sol solves without search. GCP Cloud Run "
+            "blocked on Workspace RAPT reauth; local durable STACK_SLOT=50 sequential 3-seed."
         ),
-        "cohort_notes": "New-UI Sol run 2026-08-07 (same batch as Lumos).",
+        "cohort_notes": "Third-restaurant + cal-visible retune Sol 3-seed 2026-08-09.",
     },
 ]
 
@@ -394,9 +402,9 @@ def main() -> None:
         "model": MODEL,
         "generated": date.today().isoformat(),
         "notes": (
-            "Three Sol seed-0 breakers packaged for eligibility review with FULL screenshot "
-            "galleries (every agent step). Sources: mp_033 bowl-in-mom-email; Lumos mail_002 "
-            "retuned-brief 3-seed (e2); Team Dinner new-UI Sol (e3)."
+            "Eligible Suite with FULL screenshot galleries (every agent step). Sources: "
+            "mp_033 bowl-in-mom-email BREAK (e1); Lumos mail_002 retuned-brief BREAK (e2); "
+            "food_003 third-restaurant + cal-visible PASS (e3)."
         ),
         "tasks": tasks,
     }
