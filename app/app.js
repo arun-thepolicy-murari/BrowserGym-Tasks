@@ -281,22 +281,28 @@ function appendListItem(L,t){
     idLine=`${t.mnum} · ${esc(b.short)} · Sol ${esc(sol)} · Opus ${esc(opus)}`;
     subLine=title||taskBrief(t).slice(0,110);
   } else if(poolOf(t)===ELIGIBLE_POOL && t.env && t.env.disposition){
-    // Clean Sol-Breakers-style sidebar: "e2 · 3/3 BREAK" / "e1 · HOLD"
+    // Clean Sol-Breakers-style sidebar: "e2 · 3/3 BREAK" / "e1 · HOLD" / "e7 · seed0 BREAK"
     const disp=dispositionLabel(t.env.disposition||"");
     const rate=String(t.env.break_rate||"").trim();
     const cleanRate=/^\d+\/\d+$/.test(rate)?rate:"";
+    const softRate=/^seed\d+$/i.test(rate)?rate:"";
     idLine=cleanRate
       ? `${t.mnum} · ${esc(cleanRate)} ${esc(disp)}`
-      : `${t.mnum} · ${esc(disp)}`;
+      : softRate
+        ? `${t.mnum} · ${esc(softRate)} ${esc(disp)}`
+        : `${t.mnum} · ${esc(disp)}`;
     subLine=title||t.original_mnum||taskBrief(t).slice(0,110);
   } else if(poolOf(t)==="sol_breakers_bridged" && t.env && t.env.disposition){
     // Match Eligible clean style: "n1 · 3/3 BREAK"
     const disp=dispositionLabel(t.env.disposition||"");
     const rate=String(t.env.break_rate||"").trim();
     const cleanRate=/^\d+\/\d+$/.test(rate)?rate:"";
+    const softRate=/^seed\d+$/i.test(rate)?rate:"";
     idLine=cleanRate
       ? `${t.mnum} · ${esc(cleanRate)} ${esc(disp)}`
-      : `${t.mnum} · ${esc(disp)}`;
+      : softRate
+        ? `${t.mnum} · ${esc(softRate)} ${esc(disp)}`
+        : `${t.mnum} · ${esc(disp)}`;
     subLine=title||t.original_mnum||taskBrief(t).slice(0,110);
   } else {
     idLine=`${t.mnum} · ${t.n_models} models · ${t.n_runs} runs`;
@@ -1475,7 +1481,14 @@ function renderVerifier(t,body){
   const forbidden=v.forbidden||[];
   const catalog=milestoneCatalog(t);
   const seedRows=collectSeedRuns(t);
-  let h=`<div class="vsec"><h3>Expected correct behaviour (oracle gold path)</h3><div class="expl">${esc(t.expected_behaviour||"—")}</div></div>`;
+  const requiresPlain=t.requiresSummary||t.requires_summary||(t.env&&(t.env.requiresSummary||t.env.requires_summary))||"";
+  const agentDidPlain=t.agentDidSummary||t.agent_did_summary||(t.env&&(t.env.agentDidSummary||t.env.agent_did_summary))||"";
+  let h="";
+  if(requiresPlain||agentDidPlain){
+    h+=`<div class="vsec"><h3>What it requires</h3><div class="expl">${esc(requiresPlain||"—")}</div></div>`;
+    h+=`<div class="vsec"><h3>What the agent did</h3><div class="expl">${esc(agentDidPlain||"—")}</div></div>`;
+  }
+  h+=`<div class="vsec"><h3>Expected correct behaviour (oracle gold path)</h3><div class="expl">${esc(t.expected_behaviour||"—")}</div></div>`;
   if(t.task_design) h+=`<div class="vsec"><h3>Task design &amp; the trap</h3><div class="expl">${esc(t.task_design)}</div></div>`;
   const fairness=t.fairness_notes||(t.env&&t.env.fairness_notes)||"";
   if(fairness) h+=`<div class="vsec"><h3>Fairness / Orchestrator ACCEPT</h3><div class="expl">${esc(fairness)}</div></div>`;
