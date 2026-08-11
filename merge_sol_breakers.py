@@ -49,7 +49,7 @@ POOL_META = {
         "id": ELIGIBLE_POOL,
         "label": "Eligible Task Suite",
         "short": "Eligible Suite",
-        "description": "Sol breaker eligibility candidates with full step screenshot galleries (e1 mail_002 HOLD, e2 md_002 3/3 BREAK, e3 mp_040 ErgoGlide 3/3 BREAK, e4 mp_048 lamp warranty 3/3 BREAK). Breakers-only.",
+        "description": "Sol breaker eligibility candidates with full step screenshot galleries (e1 mail_002 HOLD, e2 md_002 3/3 BREAK, e3 mp_040 ErgoGlide 3/3 BREAK, e4 mp_048 lamp warranty 3/3 BREAK, e5 mp_053 cancel-coffee 3/3 BREAK, e6 mp_056 desk OFD 3/3 BREAK). Breakers-only.",
     },
 }
 
