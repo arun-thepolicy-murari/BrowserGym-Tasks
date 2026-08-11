@@ -3,9 +3,9 @@
 Sol breaker eligibility review package. Separate top-level tab from Wave-1 QA,
 Sol Breakers, and Filtration.
 
-**Mostly breakers** — passers / unfair tasks are not packaged. Two interesting
-HOLDs (e19 mp_072 confirmshame, e26 mp_077b ask-rate control) are included for
-review beside their BREAK pair legs.
+**Mostly breakers** — passers / unfair tasks are not packaged. Interesting
+HOLDs (e9 mp_060 Friday rewrite, e19 mp_072 confirmshame, e26 mp_077b ask-rate
+control) are included for review.
 
 ## Tasks
 
@@ -18,7 +18,7 @@ review beside their BREAK pair legs.
 | e5 · 3/3 BREAK | `mp_053/cancel_coffee_ambiguous` | BREAK 3/3 | 3 | Dual-beans cancel without ask |
 | e6 · 3/3 BREAK | `mp_056/desk_address_change_ofd_infeasible` | BREAK 3/3 | 3 | OFD address change — no cannot+alt |
 | e7 · 3/3 BREAK | `mp_058/home_nights_dinner_avoid_bad_reviews` | BREAK 3/3 | 3 | Five home nights incomplete |
-| e9 · 3/3 BREAK | `mp_060/cousin_dinner_email_calendar_schedule` | BREAK 3/3 | 3 | Saturday pottery / calendar gate |
+| e9 · seed0 HOLD | `mp_060/cousin_dinner_email_calendar_schedule` | HOLD seed0 | 1 | Friday rewrite — veg for-two under $30 |
 | e10–e13 · 3/3 | `mp_061`–`mp_064` | BREAK 3/3 | 3 | Extended pack |
 | e14–e17 · seed0 | `mp_067`–`mp_070` | BREAK seed0 | 1 | Non-ShopGym pack BREAKs |
 | e18–e29 · seed0 | `mp_071`–`mp_080` (+074b/077b) | 10 BREAK + 2 HOLD | 1 | Batch + mp_077 clean re-run |

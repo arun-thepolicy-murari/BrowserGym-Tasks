@@ -9,7 +9,7 @@ Sources (2026-08-11):
 - e1–e4, e6: prior Eligible galleries (mail_002, md_002, mp_040, mp_048, mp_056)
 - e5 / e7 / e10–e13: tip-UI Sol 3-seed fill (filtration-eligible-fill-3seeds-gp4st)
   seeds 1–2 + prior seed0; mp_053 dual-beans (+ decoy expand in gym, re-run OPEN)
-- e9 mp_060 already 3/3; pottery sentence strengthened (re-run OPEN)
+- e9 mp_060 Friday rewrite 2026-08-11 (seed0 HOLD tip-UI; prior Thu-gold 3/3 BREAK retired)
 - e14–e17: tip-UI Sol seed0 BREAK (mp_067–070); mp_066 HOLD skipped
 - e18–e29: mp_071–080 seed0 (batch filtration-mp071-080-s0-4hqgc + mp_077 rerun
   filtration-mp077-rerun-s0-b5wz2). Includes HOLD cards e19 (mp_072) + e26 (mp_077b).
@@ -477,57 +477,59 @@ SPECS = [
     },
     {
         "mnum": "e9",
-        "title": "Cousin dinner · calendar gate",
+        "title": "Cousin dinner · Friday veg under $30",
         "slug": "mp_060_cousin_dinner_email_calendar_schedule",
         "task_id": "mp_060/cousin_dinner_email_calendar_schedule",
         "original_mnum": "mp_060",
         "apps": ["food", "mail", "calendar"],
         "difficulty": "hard",
         "vein": "email + calendar schedule",
-        "episode": [
-            "mp_060_cousin_dinner_email_calendar_schedule__0__390b41c3",
-            "mp_060_cousin_dinner_email_calendar_schedule__1__837258a6",
-            "mp_060_cousin_dinner_email_calendar_schedule__2__b99c6446",
-        ],
-        "traj_dir": "eligible_all_breakers_20260811",
-        "audit": "ecommerce-browser-gym/docs/history/audits/MP060_COUSIN_DINNER_SCHEDULE_2026-08-10.md",
+        "episode": "mp_060_cousin_dinner_email_calendar_schedule__0__2a4f61fe",
+        "traj_dir": "mp060_friday_rewrite_sol_seed0_gcp",
+        "audit": "ecommerce-browser-gym/docs/history/audits/MP060_FRIDAY_REWRITE_2026-08-11.md",
         "export": "server/mp_060.py",
         "mechanism": (
-            "Read cousin email + own calendar; pick a night that works for both; schedule Harbor "
-            "Table (not ASAP). Cousin unavailable Saturday trap."
+            "Read Jamie's fluff email (Fri midday arrival, Sat pottery 1–8pm, Sun morning departure) "
+            "+ own calendar (Thu dentist distractor; Friday clear). Schedule vegetarian dinner for two "
+            "under $30 for Friday only (not ASAP)."
         ),
         "expected_behaviour": (
-            "Read full cousin email, check calendar, schedule dinner on a mutually free night, "
-            "persist scheduled delivery (not ASAP)."
+            "Read full cousin email, confirm Friday clear on calendar, schedule vegetarian for-two "
+            "under $30 with durable scheduled_delivery on Friday."
         ),
         "task_design": (
-            "Forbidden: ordered_on_cousin_conflict_night / ordered_on_user_conflict_night / ASAP default."
+            "Forbidden: Saturday conflict night / non-vegetarian item / total over $30 / ASAP default. "
+            "Interesting HOLD — Sol solved the Friday rewrite on seed0."
         ),
         "why_broke": (
-            "All 3 seeds ordered on cousin's conflict night (Saturday) at some point — "
-            "ordered_on_cousin_conflict_night; scores 0.8 / 0.5 / 0.8."
+            "HOLD: scheduled two Harvest Veggie Bowls for Friday 2026-05-22 "
+            "(durable total $24.00) after reading Jamie's email + calendar (score 1.0 / 59 steps)."
         ),
         "requiresSummary": (
-            "Read the cousin's email and the calendar, then schedule dinner on a night that works "
-            "for both people (not the cousin's unavailable night)."
+            "Work out which night fits Jamie's email and your calendar, then order a vegetarian dinner "
+            "for two under $30 for that night (not ASAP)."
         ),
         "agentDidSummary": (
-            "On every seed, still placed (or first placed) Harbor Table on the cousin's conflict "
-            "Saturday before any later partial recovery."
+            "Read Jamie's email, checked the calendar, then ordered two $12 Harvest Veggie Bowls "
+            "scheduled for Friday May 22 under $30 (HOLD 1.0 / 59 steps)."
         ),
-        "disposition": "BREAK",
-        "break_rate": "3/3",
-        "score": None,
-        "success": False,
-        "specific_failure": "ordered_on_cousin_conflict_night",
+        "disposition": "HOLD",
+        "break_rate": "seed0 HOLD",
+        "score": 1.0,
+        "success": True,
+        "specific_failure": None,
         "failure_class": None,
-        "missed_milestones": ["identified_cousin_unavailable_night"],
+        "missed_milestones": [],
         "fairness_notes": (
-            "Cousin email + calendar conflict are visible before order. Seed0 GCP + seeds1–2 from "
-            "mp061_065_mp060s12 pack confirm Saturday trap 3/3. Pottery unavailability sentence strengthened 2026-08-11 to match user wording; Sol re-run with new copy still OPEN."
+            "Friday-only rewrite 2026-08-11: pottery 1–8pm ∩ dinner hours; Thu dentist forces calendar "
+            "open; veg via Dish.tags; for-two via qty≥2 or named for-two; durable order total < $30. "
+            "Tip-UI only. Packaged HOLD like e19/e26 — candidate for retune if breaker-only hardens."
         ),
-        "cohort_notes": "mp060 seed0 + mp061-065-mp060s12 seeds1–2.",
-        "wave": "mp_060 Sol 3seed tip-UI 2026-08-11",
+        "cohort_notes": (
+            "filtration-mp060-sol-seed0-jgsrp / mp060-sol-seed0-20260811T204033Z; "
+            "GCS filtration/mp060_friday_rewrite_20260811/."
+        ),
+        "wave": "mp_060 Friday rewrite Sol seed0 tip-UI 2026-08-11",
     },
     {
         "mnum": "e10",
