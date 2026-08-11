@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Merge Sol Breakers + Phase 2 Dual Breakers + Eligible Task Suite into data.json + index.html.
+"""Merge Sol Breakers + Phase 2 + Eligible + Breaker-1 into data.json + index.html.
 
 Does NOT rebuild wave-1 QA from Phase 1 / new_samples. Existing wave-1 tasks stay
-intact; they are tagged ``pool: wave1_qa`` if missing. Sol / Phase-2 / Eligible
-pools replace only their own prior rows.
+intact; they are tagged ``pool: wave1_qa`` if missing. Sol / Phase-2 / Eligible /
+Breaker-1 pools replace only their own prior rows.
 
 Usage:
   python3 merge_sol_breakers.py
@@ -20,11 +20,13 @@ APP = ROOT / "app"
 SOL = ROOT / "sol_breakers" / "tasks.json"
 PHASE2 = ROOT / "phase2_dual_breakers" / "tasks.json"
 ELIGIBLE = ROOT / "eligible_task_suite" / "tasks.json"
+BREAKER1 = ROOT / "breaker1" / "tasks.json"
 
 WAVE1_POOL = "wave1_qa"
 SOL_POOL = "sol_breakers_bridged"
 PHASE2_POOL = "phase2_dual_breakers"
 ELIGIBLE_POOL = "eligible_task_suite"
+BREAKER1_POOL = "breaker_1"
 
 POOL_META = {
     WAVE1_POOL: {
@@ -50,6 +52,12 @@ POOL_META = {
         "label": "Eligible Task Suite",
         "short": "Eligible Suite",
         "description": "Sol breaker eligibility candidates with full step screenshot galleries (e1–e13: mail_002, md_002, mp_040/048/053/056/058–064). Verifier panel includes What it requires / What the agent did. Breakers-only (no mp_065 / nine-mech HOLDs).",
+    },
+    BREAKER1_POOL: {
+        "id": BREAKER1_POOL,
+        "label": "Breaker-1",
+        "short": "Breaker-1",
+        "description": "mp_091 Burrow couch pickup × GymCal conflict — Sol seed0 full-trajectory screenshot review.",
     },
 }
 
@@ -87,12 +95,13 @@ def main() -> None:
     sol_pkg = read_json(SOL)
     phase2_pkg = read_json(PHASE2) if PHASE2.exists() else {"tasks": []}
     eligible_pkg = read_json(ELIGIBLE) if ELIGIBLE.exists() else {"tasks": []}
+    breaker1_pkg = read_json(BREAKER1) if BREAKER1.exists() else {"tasks": []}
 
-    # Preserve wave-1 QA; drop prior sol + phase2 + eligible rows (rebuilt below).
+    # Preserve wave-1 QA; drop prior sol + phase2 + eligible + breaker1 rows.
     wave1 = []
     for t in data.get("tasks") or []:
         p = t.get("pool") or WAVE1_POOL
-        if p in (SOL_POOL, PHASE2_POOL, ELIGIBLE_POOL):
+        if p in (SOL_POOL, PHASE2_POOL, ELIGIBLE_POOL, BREAKER1_POOL):
             continue
         tt = dict(t)
         tt.setdefault("pool", WAVE1_POOL)
@@ -110,17 +119,23 @@ def main() -> None:
     for t in eligible_tasks:
         t["pool"] = ELIGIBLE_POOL
 
-    data["tasks"] = wave1 + sol_tasks + phase2_tasks + eligible_tasks
+    breaker1_tasks = [finalize_task(t) for t in breaker1_pkg.get("tasks") or []]
+    for t in breaker1_tasks:
+        t["pool"] = BREAKER1_POOL
+
+    data["tasks"] = wave1 + sol_tasks + phase2_tasks + eligible_tasks + breaker1_tasks
     data["n_tasks"] = len(data["tasks"])
     data["n_wave1"] = len(wave1)
     data["n_sol_breakers"] = len(sol_tasks)
     data["n_phase2_dual"] = len(phase2_tasks)
     data["n_eligible_suite"] = len(eligible_tasks)
+    data["n_breaker1"] = len(breaker1_tasks)
     data["pools"] = [
         POOL_META[WAVE1_POOL],
         POOL_META[SOL_POOL],
         POOL_META[PHASE2_POOL],
         POOL_META[ELIGIBLE_POOL],
+        POOL_META[BREAKER1_POOL],
     ]
     data["generated"] = date.today().isoformat()
     src = dict(data.get("source") or {})
@@ -132,6 +147,8 @@ def main() -> None:
     src["phase2_dual_notes"] = phase2_pkg.get("notes", "")
     src["eligible_task_suite_package"] = "eligible_task_suite/tasks.json"
     src["eligible_task_suite_notes"] = eligible_pkg.get("notes", "")
+    src["breaker1_package"] = "breaker1/tasks.json"
+    src["breaker1_notes"] = breaker1_pkg.get("notes", "")
     data["source"] = src
     data["phase2_meta"] = {
         "headline": phase2_pkg.get("headline"),
@@ -147,6 +164,11 @@ def main() -> None:
         "headline": eligible_pkg.get("label") or "Eligible Task Suite",
         "notes": eligible_pkg.get("notes"),
         "model": eligible_pkg.get("model"),
+    }
+    data["breaker1_meta"] = {
+        "headline": breaker1_pkg.get("label") or "Breaker-1",
+        "notes": breaker1_pkg.get("notes"),
+        "model": breaker1_pkg.get("model"),
     }
 
     emit(data)
@@ -168,6 +190,14 @@ def main() -> None:
         )
     print(f"eligible_task_suite: {len(eligible_tasks)} tasks")
     for t in eligible_tasks:
+        e = t.get("env") or {}
+        print(
+            f"  {t['mnum']:<4} ← {(t.get('original_mnum') or '?'):<10} "
+            f"{e.get('disposition','?'):<8} score={(t.get('models') or [{}])[0].get('runs',[{}])[0].get('score','?')} "
+            f"steps={(t.get('models') or [{}])[0].get('runs',[{}])[0].get('true_n_steps','?')}"
+        )
+    print(f"breaker_1: {len(breaker1_tasks)} tasks")
+    for t in breaker1_tasks:
         e = t.get("env") or {}
         print(
             f"  {t['mnum']:<4} ← {(t.get('original_mnum') or '?'):<10} "

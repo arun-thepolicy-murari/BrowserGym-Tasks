@@ -14,12 +14,15 @@ cfg.url=cfg.url||""; cfg.annotator=cfg.annotator||"";
 if(localStorage.getItem(LS_THEME)==="dark") document.body.classList.add("dark");
 const PHASE2_POOL="phase2_dual_breakers";
 const ELIGIBLE_POOL="eligible_task_suite";
+const BREAKER1_POOL="breaker_1";
 function poolOf(t){ return t.pool||"wave1_qa"; }
 function isEligiblePool(id){ return (id||activePool)===ELIGIBLE_POOL; }
+function isBreaker1Pool(id){ return (id||activePool)===BREAKER1_POOL; }
 function isFullGallery(t, run){
   if(run&&run.gallery_mode==="full") return true;
   if(t&&t.gallery_mode==="full") return true;
-  return poolOf(t)===ELIGIBLE_POOL;
+  const p=poolOf(t);
+  return p===ELIGIBLE_POOL||p===BREAKER1_POOL;
 }
 const byId={};
 DATA.tasks.forEach(t=>{
@@ -32,7 +35,8 @@ const POOLS=DATA.pools||[
   {id:"wave1_qa",label:"Wave-1 QA (gpt-5.5)",short:"Wave-1 QA"},
   {id:"sol_breakers_bridged",label:"Sol Breakers — Bridged",short:"Sol Breakers"},
   {id:"phase2_dual_breakers",label:"Filtration 21/47 — Dual Breakers",short:"Filtration 21/47"},
-  {id:"eligible_task_suite",label:"Eligible Task Suite",short:"Eligible Suite"}
+  {id:"eligible_task_suite",label:"Eligible Task Suite",short:"Eligible Suite"},
+  {id:"breaker_1",label:"Breaker-1",short:"Breaker-1"}
 ];
 let activePool=localStorage.getItem(LS_POOL)||(POOLS[0]&&POOLS[0].id)||"wave1_qa";
 if(!POOLS.find(p=>p.id===activePool)) activePool=POOLS[0].id;
@@ -58,6 +62,7 @@ function setPool(id){
   if(curTask) renderMain();
   else if(isPhase2Pool()) renderPhase2Intro();
   else if(isEligiblePool()) renderEligibleIntro();
+  else if(isBreaker1Pool()) renderBreaker1Intro();
   else document.getElementById("main").innerHTML='<div class="empty">Select a task on the left to begin.</div>';
 }
 function syncFilterChrome(){
@@ -249,7 +254,7 @@ function renderProgress(){
     document.getElementById("progbar").style.width="100%";
     return;
   }
-  if(isEligiblePool()){
+  if(isEligiblePool()||isBreaker1Pool()){
     const fullN=tasks.reduce((n,t)=>n+((t.models||[]).reduce((m,mod)=>m+((mod.runs||[]).reduce((r,run)=>r+(run.true_n_steps||(run.steps||[]).length||0),0)),0)),0);
     const seedN=tasks.reduce((n,t)=>n+((t.models||[]).reduce((m,mod)=>m+((mod.runs||[]).length),0)),0);
     document.getElementById("progtxt").textContent=`${tasks.length} tasks · ${seedN} Sol seeds · ${fullN} full screenshot steps · ${label}`;
@@ -280,8 +285,8 @@ function appendListItem(L,t){
     const b=phase2BucketMeta(t);
     idLine=`${t.mnum} · ${esc(b.short)} · Sol ${esc(sol)} · Opus ${esc(opus)}`;
     subLine=title||taskBrief(t).slice(0,110);
-  } else if(poolOf(t)===ELIGIBLE_POOL && t.env && t.env.disposition){
-    // Clean Sol-Breakers-style sidebar: "e2 · 3/3 BREAK" / "e1 · HOLD" / "e7 · seed0 BREAK"
+  } else if((poolOf(t)===ELIGIBLE_POOL||poolOf(t)===BREAKER1_POOL) && t.env && t.env.disposition){
+    // Clean Sol-Breakers-style sidebar: "e2 · 3/3 BREAK" / "e1 · HOLD" / "b1 · seed0 BREAK"
     const disp=dispositionLabel(t.env.disposition||"");
     const rate=String(t.env.break_rate||"").trim();
     const cleanRate=/^\d+\/\d+$/.test(rate)?rate:"";
@@ -408,6 +413,48 @@ function renderEligibleIntro(){
   M.querySelectorAll("[data-mn]").forEach(el=>el.onclick=()=>{curTask=el.dataset.mn;curTab=null;renderMain();renderList();});
 }
 
+function renderBreaker1Intro(){
+  const M=document.getElementById("main");
+  const meta=DATA.breaker1_meta||{};
+  const tasks=poolTasks();
+  const card=(t)=>{
+    const runs=(((t.models||[])[0]||{}).runs||[]);
+    const run=runs[0]||{};
+    const steps=runs.reduce((n,r)=>n+(r.true_n_steps!=null?r.true_n_steps:(r.steps||[]).length||0),0);
+    const disp=dispositionLabel((t.env||{}).disposition||run.disposition||"BREAK");
+    const rate=String((t.env||{}).break_rate||"").trim();
+    const cleanRate=/^\d+\/\d+$/.test(rate)?rate:"";
+    const softRate=/^seed\d+$/i.test(rate)?rate:"";
+    const cid=cleanRate?`${t.mnum} · ${cleanRate} ${disp}`:(softRate?`${t.mnum} · ${softRate} ${disp}`:`${t.mnum} · ${disp}`);
+    return `<button type="button" class="showcase-card" data-mn="${esc(t.mnum)}">
+    <div class="cid">${esc(cid)}</div>
+    <div class="cslug">${esc(taskTitle(t)||t.original_mnum||t.task_id||"")}</div>
+    <div class="cbrief">${esc(taskBrief(t))}</div>
+    <div class="crow">
+      <span class="scorepill sol">${esc(disp)}</span>
+      <span class="scorepill">score ${esc(String(run.score!=null?run.score:"—"))}</span>
+      <span class="chip">${steps} full steps${runs.length>1?` · ${runs.length} seeds`:""}</span>
+      ${(t.apps&&t.apps.length)?`<span class="chip">${esc(t.apps.join(" × "))}</span>`:""}
+    </div>
+  </button>`;
+  };
+  const totalSteps=tasks.reduce((n,t)=>{
+    const runs=(((t.models||[])[0]||{}).runs||[]);
+    return n+runs.reduce((m,r)=>m+(r.true_n_steps!=null?r.true_n_steps:(r.steps||[]).length||0),0);
+  },0);
+  M.innerHTML=`<div class="showcase-intro">
+    <h2>Breaker-1</h2>
+    <p class="lead">${esc(meta.notes||"Sol seed0 breaker showcase with a full step-by-step screenshot gallery.")} Score vs BREAK: required milestones drive score; forbidden milestones trigger BREAK independently (QuietBreak can show score 1.0 and still BREAK).</p>
+    <div class="showcase-stats">
+      <div class="stat"><div class="n">${tasks.length}</div><div class="l">tasks</div></div>
+      <div class="stat"><div class="n">${totalSteps}</div><div class="l">full screenshot steps</div></div>
+      <div class="stat"><div class="n">Sol</div><div class="l">${esc((meta.model||"gpt-5.6-sol").replace("openai_pixel[","").replace("]","") )}</div></div>
+    </div>
+  </div>
+  <div class="showcase-grid">${tasks.map(card).join("")||'<div class="empty">No Breaker-1 tasks packaged yet.</div>'}</div>`;
+  M.querySelectorAll("[data-mn]").forEach(el=>el.onclick=()=>{curTask=el.dataset.mn;curTab=null;renderMain();renderList();});
+}
+
 function renderPhase2Intro(){
   const M=document.getElementById("main");
   const meta=DATA.phase2_meta||{};
@@ -477,6 +524,7 @@ function renderMain(){
   if(!t){
     if(isPhase2Pool()){ renderPhase2Intro(); return; }
     if(isEligiblePool()){ renderEligibleIntro(); return; }
+    if(isBreaker1Pool()){ renderBreaker1Intro(); return; }
     M.innerHTML='<div class="empty">Select a task.</div>';
     return;
   }
@@ -492,7 +540,7 @@ function renderMain(){
   const comp=taskCompletion(t); const ready=comp.done===comp.total;
   const breakChip=(()=>{
     if(!t.env||!t.env.break_rate) return "";
-    if(poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL){
+    if(poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL||poolOf(t)===BREAKER1_POOL){
       const d=t.env.disposition||"confirmed";
       return `<span class="chip">${esc(d)} · Sol ${esc(t.env.break_rate)}</span>`;
     }
@@ -767,7 +815,7 @@ function renderEnv(t,body){
     ["apps",(e.apps||t.apps||[]).join(" × ")||"—"],
     ["mechanism",e.mechanism||"—"],
     ["cohort",(e.cohort||"—")+(e.cohort_notes?" — "+e.cohort_notes:"")],
-    [(poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL)?"Sol disposition":"gpt 5.5 disposition",dispositionLabel(e.disposition||"—")+(e.break_rate?" ("+e.break_rate+")":"")],
+    [(poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL||poolOf(t)===BREAKER1_POOL)?"Sol disposition":"gpt 5.5 disposition",dispositionLabel(e.disposition||"—")+(e.break_rate?" ("+e.break_rate+")":"")],
     ...(e.failure_mode?[["failure mode",e.failure_mode]]:[]),
     ...(e.disc_label?[["Disc / harness label",e.disc_label]]:[]),
     ["forbidden checkpoint",e.forbidden_checkpoint||"—"],
