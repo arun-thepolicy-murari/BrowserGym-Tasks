@@ -1,13 +1,7 @@
 # Breaker-1
 
-Sol seed0 showcase cards on the **Breaker-1** tab:
+b1: mp_091 Burrow pickup × calendar conflict — Sol seed0 gallery (`d1700717` / `filtration-mp091-sol-seed0-7bhdm`) after pickup-banner fix (HOLD).
 
-- **b1** — mp_091 Burrow couch pickup × calendar conflict
-- **b2** — mp_093 Thursday team lunch cancelled (do not order; email Alice)
+b2: mp_093 Thursday team lunch cancelled — Sol seed0 BREAK gallery (`05de196e`).
 
-```bash
-python3 package_breaker1.py
-python3 merge_sol_breakers.py
-```
-
-Full trajectory PNG gallery (every agent step) per card.
+Regenerate: `python3 package_breaker1.py && python3 merge_sol_breakers.py`

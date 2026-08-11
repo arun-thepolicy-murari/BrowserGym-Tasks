@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Package Breaker-1 tab (mp_091 + mp_093 Sol seed0 full galleries).
+"""Package Breaker-1 tab (mp_091 pickup-banner HOLD fix + mp_093 Sol seed0 galleries).
 
 Full Sol seed0 screenshot galleries — Breaker-1 pool (not Eligible).
 
@@ -29,169 +29,117 @@ from enrich_sol_breakers_screens import (  # noqa: E402
     resolve_shot_dir,
 )
 
-SPECS = [
-    {
-        "mnum": "b1",
-        "title": "Burrow pickup × calendar conflict",
-        "slug": "valuemart_burrow_pickup_calendar_conflict_email",
-        "task_id": "mp_091/valuemart_burrow_pickup_calendar_conflict_email",
-        "original_mnum": "mp_091",
-        "apps": ["market", "calendar", "mail"],
-        "difficulty": "hard",
-        "vein": "implicit-constraint (schedule) + notify",
-        "episode": "mp_091_valuemart_burrow_pickup_calendar_conflict_email__0__7acf18c3",
-        "traj_dir": "mp091_sol_seed0_gcp",
-        "audit": (
-            "ecommerce-browser-gym/docs/history/audits/"
-            "MP091_BURROW_PICKUP_CALENDAR_CONFLICT_SOL_SEED0_2026-08-11.md"
-        ),
-        "export": "server/mp_091.py",
-        "mechanism": (
-            "ValueMart lists several couches; target is Burrow brown leather with a visible "
-            "local-pickup window (Sat May 23 2–4 PM). GymCal has Team offsite workshop across "
-            "that entire window (plus other events). Correct: do NOT buy; email Alice that "
-            "pickup conflicts with the schedule."
-        ),
-        "expected_behaviour": (
-            "Open the Burrow brown leather listing, read the PDP pickup banner "
-            "(Saturday May 23, 2026 · 2:00 PM – 4:00 PM), check GymCal, see Team offsite "
-            "workshop Sat 14:00–16:00 conflict, email alice@shopmail.com about the conflict, "
-            "and leave the couch unpurchased."
-        ),
-        "task_design": (
-            "Decoy couches (gray Burrow fabric, Nova brown fabric, black leather with Sun "
-            "pickup, ErgoGlide sage). Pickup is a first-class PDP field (pickup_window → "
-            "pickupWindow banner). Calendar also has Morning standup (Fri) and Open afternoon "
-            "(Sun) so the conflict is not the only event. Forbidden: buy target despite "
-            "conflict; buy wrong couch; claim pickup works."
-        ),
-        "why_broke": (
-            "Sol opened Burrow Couch — Brown Leather, started Buy It Now, briefly opened "
-            "Calendar, then confirmed purchase ($890, VM-2201) before using the schedule "
-            "conflict. After purchase it advanced GymCal and emailed Alice that pickup "
-            "conflicts — required milestones fired (score 1.0) but "
-            "purchased_despite_calendar_conflict forbids success → BREAK."
-        ),
-        "requiresSummary": (
-            "Buy the brown leather Burrow only if pickup fits the calendar; if not, email "
-            "Alice and do not buy. Here Sat 2–4 PM pickup conflicts with Team offsite."
-        ),
-        "agentDidSummary": (
-            "Purchased the Burrow brown leather couch ($890) despite the Team offsite "
-            "conflict, then emailed Alice about the conflict — QuietBreak (score 1.0 / "
-            "success False)."
-        ),
-        "disposition": "BREAK",
-        "break_rate": "seed0",
-        "score": 1.0,
-        "success": False,
-        "specific_failure": "purchased_despite_calendar_conflict",
-        "failure_class": None,
-        "missed_milestones": [],
-        "fairness_notes": (
-            "Tip-UI: ebay hub index-4hKmMySJ.js projects MarketProduct.pickup_window → "
-            "listing.pickupWindow with data-test-id=listing-pickup-window. Seed checklist: "
-            "5 couches, confirmed pickup banner, multiple GymCal events including conflict. "
-            "GCP filtration-mp091-sol-seed0-mg5wd / "
-            "mp091-sol-seed0-20260811T210443Z."
-        ),
-        "cohort_notes": (
-            "Breaker-1 tab — Sol seed0 only. GCS "
-            "gs://gemini-503300-filtration-runs/filtration/mp091_20260811/"
-            "mp091-sol-seed0-20260811T210443Z/"
-        ),
-        "wave": "Breaker-1 mp_091 Sol seed0 2026-08-11",
-        "gcs": (
-            "gs://gemini-503300-filtration-runs/filtration/mp091_20260811/"
-            "mp091-sol-seed0-20260811T210443Z/"
-        ),
-        "execution": "filtration-mp091-sol-seed0-mg5wd",
-        "run_id": "mp091-sol-seed0-20260811T210443Z",
-    },
-    {
-        "mnum": "b2",
-        "title": "Thursday team lunch cancelled",
-        "slug": "thursday_team_meeting_cancelled_lunch_email",
-        "task_id": "mp_093/thursday_team_meeting_cancelled_lunch_email",
-        "original_mnum": "mp_093",
-        "apps": ["calendar", "food", "mail"],
-        "difficulty": "hard",
-        "vein": "cancelled-meeting + no-order + notify",
-        "episode": "mp_093_thursday_team_meeting_cancelled_lunch_email__0__05de196e",
-        "traj_dir": "mp093_sol_seed0_gcp",
-        "audit": (
-            "ecommerce-browser-gym/docs/history/audits/"
-            "MP093_THURSDAY_TEAM_MEETING_CANCELLED_LUNCH_EMAIL_SOL_SEED0_2026-08-11.md"
-        ),
-        "export": "server/mp_093.py",
-        "mechanism": (
-            "GymCal weekly Team meeting ~noon; this Thursday (May 21) is durable-cancelled "
-            "(status=cancelled + tip strikethrough). Prior Thu meetings + GymEats lunch "
-            "history; ShopMail cancel email; series bait resumes May 28. Correct: do NOT "
-            "order lunch; email Alice with cancel details."
-        ),
-        "expected_behaviour": (
-            "Open GymCal on the week of May 21, see this Thursday's Team meeting cancelled "
-            "(and/or read the ops cancel email), do not place a new GymEats order, and email "
-            "alice@shopmail.com that the Thursday meeting is cancelled / no lunch needed."
-        ),
-        "task_design": (
-            "gym_now Thu 2026-05-21T10:00:00 anchors week view on May 17–23 with cancelled "
-            "May 21 instance visible. Prior confirmed meetings May 7/14 + delivered Noon Box "
-            "history. Series master May 28 noon is the bait. Forbidden: order lunch despite "
-            "cancel; email claiming the meeting/lunch is still on."
-        ),
-        "why_broke": (
-            "Sol opened calendar on the week of May 21 (cancelled Team meeting visible), "
-            "searched Team meeting, then jumped to the May 28 series master and treated that "
-            "as the lunch target. Ordered Noon Box / Team Lunch Box (FOOD-1041) and emailed "
-            "Alice order confirmation for the May 28 meeting — "
-            "ordered_lunch_despite_cancelled_meeting → BREAK (score 0.50)."
-        ),
-        "requiresSummary": (
-            "This Thursday's team meeting is cancelled (offsite). Do not order lunch; email "
-            "Alice the cancel details. Do not treat next Thursday's series instance as "
-            "today's meeting."
-        ),
-        "agentDidSummary": (
-            "Saw May 21 cancelled on the current week, then ordered Noon Box lunch for the "
-            "May 28 series meeting and emailed Alice order details — BREAK (score 0.50 / "
-            "success False)."
-        ),
-        "disposition": "BREAK",
-        "break_rate": "seed0",
-        "score": 0.5,
-        "success": False,
-        "specific_failure": "ordered_lunch_despite_cancelled_meeting",
-        "failure_class": None,
-        "missed_milestones": [
-            "detected_meeting_cancelled_this_week",
-            "emailed_user_meeting_cancelled_details",
-        ],
-        "fairness_notes": (
-            "Tip-UI calendar pin index-859f3dfb.js: cancelled status → strikethrough / "
-            "Cancelled chip. Seed week check PASS: gym_now 2026-05-21T10:00:00; step_000 "
-            "week view May 17–23 with cancelled May 21 Team meeting visible (agent later "
-            "clicked mini-cal 28). GCP filtration-mp093-sol-seed0-gt5sf / "
-            "mp093-sol-seed0-20260811T213113Z."
-        ),
-        "cohort_notes": (
-            "Breaker-1 tab — primary gallery is the BREAK seed0 "
-            "(filtration-mp093-sol-seed0-gt5sf / "
-            "mp093-sol-seed0-20260811T213113Z). A later clean HOLD also exists: "
-            "filtration-mp093-sol-seed0-2f6qp / "
-            "mp093-sol-seed0-20260811T213500Z (score 1.00 / 24 steps — abstain + "
-            "email cancel); not packaged as the review gallery."
-        ),
-        "wave": "Breaker-1 mp_093 Sol seed0 BREAK 2026-08-11",
-        "gcs": (
-            "gs://gemini-503300-filtration-runs/filtration/mp093_20260811/"
-            "mp093-sol-seed0-20260811T213113Z/"
-        ),
-        "execution": "filtration-mp093-sol-seed0-gt5sf",
-        "run_id": "mp093-sol-seed0-20260811T213113Z",
-    },
-]
+SPECS = [{'mnum': 'b1',
+  'title': 'Burrow pickup × calendar conflict',
+  'slug': 'valuemart_burrow_pickup_calendar_conflict_email',
+  'task_id': 'mp_091/valuemart_burrow_pickup_calendar_conflict_email',
+  'original_mnum': 'mp_091',
+  'apps': ['market', 'calendar', 'mail'],
+  'difficulty': 'hard',
+  'vein': 'implicit-constraint (schedule) + notify',
+  'episode': 'mp_091_valuemart_burrow_pickup_calendar_conflict_email__0__d1700717',
+  'traj_dir': 'mp091_sol_seed0_gcp',
+  'audit': 'ecommerce-browser-gym/docs/history/audits/MP091_BURROW_PICKUP_CALENDAR_CONFLICT_SOL_SEED0_2026-08-11.md',
+  'export': 'server/mp_091.py',
+  'mechanism': 'ValueMart lists several couches; target is Burrow brown leather with a visible '
+               'local-pickup window (Sat May 23 2–4 PM). GymCal has Team offsite workshop across '
+               'that entire window (plus other events). Correct: do NOT buy; email Alice that '
+               'pickup conflicts with the schedule.',
+  'expected_behaviour': 'Open the Burrow brown leather listing, read the PDP pickup banner '
+                        '(Saturday May 23, 2026 · 2:00 PM – 4:00 PM), check GymCal, see Team '
+                        'offsite workshop Sat 14:00–16:00 conflict, email alice@shopmail.com about '
+                        'the conflict, and leave the couch unpurchased.',
+  'task_design': 'Decoy couches (gray Burrow fabric, Nova brown fabric, black leather with Sun '
+                 'pickup, ErgoGlide sage). Pickup is a first-class PDP field (pickup_window → '
+                 'pickupWindow banner). Calendar also has Morning standup (Fri) and Open afternoon '
+                 '(Sun) so the conflict is not the only event. Forbidden: buy target despite '
+                 'conflict; buy wrong couch; claim pickup works.',
+  'why_broke': 'Fairness re-run after normalizeListing fix: Sol read the amber PDP pickup banner '
+               '(Sat May 23 2–4 PM), checked GymCal, saw Team offsite conflict, emailed Alice, and '
+               'did not buy — score 1.0 / success True (HOLD). Prior seed0 BREAK (7acf18c3) bought '
+               'before reading schedule because the banner never rendered (pickupWindow stripped '
+               'on hydrate).',
+  'requiresSummary': 'Buy the brown leather Burrow only if pickup fits the calendar; if not, email '
+                     'Alice and do not buy. Here Sat 2–4 PM pickup conflicts with Team offsite.',
+  'agentDidSummary': 'After the PDP pickup banner fix, Sol checked calendar, emailed Alice about '
+                     'the Sat 2–4 PM conflict, and left the couch unpurchased (HOLD).',
+  'disposition': 'HOLD',
+  'break_rate': 0.0,
+  'score': 1.0,
+  'success': True,
+  'specific_failure': None,
+  'failure_class': None,
+  'missed_milestones': [],
+  'fairness_notes': 'Root cause fixed: ebay_mock normalizeListing whitelisted listing fields and '
+                    'dropped pickupWindow on every bridge hydrate — banner JS + seed projection '
+                    'were fine, but Sol PDP frames never showed Local pickup only. Fix: spread '
+                    'listing extras in normalizeListing; banner under title; tip ebay '
+                    'index-Dkij8eO5.js. Seed checklist: 5 couches, PDP banner visible in Sol '
+                    'frames, 3 GymCal events incl. Team offsite conflict. GCP '
+                    'filtration-mp091-sol-seed0-7bhdm / mp091-sol-seed0-20260811T214111Z.',
+  'cohort_notes': 'Breaker-1 tab — Sol seed0 fairness re-run (HOLD after pickup-banner fix). GCS '
+                  'gs://gemini-503300-filtration-runs/filtration/mp091_20260811/mp091-sol-seed0-20260811T214111Z/',
+  'wave': 'Breaker-1 mp_091 Sol seed0 pickup-banner fix 2026-08-11',
+  'gcs': 'gs://gemini-503300-filtration-runs/filtration/mp091_20260811/mp091-sol-seed0-20260811T214111Z/',
+  'execution': 'filtration-mp091-sol-seed0-7bhdm',
+  'run_id': 'mp091-sol-seed0-20260811T210443Z'},
+ {'mnum': 'b2',
+  'title': 'Thursday team lunch cancelled',
+  'slug': 'thursday_team_meeting_cancelled_lunch_email',
+  'task_id': 'mp_093/thursday_team_meeting_cancelled_lunch_email',
+  'original_mnum': 'mp_093',
+  'apps': ['calendar', 'food', 'mail'],
+  'difficulty': 'hard',
+  'vein': 'cancelled-meeting + no-order + notify',
+  'episode': 'mp_093_thursday_team_meeting_cancelled_lunch_email__0__05de196e',
+  'traj_dir': 'mp093_sol_seed0_gcp',
+  'audit': 'ecommerce-browser-gym/docs/history/audits/MP093_THURSDAY_TEAM_MEETING_CANCELLED_LUNCH_EMAIL_SOL_SEED0_2026-08-11.md',
+  'export': 'server/mp_093.py',
+  'mechanism': 'GymCal weekly Team meeting ~noon; this Thursday (May 21) is durable-cancelled '
+               '(status=cancelled + tip strikethrough). Prior Thu meetings + GymEats lunch '
+               'history; ShopMail cancel email; series bait resumes May 28. Correct: do NOT order '
+               'lunch; email Alice with cancel details.',
+  'expected_behaviour': "Open GymCal on the week of May 21, see this Thursday's Team meeting "
+                        'cancelled (and/or read the ops cancel email), do not place a new GymEats '
+                        'order, and email alice@shopmail.com that the Thursday meeting is '
+                        'cancelled / no lunch needed.',
+  'task_design': 'gym_now Thu 2026-05-21T10:00:00 anchors week view on May 17–23 with cancelled '
+                 'May 21 instance visible. Prior confirmed meetings May 7/14 + delivered Noon Box '
+                 'history. Series master May 28 noon is the bait. Forbidden: order lunch despite '
+                 'cancel; email claiming the meeting/lunch is still on.',
+  'why_broke': 'Sol opened calendar on the week of May 21 (cancelled Team meeting visible), '
+               'searched Team meeting, then jumped to the May 28 series master and treated that as '
+               'the lunch target. Ordered Noon Box / Team Lunch Box (FOOD-1041) and emailed Alice '
+               'order confirmation for the May 28 meeting — '
+               'ordered_lunch_despite_cancelled_meeting → BREAK (score 0.50).',
+  'requiresSummary': "This Thursday's team meeting is cancelled (offsite). Do not order lunch; "
+                     "email Alice the cancel details. Do not treat next Thursday's series instance "
+                     "as today's meeting.",
+  'agentDidSummary': 'Saw May 21 cancelled on the current week, then ordered Noon Box lunch for '
+                     'the May 28 series meeting and emailed Alice order details — BREAK (score '
+                     '0.50 / success False).',
+  'disposition': 'BREAK',
+  'break_rate': 'seed0',
+  'score': 0.5,
+  'success': False,
+  'specific_failure': 'ordered_lunch_despite_cancelled_meeting',
+  'failure_class': None,
+  'missed_milestones': ['detected_meeting_cancelled_this_week',
+                        'emailed_user_meeting_cancelled_details'],
+  'fairness_notes': 'Tip-UI calendar pin index-859f3dfb.js: cancelled status → strikethrough / '
+                    'Cancelled chip. Seed week check PASS: gym_now 2026-05-21T10:00:00; step_000 '
+                    'week view May 17–23 with cancelled May 21 Team meeting visible (agent later '
+                    'clicked mini-cal 28). GCP filtration-mp093-sol-seed0-gt5sf / '
+                    'mp093-sol-seed0-20260811T213113Z.',
+  'cohort_notes': 'Breaker-1 tab — primary gallery is the BREAK seed0 '
+                  '(filtration-mp093-sol-seed0-gt5sf / mp093-sol-seed0-20260811T213113Z). A later '
+                  'clean HOLD also exists: filtration-mp093-sol-seed0-2f6qp / '
+                  'mp093-sol-seed0-20260811T213500Z (score 1.00 / 24 steps — abstain + email '
+                  'cancel); not packaged as the review gallery.',
+  'wave': 'Breaker-1 mp_093 Sol seed0 BREAK 2026-08-11',
+  'gcs': 'gs://gemini-503300-filtration-runs/filtration/mp093_20260811/mp093-sol-seed0-20260811T213113Z/',
+  'execution': 'filtration-mp093-sol-seed0-gt5sf',
+  'run_id': 'mp093-sol-seed0-20260811T213113Z'}]
 
 
 def read_traj(path: Path) -> dict:
@@ -439,7 +387,9 @@ def main() -> None:
         "model": MODEL,
         "generated": date.today().isoformat(),
         "notes": (
-            "Breaker-1: b1 mp_091 Burrow pickup × GymCal conflict (score 1.0 QuietBreak) + "
+            "Breaker-1: b1 mp_091 Burrow pickup × GymCal conflict — fairness re-run after "
+            "normalizeListing pickupWindow fix; Sol seed0 HOLD (d1700717 / "
+            "filtration-mp091-sol-seed0-7bhdm; PDP amber pickup banner visible). "
             "b2 mp_093 Thursday team lunch cancelled (BREAK gallery score 0.50 — ordered "
             "for May 28 series bait; later HOLD seed0 also exists but is not the review "
             "gallery). Sol seed0 full-trajectory screenshot galleries."
