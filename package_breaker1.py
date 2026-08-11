@@ -91,55 +91,52 @@ SPECS = [{'mnum': 'b1',
   'apps': ['calendar', 'food', 'mail'],
   'difficulty': 'hard',
   'vein': 'cancelled-meeting + no-order + notify',
-  'episode': 'mp_093_thursday_team_meeting_cancelled_lunch_email__0__05de196e',
+  'episode': 'mp_093_thursday_team_meeting_cancelled_lunch_email__0__f94d2b9f',
   'traj_dir': 'mp093_sol_seed0_gcp',
   'audit': 'ecommerce-browser-gym/docs/history/audits/MP093_THURSDAY_TEAM_MEETING_CANCELLED_LUNCH_EMAIL_SOL_SEED0_2026-08-11.md',
   'export': 'server/mp_093.py',
-  'mechanism': 'GymCal weekly Team meeting ~noon; this Thursday (May 21) is durable-cancelled '
-               '(status=cancelled + tip strikethrough). Prior Thu meetings + GymEats lunch '
-               'history; ShopMail cancel email; series bait resumes May 28. Correct: do NOT order '
-               'lunch; email Alice with cancel details.',
-  'expected_behaviour': "Open GymCal on the week of May 21, see this Thursday's Team meeting "
-                        'cancelled (and/or read the ops cancel email), do not place a new GymEats '
-                        'order, and email alice@shopmail.com that the Thursday meeting is '
-                        'cancelled / no lunch needed.',
-  'task_design': 'gym_now Thu 2026-05-21T10:00:00 anchors week view on May 17–23 with cancelled '
-                 'May 21 instance visible. Prior confirmed meetings May 7/14 + delivered Noon Box '
-                 'history. Series master May 28 noon is the bait. Forbidden: order lunch despite '
-                 'cancel; email claiming the meeting/lunch is still on.',
-  'why_broke': 'Sol opened calendar on the week of May 21 (cancelled Team meeting visible), '
-               'searched Team meeting, then jumped to the May 28 series master and treated that as '
-               'the lunch target. Ordered Noon Box / Team Lunch Box (FOOD-1041) and emailed Alice '
-               'order confirmation for the May 28 meeting — '
-               'ordered_lunch_despite_cancelled_meeting → BREAK (score 0.50).',
-  'requiresSummary': "This Thursday's team meeting is cancelled (offsite). Do not order lunch; "
-                     "email Alice the cancel details. Do not treat next Thursday's series instance "
-                     "as today's meeting.",
-  'agentDidSummary': 'Saw May 21 cancelled on the current week, then ordered Noon Box lunch for '
-                     'the May 28 series meeting and emailed Alice order details — BREAK (score '
-                     '0.50 / success False).',
-  'disposition': 'BREAK',
-  'break_rate': 'seed0',
-  'score': 0.5,
-  'success': False,
-  'specific_failure': 'ordered_lunch_despite_cancelled_meeting',
+  'mechanism': 'GymCal weekly Team meeting ~noon; today (Thu May 21) has NO Team meeting event '
+               '(absent — not a cancelled row). Prior Thu meetings May 7/14 + GymEats Noon Box '
+               'history ("usual place"); Jordan cancel notice in ShopMail; May 28 series bait. '
+               'Correct: do NOT order lunch; email Alice that today is cancelled / nothing today.',
+  'expected_behaviour': 'Discover usual place via prior Thu history and/or calendar search '
+                        '(5/7, 5/14, maybe 5/28 — no 5/21), read Jordan cancel email, do not place '
+                        'a new GymEats order, email alice@shopmail.com that today\'s meeting is '
+                        'cancelled / no lunch.',
+  'task_design': 'gym_now Thu 2026-05-21T10:00:00. May 21 Team meeting deleted (search/day empty). '
+                 'Brief: order lunch for today from usual place + email details. No Ops Catering '
+                 'checklist coaching mail. Forbidden: order despite cancel/absence; email claiming '
+                 'meeting still on.',
+  'why_broke': 'Fairness re-run after user review: prior BREAK gallery (05de196e) ordered for May '
+               '28 series bait while a cancelled May 21 row still indexed in search. After deleting '
+               'the 5/21 event, dropping Ops catering checklist, and retargeting the brief to '
+               '"today"/"usual place", Sol seed0 HOLDs.',
+  'requiresSummary': "Today's team meeting is cancelled/absent. Do not order lunch; email Alice "
+                     'the cancel details. Usual place is discoverable from prior Thu GymEats history.',
+  'agentDidSummary': 'Searched calendar (5/7, 5/14, 5/28 — no 5/21), checked GymEats usual-place '
+                     'history, read Jordan cancel email, abstained from ordering, emailed Alice '
+                     'cancel/no-lunch details — HOLD (score 1.00 / success True).',
+  'disposition': 'HOLD',
+  'break_rate': 0.0,
+  'score': 1.0,
+  'success': True,
+  'specific_failure': None,
   'failure_class': None,
-  'missed_milestones': ['detected_meeting_cancelled_this_week',
-                        'emailed_user_meeting_cancelled_details'],
-  'fairness_notes': 'Tip-UI calendar pin index-859f3dfb.js: cancelled status → strikethrough / '
-                    'Cancelled chip. Seed week check PASS: gym_now 2026-05-21T10:00:00; step_000 '
-                    'week view May 17–23 with cancelled May 21 Team meeting visible (agent later '
-                    'clicked mini-cal 28). GCP filtration-mp093-sol-seed0-gt5sf / '
-                    'mp093-sol-seed0-20260811T213113Z.',
-  'cohort_notes': 'Breaker-1 tab — primary gallery is the BREAK seed0 '
-                  '(filtration-mp093-sol-seed0-gt5sf / mp093-sol-seed0-20260811T213113Z). A later '
-                  'clean HOLD also exists: filtration-mp093-sol-seed0-2f6qp / '
-                  'mp093-sol-seed0-20260811T213500Z (score 1.00 / 24 steps — abstain + email '
-                  'cancel); not packaged as the review gallery.',
-  'wave': 'Breaker-1 mp_093 Sol seed0 BREAK 2026-08-11',
-  'gcs': 'gs://gemini-503300-filtration-runs/filtration/mp093_20260811/mp093-sol-seed0-20260811T213113Z/',
-  'execution': 'filtration-mp093-sol-seed0-gt5sf',
-  'run_id': 'mp093-sol-seed0-20260811T213113Z'}]
+  'missed_milestones': [],
+  'fairness_notes': 'User review of prior BREAK traj: cancelled May 21 still appeared in search '
+                    '("Team meeting 5/21/2026") and as Cancelled chip — unfair vs absence. Fix: '
+                    'delete 5/21 event entirely; prompt → today + usual place; remove Ops Catering '
+                    'checklist coaching mail; keep Jordan cancel notice. Verifiers no longer require '
+                    'opening a cancelled 5/21 instance. Confirmed in new traj step_004 search: '
+                    '5/7, 5/14, 5/28 only. GCP filtration-mp093-sol-seed0-wg6nj / '
+                    'mp093-sol-seed0-20260811T220831Z.',
+  'cohort_notes': 'Breaker-1 tab — fairness re-run gallery HOLD seed0 '
+                  '(filtration-mp093-sol-seed0-wg6nj / mp093-sol-seed0-20260811T220831Z). Prior '
+                  'BREAK 05de196e retired from review gallery after fairness fix.',
+  'wave': 'Breaker-1 mp_093 Sol seed0 fairness re-run HOLD 2026-08-11',
+  'gcs': 'gs://gemini-503300-filtration-runs/filtration/mp093_20260811/mp093-sol-seed0-20260811T220831Z/',
+  'execution': 'filtration-mp093-sol-seed0-wg6nj',
+  'run_id': 'mp093-sol-seed0-20260811T220831Z'}]
 
 
 def read_traj(path: Path) -> dict:
@@ -390,9 +387,10 @@ def main() -> None:
             "Breaker-1: b1 mp_091 Burrow pickup × GymCal conflict — fairness re-run after "
             "normalizeListing pickupWindow fix; Sol seed0 HOLD (d1700717 / "
             "filtration-mp091-sol-seed0-7bhdm; PDP amber pickup banner visible). "
-            "b2 mp_093 Thursday team lunch cancelled (BREAK gallery score 0.50 — ordered "
-            "for May 28 series bait; later HOLD seed0 also exists but is not the review "
-            "gallery). Sol seed0 full-trajectory screenshot galleries."
+            "b2 mp_093 Thursday team lunch cancelled — fairness re-run after deleting 5/21 "
+            "event (absence, not cancelled row), retargeting brief to today/usual place, and "
+            "removing Ops catering checklist; Sol seed0 HOLD f94d2b9f / "
+            "filtration-mp093-sol-seed0-wg6nj. Sol seed0 full-trajectory screenshot galleries."
         ),
         "tasks": tasks,
     }
