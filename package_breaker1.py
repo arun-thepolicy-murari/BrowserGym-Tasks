@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Package Breaker-1 tab (mp_091 pickup-banner HOLD fix + mp_093 Sol seed0 galleries).
+"""Package Breaker-1 tab (mp_091 Burrow pickup × calendar conflict Sol seed0 gallery).
 
 Full Sol seed0 screenshot galleries — Breaker-1 pool (not Eligible).
+mp_093 removed after fairness re-run HOLD (not a BREAK).
 
 Usage:
   python3 package_breaker1.py
@@ -82,61 +83,7 @@ SPECS = [{'mnum': 'b1',
   'wave': 'Breaker-1 mp_091 Sol seed0 pickup-banner fix 2026-08-11',
   'gcs': 'gs://gemini-503300-filtration-runs/filtration/mp091_20260811/mp091-sol-seed0-20260811T214111Z/',
   'execution': 'filtration-mp091-sol-seed0-7bhdm',
-  'run_id': 'mp091-sol-seed0-20260811T210443Z'},
- {'mnum': 'b2',
-  'title': 'Thursday team lunch cancelled',
-  'slug': 'thursday_team_meeting_cancelled_lunch_email',
-  'task_id': 'mp_093/thursday_team_meeting_cancelled_lunch_email',
-  'original_mnum': 'mp_093',
-  'apps': ['calendar', 'food', 'mail'],
-  'difficulty': 'hard',
-  'vein': 'cancelled-meeting + no-order + notify',
-  'episode': 'mp_093_thursday_team_meeting_cancelled_lunch_email__0__f94d2b9f',
-  'traj_dir': 'mp093_sol_seed0_gcp',
-  'audit': 'ecommerce-browser-gym/docs/history/audits/MP093_THURSDAY_TEAM_MEETING_CANCELLED_LUNCH_EMAIL_SOL_SEED0_2026-08-11.md',
-  'export': 'server/mp_093.py',
-  'mechanism': 'GymCal weekly Team meeting ~noon; today (Thu May 21) has NO Team meeting event '
-               '(absent — not a cancelled row). Prior Thu meetings May 7/14 + GymEats Noon Box '
-               'history ("usual place"); Jordan cancel notice in ShopMail; May 28 series bait. '
-               'Correct: do NOT order lunch; email Alice that today is cancelled / nothing today.',
-  'expected_behaviour': 'Discover usual place via prior Thu history and/or calendar search '
-                        '(5/7, 5/14, maybe 5/28 — no 5/21), read Jordan cancel email, do not place '
-                        'a new GymEats order, email alice@shopmail.com that today\'s meeting is '
-                        'cancelled / no lunch.',
-  'task_design': 'gym_now Thu 2026-05-21T10:00:00. May 21 Team meeting deleted (search/day empty). '
-                 'Brief: order lunch for today from usual place + email details. No Ops Catering '
-                 'checklist coaching mail. Forbidden: order despite cancel/absence; email claiming '
-                 'meeting still on.',
-  'why_broke': 'Fairness re-run after user review: prior BREAK gallery (05de196e) ordered for May '
-               '28 series bait while a cancelled May 21 row still indexed in search. After deleting '
-               'the 5/21 event, dropping Ops catering checklist, and retargeting the brief to '
-               '"today"/"usual place", Sol seed0 HOLDs.',
-  'requiresSummary': "Today's team meeting is cancelled/absent. Do not order lunch; email Alice "
-                     'the cancel details. Usual place is discoverable from prior Thu GymEats history.',
-  'agentDidSummary': 'Searched calendar (5/7, 5/14, 5/28 — no 5/21), checked GymEats usual-place '
-                     'history, read Jordan cancel email, abstained from ordering, emailed Alice '
-                     'cancel/no-lunch details — HOLD (score 1.00 / success True).',
-  'disposition': 'HOLD',
-  'break_rate': 0.0,
-  'score': 1.0,
-  'success': True,
-  'specific_failure': None,
-  'failure_class': None,
-  'missed_milestones': [],
-  'fairness_notes': 'User review of prior BREAK traj: cancelled May 21 still appeared in search '
-                    '("Team meeting 5/21/2026") and as Cancelled chip — unfair vs absence. Fix: '
-                    'delete 5/21 event entirely; prompt → today + usual place; remove Ops Catering '
-                    'checklist coaching mail; keep Jordan cancel notice. Verifiers no longer require '
-                    'opening a cancelled 5/21 instance. Confirmed in new traj step_004 search: '
-                    '5/7, 5/14, 5/28 only. GCP filtration-mp093-sol-seed0-wg6nj / '
-                    'mp093-sol-seed0-20260811T220831Z.',
-  'cohort_notes': 'Breaker-1 tab — fairness re-run gallery HOLD seed0 '
-                  '(filtration-mp093-sol-seed0-wg6nj / mp093-sol-seed0-20260811T220831Z). Prior '
-                  'BREAK 05de196e retired from review gallery after fairness fix.',
-  'wave': 'Breaker-1 mp_093 Sol seed0 fairness re-run HOLD 2026-08-11',
-  'gcs': 'gs://gemini-503300-filtration-runs/filtration/mp093_20260811/mp093-sol-seed0-20260811T220831Z/',
-  'execution': 'filtration-mp093-sol-seed0-wg6nj',
-  'run_id': 'mp093-sol-seed0-20260811T220831Z'}]
+  'run_id': 'mp091-sol-seed0-20260811T210443Z'}]
 
 
 def read_traj(path: Path) -> dict:
@@ -387,10 +334,9 @@ def main() -> None:
             "Breaker-1: b1 mp_091 Burrow pickup × GymCal conflict — fairness re-run after "
             "normalizeListing pickupWindow fix; Sol seed0 HOLD (d1700717 / "
             "filtration-mp091-sol-seed0-7bhdm; PDP amber pickup banner visible). "
-            "b2 mp_093 Thursday team lunch cancelled — fairness re-run after deleting 5/21 "
-            "event (absence, not cancelled row), retargeting brief to today/usual place, and "
-            "removing Ops catering checklist; Sol seed0 HOLD f94d2b9f / "
-            "filtration-mp093-sol-seed0-wg6nj. Sol seed0 full-trajectory screenshot galleries."
+            "mp_093 (former b2) removed after fairness re-run HOLD "
+            "(f94d2b9f / filtration-mp093-sol-seed0-wg6nj) — not a BREAK. "
+            "Sol seed0 full-trajectory screenshot gallery."
         ),
         "tasks": tasks,
     }

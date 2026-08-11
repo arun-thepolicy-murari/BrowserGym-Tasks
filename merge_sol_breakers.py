@@ -57,7 +57,7 @@ POOL_META = {
         "id": BREAKER1_POOL,
         "label": "Breaker-1",
         "short": "Breaker-1",
-        "description": "b1 mp_091 Burrow pickup × calendar conflict + b2 mp_093 Thursday team lunch cancelled — Sol seed0 full-trajectory screenshot review.",
+        "description": "b1 mp_091 Burrow pickup × calendar conflict — Sol seed0 full-trajectory screenshot review (mp_093 removed: fairness HOLD, not BREAK).",
     },
 }
 
