@@ -57,7 +57,7 @@ POOL_META = {
         "id": BREAKER1_POOL,
         "label": "Breaker-1",
         "short": "Breaker-1",
-        "description": "b1–b4 Sol seed0 BREAKs with full trajectory galleries (mp_095/096/097/099). HOLDs excluded (mp_091–094, mp_098).",
+        "description": "b1 mp_091 Burrow couch HOLD (pickup-banner fair traj) + b2–b4 Sol seed0 BREAKs (mp_096/097/099). Full trajectory galleries.",
     },
 }
 

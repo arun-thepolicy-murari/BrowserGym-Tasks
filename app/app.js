@@ -186,7 +186,9 @@ function runState(mn,model,ep){
 function qGet(store,id){ return store[id]||{pass:null,errors:[]}; }   // default UNANSWERED
 function answered(x){ return x && (x.pass===true || x.pass===false || x.pass==="na"); }
 function save(){ localStorage.setItem(LS,JSON.stringify(ann)); renderProgress(); renderList(); }
-function esc(s){return (s||"").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+// Coerce first — Breaker-1 historically stored break_rate as a float (1.0), and
+// Number.prototype has no .replace, which crashed renderMain on card open.
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function fmt(x){return x==null?"—":Math.round(x*100)/100}
 function jsonPre(o){ return `<pre class="code">${esc(JSON.stringify(o,null,2))}</pre>`; }
 function fold(label,inner,open){ return `<details class="fold" ${open?"open":""}><summary>${esc(label)}</summary><div class="foldbody">${inner}</div></details>`; }
@@ -542,9 +544,9 @@ function renderMain(){
     if(!t.env||!t.env.break_rate) return "";
     if(poolOf(t)==="sol_breakers_bridged"||poolOf(t)===ELIGIBLE_POOL||poolOf(t)===BREAKER1_POOL){
       const d=t.env.disposition||"confirmed";
-      return `<span class="chip">${esc(d)} · Sol ${esc(t.env.break_rate)}</span>`;
+      return `<span class="chip">${esc(d)} · Sol ${esc(String(t.env.break_rate))}</span>`;
     }
-    return `<span class="chip">gpt 5.5 broke ${esc(t.env.break_rate)}</span>`;
+    return `<span class="chip">gpt 5.5 broke ${esc(String(t.env.break_rate))}</span>`;
   })();
   let h=`<div class="thead">
     <div class="row1"><h2>${t.mnum}</h2>${taskTitle(t)?`<span class="chip">${esc(taskTitle(t))}</span>`:""}<span class="chip blue">${esc(t.task_id)}</span>
