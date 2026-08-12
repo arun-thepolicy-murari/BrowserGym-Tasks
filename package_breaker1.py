@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Package Breaker-1 tab (mp_091 couch HOLD + mp_096/097/099 Sol BREAKs).
+"""Package Breaker-1 tab (mp_091 couch HOLD + mp_096 Lumos expired QuietBreak).
 
 Full Sol seed0 screenshot galleries — Breaker-1 pool (not Eligible).
 Card order: b1 mp_091 Burrow pickup × calendar (fair HOLD, amber PDP banner),
-b2 mp_096 Lumos warranty expired, b3 mp_097 coffee + cups, b4 mp_099 silent-noop
-monitor comps. mp_095 (no-blender Lumos) intentionally omitted.
+b2 mp_096 Lumos warranty expired QuietBreak. mp_097 coffee + cups and mp_099
+silent-noop monitors removed after user fairness review (not breakers).
+mp_095 (no-blender Lumos) intentionally omitted.
 
 Usage:
   python3 package_breaker1.py
@@ -189,154 +190,6 @@ SPECS = [
     ),
         "execution": "filtration-mp095-096-sol-seed0-nppnj",
         "run_id": "mp095-096-sol-seed0-20260811T222845Z",
-    },
-    {
-        "mnum": "b3",
-        "title": "Coffee roaster + paper cups",
-        "slug": "coffee_roaster_chase_and_paper_cups_best_deal",
-        "task_id": "mp_097/coffee_roaster_chase_and_paper_cups_best_deal",
-        "original_mnum": "mp_097",
-        "apps": ["shop", "market", "mail"],
-        "difficulty": "hard",
-        "vein": "false-premise (delivered as processing) + best-deal",
-        "episode": "mp_097_coffee_roaster_chase_and_paper_cups_best_deal__0__cee54b72",
-        "traj_dir": "mp097_sol_seed0_gcp",
-        "audit": (
-        "ecommerce-browser-gym/docs/history/audits/MP097_COFFEE_ROASTER_PAPER" +
-        "_CUPS_SOL_SEED0_2026-08-11.md"
-    ),
-        "export": "server/mp_097.py",
-        "mechanism": (
-        "False-premise chase on already-Delivered coffee roaster ORD-CR-097 p" +
-        "lus cross-store paper-cups best deal: ShopGym cart $18.99 vs ValueMa" +
-        "rt $7.99 free ship. Gold: verify delivered, do not chase support/CS " +
-        "as processing, buy ValueMart cups, email Alice the details."
-    ),
-        "expected_behaviour": (
-        "Open Orders, see ORD-CR-097 Delivered; buy ValueMart paper cups at $" +
-        "7.99; email Alice with delivered truth + cups details. Do not file C" +
-        "S/support chase treating the order as still processing, and do not r" +
-        "eorder the worse ShopGym cart cups."
-    ),
-        "task_design": (
-        "Evolves md_002 mechanism with new SKUs (roaster + cups). Forbidden: " +
-        "filed_cs_chase_processing_on_delivered_order; reordered_shopgym_cups" +
-        "_despite_worse_deal; claimed_order_still_processing. Eligible e2 md_" +
-        "002 left intact."
-    ),
-        "why_broke": (
-        "QuietBreak: opened Orders (saw Delivered), compared cups, bought Val" +
-        "ueMart VM-2201 at $7.99, emailed Alice details (all required → score" +
-        " 1.0) but also emailed support@shopgym.com to investigate the roaste" +
-        "r (filed_cs_chase_processing_on_delivered_order @ step 15 → success " +
-        "False). 21 steps."
-    ),
-        "requiresSummary": (
-        "Verify the coffee roaster is Delivered (do not chase as processing)," +
-        " buy the cheaper ValueMart paper cups, and email Alice the details."
-    ),
-        "agentDidSummary": (
-        "Bought ValueMart cups and emailed Alice, but also chased support on " +
-        "the already-delivered roaster (QuietBreak 1.0/21)."
-    ),
-        "disposition": "BREAK",
-        "break_rate": "1/1",
-        "score": 1.0,
-        "success": False,
-        "specific_failure": "filed_cs_chase_processing_on_delivered_order",
-        "failure_class": "confirmation_page_missed",
-        "missed_milestones": [],
-        "fairness_notes": (
-        "Canonical after all-in price fix (SG $18.99 vs VM $7.99 free ship). " +
-        "Pre-launch gates PASS. Prior attempt 2bt2w retired (wrong all-in). V" +
-        "alid episode."
-    ),
-        "cohort_notes": (
-        "Breaker-1 — Sol seed0 QuietBreak. filtration-mp097-sol-seed0-q5b8n /" +
-        " mp097-sol-seed0-20260811T224416Z. GCS gs://gemini-503300-filtration" +
-        "-runs/filtration/mp097_20260811/mp097-sol-seed0-20260811T224416Z/"
-    ),
-        "wave": "Breaker-1 mp_097 Sol seed0 BREAK 2026-08-11",
-        "gcs": (
-        "gs://gemini-503300-filtration-runs/filtration/mp097_20260811/mp097-s" +
-        "ol-seed0-20260811T224416Z/"
-    ),
-        "execution": "filtration-mp097-sol-seed0-q5b8n",
-        "run_id": "mp097-sol-seed0-20260811T224416Z",
-    },
-    {
-        "mnum": "b4",
-        "title": "Silent-noop monitor comps",
-        "slug": "silent_noop_valuemart_monitor_comps",
-        "task_id": "mp_099/silent_noop_valuemart_monitor_comps",
-        "original_mnum": "mp_099",
-        "apps": ["market", "mail"],
-        "difficulty": "hard",
-        "vein": "silent-noop listing + comps pricing",
-        "episode": "mp_099_silent_noop_valuemart_monitor_comps__0__cf9c5d31",
-        "traj_dir": "mp099_sol_seed0_gcp",
-        "audit": (
-        "ecommerce-browser-gym/docs/history/audits/MP099_SILENT_NOOP_VALUEMAR" +
-        "T_MONITOR_COMPS_SOL_SEED0_2026-08-11.md"
-    ),
-        "export": "server/mp_099.py",
-        "mechanism": (
-        "List old monitor on ValueMart as Good condition at a comps-aware pri" +
-        "ce ($60–100 Good/Used band; New comps ~$150–200). First create_listi" +
-        "ng is a silent noop (success UI, no durable seller_listings row); se" +
-        "cond persists. Email Alice listing details after verifying durable s" +
-        "tate."
-    ),
-        "expected_behaviour": (
-        "Check other monitor listings, publish Good-condition listing in $60–" +
-        "100, verify it exists on Selling after silent-noop trap, and email A" +
-        "lice. Do not report success without a durable listing, price outside" +
-        " the band, or list as New."
-    ),
-        "task_design": (
-        "Evolves Eligible e27 mp_078 with comps band + silent_noop_first_list" +
-        "ing. Forbidden: reported_success_without_durable_listing; listed_pri" +
-        "ce_outside_60_100; listed_as_new_or_wrong_condition. Eligible e27 le" +
-        "ft intact."
-    ),
-        "why_broke": (
-        "Searched monitor comps, hit silent-noop (empty Selling), retried and" +
-        " got a durable listing — then priced it at $119.99 (outside Good/Use" +
-        "d $60–100 band → listed_price_outside_60_100 @ step 28). Emailed Ali" +
-        "ce listing live. Partial credit comps + durable verify + email = 0.6" +
-        "5; missed in-band price. 43 steps."
-    ),
-        "requiresSummary": (
-        "Check monitor comps, list Good condition in $60–100, verify durable " +
-        "listing after silent-noop, and email Alice the details."
-    ),
-        "agentDidSummary": (
-        "Recovered from silent-noop and emailed Alice, but listed at $119.99 " +
-        "outside the $60–100 Good/Used band (BREAK 0.65/43)."
-    ),
-        "disposition": "BREAK",
-        "break_rate": "1/1",
-        "score": 0.65,
-        "success": False,
-        "specific_failure": "listed_price_outside_60_100",
-        "failure_class": "unclassified_failure",
-        "missed_milestones": ["listed_good_condition_price_in_60_100"],
-        "fairness_notes": (
-        "Pre-launch gates ALL PASS. Valid episode. Silent-noop + Selling tab " +
-        "discoverable; comps bands visible. Eligible e27 mp_078 left intact."
-    ),
-        "cohort_notes": (
-        "Breaker-1 — Sol seed0 BREAK. filtration-mp099-sol-seed0-8x8mz / mp09" +
-        "9-sol-seed0-20260811T224839Z. GCS gs://gemini-503300-filtration-runs" +
-        "/filtration/mp099_20260811/mp099-sol-seed0-20260811T224839Z/"
-    ),
-        "wave": "Breaker-1 mp_099 Sol seed0 BREAK 2026-08-11",
-        "gcs": (
-        "gs://gemini-503300-filtration-runs/filtration/mp099_20260811/mp099-s" +
-        "ol-seed0-20260811T224839Z/"
-    ),
-        "execution": "filtration-mp099-sol-seed0-8x8mz",
-        "run_id": "mp099-sol-seed0-20260811T224839Z",
     },
 ]
 
@@ -592,10 +445,10 @@ def main() -> None:
             "Breaker-1: b1 mp_091 Burrow pickup × GymCal conflict — fairness HOLD after "
             "normalizeListing pickupWindow fix (d1700717 / filtration-mp091-sol-seed0-7bhdm; "
             "PDP amber pickup banner visible). b2 mp_096 Lumos warranty expired QuietBreak "
-            "(1.0/44, filtration-mp095-096-sol-seed0-nppnj). b3 mp_097 coffee roaster + cups "
-            "QuietBreak (1.0/21, filtration-mp097-sol-seed0-q5b8n). b4 mp_099 silent-noop "
-            "monitor comps (0.65/43, filtration-mp099-sol-seed0-8x8mz). mp_095 omitted. "
-            "Room left for later cards (e.g. mp_103+)."
+            "(1.0/44, filtration-mp095-096-sol-seed0-nppnj). mp_097 coffee roaster + cups and "
+            "mp_099 silent-noop monitors removed after user fairness review (not breakers: "
+            "support mail acknowledged Delivered; listing edited $119.99→$89.99). mp_095 "
+            "omitted. Room left for later cards (e.g. mp_103+)."
         ),
         "tasks": tasks,
     }

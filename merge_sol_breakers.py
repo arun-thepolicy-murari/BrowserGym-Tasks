@@ -57,7 +57,7 @@ POOL_META = {
         "id": BREAKER1_POOL,
         "label": "Breaker-1",
         "short": "Breaker-1",
-        "description": "b1 mp_091 Burrow couch HOLD (pickup-banner fair traj) + b2–b4 Sol seed0 BREAKs (mp_096/097/099). Full trajectory galleries.",
+        "description": "b1 mp_091 Burrow couch HOLD (pickup-banner fair traj) + b2 mp_096 Lumos warranty expired QuietBreak. mp_097/mp_099 removed (fairness: not breakers). Full trajectory galleries.",
     },
 }
 
