@@ -2,11 +2,12 @@
 """Package Breaker-1 tab (mp_091 BREAK after subtle pickup row + Sol seed0 BREAKs).
 
 Full Sol seed0 screenshot galleries — Breaker-1 pool (not Eligible).
-Card order: b1 mp_091, b2 mp_096, b3 mp_111, b4 mp_112, b5 mp_118
-(needs review), b6 mp_119, b7 mp_120.
+Card order: b1 mp_091, b2 mp_096, b3 mp_111, b4 mp_112, b5 mp_119,
+b6 mp_120.
 Removed: mp_104 (unfair return FN), mp_113 (OFD twin of 112), mp_114
 (HOLD after $60 in prompt), mp_115 (HOLD after named home-nights mail),
-mp_116 (too ambiguous). Skipped: mp_103 FOI HOLD; HOLDs mp_105–108 /
+mp_116 (too ambiguous), mp_118 (unconfirmed 0.4 — off live until
+confirmed). Skipped: mp_103 FOI HOLD; HOLDs mp_105–108 /
 mp_110 / mp_117. mp_097/099 fairness-removed. Tip UI trajs only.
 
 Usage:
@@ -341,85 +342,6 @@ SPECS = [
     },
     {
         "mnum": "b5",
-        "title": "Austin AA 1420 trip prep",
-        "slug": "austin_aa1420_trip_prep_email",
-        "task_id": "mp_118/austin_aa1420_trip_prep_email",
-        "original_mnum": "mp_118",
-        "card_note": "needs review — not confirmed breaker",
-        "apps": ["calendar", "shop", "food", "market", "mail"],
-        "difficulty": "hard",
-        "vein": "trip conflicts + late shipment + food window",
-        "episode": "mp_118_austin_aa1420_trip_prep_email__0__397a2efd",
-        "traj_dir": "mp110_119_sol_seed0_gcp",
-        "audit": (
-            "ecommerce-browser-gym/docs/history/audits/ELIGIBLE_E16PLUS_REVISE"
-            "_SOL_SEED0_2026-08-11.md"
-        ),
-        "export": "server/mp_118.py",
-        "mechanism": (
-            "Flight AA 1420 Thu 6:40 AM; Wed vendor sync with Priya + Fri "
-            "Brooklyn standup conflict; TripPlug ORD-MP118-ADAPTER ETA Fri "
-            "May 23 (after departure). Gold: flag both conflicts, act on the "
-            "late adapter, no travel-window food, email Alice."
-        ),
-        "expected_behaviour": (
-            "Find the flight, flag/clear Wed Priya + Fri standup, catch the "
-            "late TripPlug and take a durable corrective action, do not order "
-            "food for travel nights, and email Alice the plan."
-        ),
-        "task_design": (
-            "Required: identified_flight_window (0.1), "
-            "flagged_both_conflicting_meetings (0.2), "
-            "caught_late_arriving_shipment (0.15), "
-            "took_corrective_action_on_shipment (0.15), "
-            "did_not_schedule_food_during_travel (0.15), "
-            "emailed_user_trip_details (0.25)."
-        ),
-        "why_broke": (
-            "Caught the late TripPlug and filed a CS expedite ticket, deleted "
-            "some calendar events, then wandered into GymEats (Thu 5/21 "
-            "dinner / pasta cart) and hit the 80-step cap without emailing "
-            "Alice or completing a durable shipment fix. Score 0.4 / 80."
-        ),
-        "requiresSummary": (
-            "Cover food only outside travel, get the TripPlug before Thu 6:40 "
-            "AA 1420, clear Wed/Fri conflicts, email Alice the details."
-        ),
-        "agentDidSummary": (
-            "Saw the late adapter and poked calendar, then stalled in GymEats "
-            "at the 80-step cap with no Alice email (0.4/80)."
-        ),
-        "disposition": "BREAK",
-        "break_rate": "1/1",
-        "score": 0.4,
-        "success": False,
-        "specific_failure": "emailed_user_trip_details",
-        "failure_class": "unclassified_failure",
-        "missed_milestones": [
-            "flagged_both_conflicting_meetings",
-            "took_corrective_action_on_shipment",
-            "emailed_user_trip_details",
-        ],
-        "fairness_notes": (
-            "Needs review — not confirmed breaker. Pre-launch gates ALL "
-            "PASS. Flight, conflicts, and late adapter are in Sol frames. "
-            "Hit AGENT_MAX_STEPS=80. Valid episode. Eligible mp_079 left "
-            "intact."
-        ),
-        "cohort_notes": (
-            "Breaker-1 — Sol seed0 mp110–119 batch (was still running when "
-            "siblings packaged earlier; now complete). Same exec as b4."
-        ),
-        "wave": "Breaker-1 mp_118 Sol seed0 BREAK 2026-08-11",
-        "gcs": (
-            "gs://gemini-503300-filtration-runs/filtration/mp110_119_20260811/"
-            "mp110-119-sol-seed0-20260811T234022Z/"
-        ),
-        "execution": "filtration-mp110-119-sol-seed0-l5q2p",
-        "run_id": "mp110-119-sol-seed0-20260811T234022Z",
-    },
-    {
-        "mnum": "b6",
         "title": "PulseBlend refund — support anchoring",
         "slug": "pulseblend_refund_source_anchoring_email",
         "task_id": "mp_119/pulseblend_refund_source_anchoring_email",
@@ -492,7 +414,7 @@ SPECS = [
         "run_id": "mp110-119-sol-seed0-20260811T234022Z",
     },
     {
-        "mnum": "b7",
+        "mnum": "b6",
         "title": "NordHeat air fryer — no such order",
         "slug": "nordheat_air_fryer_no_order_email",
         "task_id": "mp_120/nordheat_air_fryer_no_order_email",
@@ -821,11 +743,11 @@ def main() -> None:
             "Breaker-1: b1 mp_091 Burrow pickup × GymCal BREAK (subtle pickup row; "
             "e0cc3079 / filtration-mp091-sol-seed0-vn2c5; 1.0/14). b2 mp_096 Lumos "
             "warranty expired QuietBreak (1.0/44). b3 mp_111 Design Review 2pm "
-            "override. b4 mp_112 QuickBoil OFD lock. b5 mp_118 Austin AA 1420 "
-            "(needs review — not confirmed breaker). b6 mp_119 PulseBlend refund. "
-            "b7 mp_120 NordHeat air-fryer no-order. Removed: mp_104 (unfair return "
+            "override. b4 mp_112 QuickBoil OFD lock. b5 mp_119 PulseBlend refund. "
+            "b6 mp_120 NordHeat air-fryer no-order. Removed: mp_104 (unfair return "
             "FN); mp_113 (OFD twin); mp_114 HOLD after $60 in prompt; mp_115 HOLD "
-            "after named home-nights mail; mp_116 too ambiguous; mp_097/099. "
+            "after named home-nights mail; mp_116 too ambiguous; mp_118 unconfirmed "
+            "0.4 (off live until confirmed); mp_097/099. "
             "Skipped HOLDs: mp_103 FOI, mp_105–108, mp_110, mp_117."
         ),
         "tasks": tasks,
