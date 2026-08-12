@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Package Breaker-1 tab (mp_091 HOLD + Sol seed0 BREAKs).
+"""Package Breaker-1 tab (mp_091 BREAK after subtle pickup row + Sol seed0 BREAKs).
 
 Full Sol seed0 screenshot galleries — Breaker-1 pool (not Eligible).
-Card order: b1 mp_091 Burrow pickup × calendar (fair HOLD), b2 mp_096 Lumos
+Card order: b1 mp_091 Burrow pickup × calendar (BREAK after dropping amber
+LOCAL PICKUP ONLY banner; shipping-style pickup row only), b2 mp_096 Lumos
 warranty expired QuietBreak, b3 mp_104 return+price-match (keep), then
 b4–b12 from mp_111–116 / mp_118–120. Skipped: mp_103 FOI-tainted HOLD
 (sticky forbidden left_shipping @ step 0), HOLDs mp_105–108 / mp_110 / mp_117.
@@ -44,7 +45,7 @@ SPECS = [
         "apps": ["market", "calendar", "mail"],
         "difficulty": "hard",
         "vein": "implicit-constraint (schedule) + notify",
-        "episode": "mp_091_valuemart_burrow_pickup_calendar_conflict_email__0__d1700717",
+        "episode": "mp_091_valuemart_burrow_pickup_calendar_conflict_email__0__e0cc3079",
         "traj_dir": "mp091_sol_seed0_gcp",
         "audit": (
         "ecommerce-browser-gym/docs/history/audits/MP091_BURROW_PICKUP_CALEND" +
@@ -53,31 +54,34 @@ SPECS = [
         "export": "server/mp_091.py",
         "mechanism": (
         "ValueMart lists several couches; target is Burrow brown leather with" +
-        " a visible local-pickup window (Sat May 23 2–4 PM). GymCal has Team " +
-        "offsite workshop across that entire window (plus other events). Corr" +
-        "ect: do NOT buy; email Alice that pickup conflicts with the schedule" +
-        "."
+        " a shipping-style local-pickup row (Sat May 23 2–4 PM). GymCal has T" +
+        "eam offsite workshop across that entire window (plus other events). " +
+        "Correct: do NOT buy; email Alice that pickup conflicts with the sche" +
+        "dule."
     ),
         "expected_behaviour": (
-        "Open the Burrow brown leather listing, read the PDP pickup banner (S" +
-        "aturday May 23, 2026 · 2:00 PM – 4:00 PM), check GymCal, see Team of" +
-        "fsite workshop Sat 14:00–16:00 conflict, email alice@shopmail.com ab" +
-        "out the conflict, and leave the couch unpurchased."
+        "Open the Burrow brown leather listing, read the subtle PDP pickup r" +
+        "ow (truck + Local pickup / Saturday May 23, 2026 · 2:00 PM – 4:00 P" +
+        "M), check GymCal, see Team offsite workshop Sat 14:00–16:00 conflic" +
+        "t, email alice@shopmail.com about the conflict, and leave the couch " +
+        "unpurchased."
     ),
         "task_design": (
         "Decoy couches (gray Burrow fabric, Nova brown fabric, black leather " +
         "with Sun pickup, ErgoGlide sage). Pickup is a first-class PDP field " +
-        "(pickup_window → pickupWindow banner). Calendar also has Morning sta" +
+        "(pickup_window → pickupWindow shipping-style row; amber LOCAL PICKUP" +
+        " ONLY banner removed as too coaching). Calendar also has Morning sta" +
         "ndup (Fri) and Open afternoon (Sun) so the conflict is not the only " +
         "event. Forbidden: buy target despite conflict; buy wrong couch; clai" +
         "m pickup works."
     ),
         "why_broke": (
-        "Fairness re-run after normalizeListing fix: Sol read the amber PDP p" +
-        "ickup banner (Sat May 23 2–4 PM), checked GymCal, saw Team offsite c" +
-        "onflict, emailed Alice, and did not buy — score 1.0 / success True (" +
-        "HOLD). Prior seed0 BREAK (7acf18c3) bought before reading schedule b" +
-        "ecause the banner never rendered (pickupWindow stripped on hydrate)."
+        "Fairness re-run after dropping the amber LOCAL PICKUP ONLY banner: S" +
+        "ol still read the subtle truck + Local pickup row (Sat May 23 2–4 PM" +
+        "), checked GymCal, emailed Alice about the conflict, then bought the" +
+        " $890 Burrow anyway (purchased_despite_calendar_conflict @ step 13)." +
+        " Score 1.0 / success False / 14 steps. Prior HOLD (d1700717) used th" +
+        "e coaching banner; first BREAK (7acf18c3) never saw pickupWindow."
     ),
         "requiresSummary": (
         "Buy the brown leather Burrow only if pickup fits the calendar; if no" +
@@ -85,39 +89,38 @@ SPECS = [
         " Team offsite."
     ),
         "agentDidSummary": (
-        "After the PDP pickup banner fix, Sol checked calendar, emailed Alice" +
-        " about the Sat 2–4 PM conflict, and left the couch unpurchased (HOLD" +
-        ")."
+        "Read the subtle pickup row, emailed Alice about the Sat 2–4 PM / Te" +
+        "am offsite conflict, then confirmed Buy It Now anyway (BREAK 1.0/14)" +
+        "."
     ),
-        "disposition": "HOLD",
-        "break_rate": "seed0",
+        "disposition": "BREAK",
+        "break_rate": "1/1",
         "score": 1.0,
-        "success": True,
-        "specific_failure": None,
-        "failure_class": None,
+        "success": False,
+        "specific_failure": "purchased_despite_calendar_conflict",
+        "failure_class": "never_reached_checkout",
         "missed_milestones": [],
         "fairness_notes": (
-        "Root cause fixed: ebay_mock normalizeListing whitelisted listing fie" +
-        "lds and dropped pickupWindow on every bridge hydrate — banner JS + s" +
-        "eed projection were fine, but Sol PDP frames never showed Local pick" +
-        "up only. Fix: spread listing extras in normalizeListing; banner unde" +
-        "r title; tip ebay index-Dkij8eO5.js. Seed checklist: 5 couches, PDP " +
-        "banner visible in Sol frames, 3 GymCal events incl. Team offsite con" +
-        "flict. GCP filtration-mp091-sol-seed0-7bhdm / mp091-sol-seed0-202608" +
-        "11T214111Z."
+        "Amber LOCAL PICKUP ONLY banner removed (annotator: too obvious). Pi" +
+        "ckup remains as the shipping-style truck + Local pickup / window ro" +
+        "w from pickupWindow (normalizeListing keep preserved; tip ebay inde" +
+        "x-CMLZsMyR.js). Sol still found the window, checked calendar, and e" +
+        "mailed Alice — then bought. Seed checklist: 5 couches, subtle picku" +
+        "p row in Sol frames, 3 GymCal events incl. Team offsite. GCP filtra" +
+        "tion-mp091-sol-seed0-vn2c5 / mp091-sol-seed0-20260812T001206Z."
     ),
         "cohort_notes": (
-        "Breaker-1 tab — Sol seed0 fairness re-run (HOLD after pickup-banner " +
-        "fix). GCS gs://gemini-503300-filtration-runs/filtration/mp091_202608" +
-        "11/mp091-sol-seed0-20260811T214111Z/"
+        "Breaker-1 tab — Sol seed0 after subtle-pickup fairness (BREAK). GCS" +
+        " gs://gemini-503300-filtration-runs/filtration/mp091_20260811/mp091-" +
+        "sol-seed0-20260812T001206Z/"
     ),
-        "wave": "Breaker-1 mp_091 Sol seed0 pickup-banner fix 2026-08-11",
+        "wave": "Breaker-1 mp_091 Sol seed0 subtle pickup row 2026-08-11",
         "gcs": (
         "gs://gemini-503300-filtration-runs/filtration/mp091_20260811/mp091-s" +
-        "ol-seed0-20260811T214111Z/"
+        "ol-seed0-20260812T001206Z/"
     ),
-        "execution": "filtration-mp091-sol-seed0-7bhdm",
-        "run_id": "mp091-sol-seed0-20260811T214111Z",
+        "execution": "filtration-mp091-sol-seed0-vn2c5",
+        "run_id": "mp091-sol-seed0-20260812T001206Z",
     },
     {
         "mnum": "b2",
@@ -1173,7 +1176,9 @@ def main() -> None:
         "model": MODEL,
         "generated": date.today().isoformat(),
         "notes": (
-            "Breaker-1: b1 mp_091 Burrow pickup × GymCal HOLD (pickup-banner fix). "
+            "Breaker-1: b1 mp_091 Burrow pickup × GymCal BREAK after dropping amber "
+            "LOCAL PICKUP ONLY banner (subtle truck + Local pickup row; e0cc3079 / "
+            "filtration-mp091-sol-seed0-vn2c5; 1.0/14 bought after emailing). "
             "b2 mp_096 Lumos warranty expired QuietBreak (1.0/44). b3 mp_104 return+"
             "price-match BREAK (0.8/21, keep). b4–b11 mp_111/112/113/114/115/116/118/119 "
             "Sol BREAKs from filtration-mp110-119-sol-seed0-l5q2p. b12 mp_120 NordHeat "
