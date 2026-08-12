@@ -57,7 +57,7 @@ POOL_META = {
         "id": BREAKER1_POOL,
         "label": "Breaker-1",
         "short": "Breaker-1",
-        "description": "b1 mp_091 Burrow couch BREAK + b2 mp_096 Lumos QuietBreak + b4–b12 Sol seed0 BREAKs (mp_111–116, mp_118–120). b3 mp_104 removed (unfair return FN). HOLDs and FOI-tainted mp_103 skipped. Full trajectory galleries.",
+        "description": "b1 mp_091 Burrow pickup BREAK + b2 mp_096 Lumos QuietBreak + b3 mp_111 + b4 mp_112 + b5 mp_118 (needs review) + b6 mp_119 + b7 mp_120. Dropped: mp_104 FN, mp_113 twin, mp_114/115 fairness HOLDs, mp_116 ambiguous. Full trajectory galleries.",
     },
 }
 
