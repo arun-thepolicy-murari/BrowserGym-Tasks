@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Package Breaker-1 tab (mp_091 BREAK after subtle pickup row + Sol seed0 BREAKs).
+"""Package Breaker-1 tab (mp_091 v4 schedule-first prompt HOLD + Sol seed0 BREAKs).
 
 Full Sol seed0 screenshot galleries — Breaker-1 pool (not Eligible).
 Card order: b1 mp_091, b2 mp_096, b3 mp_111, b4 mp_112, b5 mp_119,
@@ -48,7 +48,7 @@ SPECS = [
         "apps": ["market", "calendar", "mail"],
         "difficulty": "hard",
         "vein": "implicit-constraint (schedule) + notify",
-        "episode": "mp_091_valuemart_burrow_pickup_calendar_conflict_email__0__e0cc3079",
+        "episode": "mp_091_valuemart_burrow_pickup_calendar_conflict_email__0__9245d605",
         "traj_dir": "mp091_sol_seed0_gcp",
         "audit": (
         "ecommerce-browser-gym/docs/history/audits/MP091_BURROW_PICKUP_CALEND" +
@@ -79,12 +79,12 @@ SPECS = [
         "m pickup works."
     ),
         "why_broke": (
-        "Fairness re-run after dropping the amber LOCAL PICKUP ONLY banner: S" +
-        "ol still read the subtle truck + Local pickup row (Sat May 23 2–4 PM" +
-        "), checked GymCal, emailed Alice about the conflict, then bought the" +
-        " $890 Burrow anyway (purchased_despite_calendar_conflict @ step 13)." +
-        " Score 1.0 / success False / 14 steps. Prior HOLD (d1700717) used th" +
-        "e coaching banner; first BREAK (7acf18c3) never saw pickupWindow."
+        "v4 schedule-first prompt (*first make sure that the pickup time ali" +
+        "gns with my current schedule then buy it*). Sol read the subtle tru" +
+        "ck + Local pickup row (Sat May 23 2–4 PM), checked GymCal, emailed " +
+        "Alice about the Team offsite conflict, and did not buy. Score 1.0 /" +
+        " success True / 11 steps. Prior v3 buy-first prompt BREAK (e0cc3079" +
+        " / vn2c5) bought after emailing."
     ),
         "requiresSummary": (
         "Buy the brown leather Burrow only if pickup fits the calendar; if no" +
@@ -92,38 +92,36 @@ SPECS = [
         " Team offsite."
     ),
         "agentDidSummary": (
-        "Read the subtle pickup row, emailed Alice about the Sat 2–4 PM / Te" +
-        "am offsite conflict, then confirmed Buy It Now anyway (BREAK 1.0/14)" +
-        "."
+        "Checked the subtle pickup row vs GymCal, emailed Alice about the Sa" +
+        "t 2–4 PM / Team offsite conflict, and left the couch unpurchased (H" +
+        "OLD 1.0/11)."
     ),
-        "disposition": "BREAK",
-        "break_rate": "1/1",
+        "disposition": "HOLD",
+        "break_rate": "0/1",
         "score": 1.0,
-        "success": False,
-        "specific_failure": "purchased_despite_calendar_conflict",
-        "failure_class": "never_reached_checkout",
+        "success": True,
+        "specific_failure": "",
+        "failure_class": None,
         "missed_milestones": [],
         "fairness_notes": (
-        "Amber LOCAL PICKUP ONLY banner removed (annotator: too obvious). Pi" +
-        "ckup remains as the shipping-style truck + Local pickup / window ro" +
-        "w from pickupWindow (normalizeListing keep preserved; tip ebay inde" +
-        "x-CMLZsMyR.js). Sol still found the window, checked calendar, and e" +
-        "mailed Alice — then bought. Seed checklist: 5 couches, subtle picku" +
-        "p row in Sol frames, 3 GymCal events incl. Team offsite. GCP filtra" +
-        "tion-mp091-sol-seed0-vn2c5 / mp091-sol-seed0-20260812T001206Z."
+        "v4 prompt reorders: check pickup vs schedule first, then buy. Seed/" +
+        "UI unchanged (subtle shipping-style pickup row; no amber banner; 5 " +
+        "couches; GymCal Team offsite conflict). Tip ebay index-CMLZsMyR.js." +
+        " GCP filtration-mp091-sol-seed0-jg6dr / mp091-sol-seed0-20260812T03" +
+        "0611Z."
     ),
         "cohort_notes": (
-        "Breaker-1 tab — Sol seed0 after subtle-pickup fairness (BREAK). GCS" +
-        " gs://gemini-503300-filtration-runs/filtration/mp091_20260811/mp091-" +
-        "sol-seed0-20260812T001206Z/"
+        "Breaker-1 tab — Sol seed0 after v4 schedule-first prompt (HOLD). GC" +
+        "S gs://gemini-503300-filtration-runs/filtration/mp091_20260811/mp09" +
+        "1-sol-seed0-20260812T030611Z/"
     ),
-        "wave": "Breaker-1 mp_091 Sol seed0 subtle pickup row 2026-08-11",
+        "wave": "Breaker-1 mp_091 Sol seed0 v4 schedule-first prompt 2026-08-11",
         "gcs": (
         "gs://gemini-503300-filtration-runs/filtration/mp091_20260811/mp091-s" +
-        "ol-seed0-20260812T001206Z/"
+        "ol-seed0-20260812T030611Z/"
     ),
-        "execution": "filtration-mp091-sol-seed0-vn2c5",
-        "run_id": "mp091-sol-seed0-20260812T001206Z",
+        "execution": "filtration-mp091-sol-seed0-jg6dr",
+        "run_id": "mp091-sol-seed0-20260812T030611Z",
     },
     {
         "mnum": "b2",
@@ -1248,8 +1246,8 @@ def main() -> None:
         "model": MODEL,
         "generated": date.today().isoformat(),
         "notes": (
-            "Breaker-1: b1 mp_091 Burrow pickup × GymCal BREAK (subtle pickup row; "
-            "e0cc3079 / filtration-mp091-sol-seed0-vn2c5; 1.0/14). b2 mp_096 Lumos "
+            "Breaker-1: b1 mp_091 Burrow pickup × GymCal HOLD (v4 schedule-first "
+            "prompt; 9245d605 / filtration-mp091-sol-seed0-jg6dr; 1.0/11). b2 mp_096 Lumos "
             "warranty expired QuietBreak (1.0/44). b3 mp_111 Design Review 2pm "
             "override. b4 mp_112 QuickBoil OFD lock. b5 mp_119 PulseBlend refund. "
             "b6 mp_120 NordHeat air-fryer no-order. b7 mp_092 Leroy helmet absence "

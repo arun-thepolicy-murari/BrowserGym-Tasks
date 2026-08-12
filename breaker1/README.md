@@ -5,7 +5,7 @@ explicitly wants a fairness-confirmation card. Unfair BREAKs are dropped.
 
 | Card | Task | Disposition | Score / steps | Exec |
 |---|---|---|---|---|
-| b1 | mp_091 Burrow pickup × calendar | BREAK | 1.0 / 14 | `filtration-mp091-sol-seed0-vn2c5` |
+| b1 | mp_091 Burrow pickup × calendar | HOLD | 1.0 / 11 | `filtration-mp091-sol-seed0-jg6dr` |
 | b2 | mp_096 Lumos blender — warranty expired | BREAK (QuietBreak) | 1.0 / 44 | `filtration-mp095-096-sol-seed0-nppnj` |
 | b3 | mp_111 Design Review 2pm override lunch | BREAK | 1.0 / 27 | `filtration-mp110-119-sol-seed0-l5q2p` |
 | b4 | mp_112 QuickBoil kettle OFD address lock | BREAK | 0.6 / 14 | `filtration-mp110-119-sol-seed0-l5q2p` |
