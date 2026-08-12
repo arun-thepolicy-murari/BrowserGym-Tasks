@@ -428,15 +428,18 @@ function renderBreaker1Intro(){
     const cleanRate=/^\d+\/\d+$/.test(rate)?rate:"";
     const softRate=/^seed\d+$/i.test(rate)?rate:"";
     const cid=cleanRate?`${t.mnum} · ${cleanRate} ${disp}`:(softRate?`${t.mnum} · ${softRate} ${disp}`:`${t.mnum} · ${disp}`);
+    const cardNote=t.card_note||(t.env&&t.env.card_note)||"";
     return `<button type="button" class="showcase-card" data-mn="${esc(t.mnum)}">
     <div class="cid">${esc(cid)}</div>
     <div class="cslug">${esc(taskTitle(t)||t.original_mnum||t.task_id||"")}</div>
     <div class="cbrief">${esc(taskBrief(t))}</div>
+    ${cardNote?`<div class="cbrief" style="color:var(--warn-fg);font-weight:600">${esc(cardNote)}</div>`:""}
     <div class="crow">
       <span class="scorepill sol">${esc(disp)}</span>
       <span class="scorepill">score ${esc(String(run.score!=null?run.score:"—"))}</span>
       <span class="chip">${steps} full steps${runs.length>1?` · ${runs.length} seeds`:""}</span>
       ${(t.apps&&t.apps.length)?`<span class="chip">${esc(t.apps.join(" × "))}</span>`:""}
+      ${cardNote?`<span class="chip" style="background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-line)">${esc(cardNote)}</span>`:""}
     </div>
   </button>`;
   };
@@ -1683,9 +1686,99 @@ async function submitTask(){
 function downloadJSON(name,obj){ const b=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"});
   const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
 
+/** Card/catalog export — omit screenshot step arrays (those make data.json ~70MB). */
+function slimRun(r){
+  if(!r||typeof r!=="object") return r;
+  const out={};
+  for(const k of Object.keys(r)){ if(k==="steps"||k==="env") continue; out[k]=r[k]; }
+  out.n_steps_packaged=Array.isArray(r.steps)?r.steps.length:(r.n_steps||0);
+  return out;
+}
+function slimCatalogTask(t){
+  const e=t.env||{};
+  const run=(((t.models||[])[0]||{}).runs||[])[0]||{};
+  return {
+    mnum:t.mnum,
+    title:t.title||taskTitle(t),
+    slug:t.slug||"",
+    task_id:t.task_id||"",
+    pool:poolOf(t),
+    original_mnum:t.original_mnum||"",
+    original_task_id:t.original_task_id||"",
+    prompt:t.prompt||t.brief_agent||"",
+    brief_agent:t.brief_agent||"",
+    apps:t.apps||e.apps||[],
+    difficulty:t.difficulty||"",
+    vein:t.vein||"",
+    expected_behaviour:t.expected_behaviour||"",
+    task_design:t.task_design||"",
+    requiresSummary:t.requiresSummary||e.requiresSummary||"",
+    agentDidSummary:t.agentDidSummary||e.agentDidSummary||"",
+    fairness_notes:t.fairness_notes||e.fairness_notes||"",
+    card_note:t.card_note||e.card_note||"",
+    has_screenshots:!!t.has_screenshots,
+    gallery_mode:t.gallery_mode||"",
+    mean_steps:t.mean_steps,
+    true_n_steps_by_seed:t.true_n_steps_by_seed,
+    n_models:t.n_models,
+    n_runs:t.n_runs,
+    verifier:t.verifier||null,
+    env:{
+      brief:e.brief||"",
+      title:e.title||"",
+      apps:e.apps||[],
+      mechanism:e.mechanism||"",
+      cohort:e.cohort||"",
+      cohort_notes:e.cohort_notes||"",
+      break_rate:e.break_rate,
+      disposition:e.disposition||"",
+      fail_reasons:e.fail_reasons,
+      forbidden_checkpoint:e.forbidden_checkpoint,
+      scoring:e.scoring||"",
+      why_broke:e.why_broke||"",
+      fairness_notes:e.fairness_notes||"",
+      provenance:e.provenance||null
+    },
+    models:(t.models||[]).map(m=>({model:m.model, model_full:m.model_full, runs:(m.runs||[]).map(slimRun)})),
+    score:run.score,
+    success:run.success,
+    disposition:dispositionLabel(e.disposition||run.disposition||""),
+    specific_failure:run.specific_failure||"",
+    true_n_steps:run.true_n_steps
+  };
+}
+function catalogByPool(){
+  const by={};
+  (DATA.tasks||[]).forEach(t=>{
+    const p=poolOf(t);
+    (by[p]=by[p]||[]).push(slimCatalogTask(t));
+  });
+  return by;
+}
+
 document.getElementById("exportJson").onclick=()=>{
   const rows=DATA.tasks.filter(t=>ann[t.mnum]).map(t=>buildRow(t.mnum));
-  downloadJSON("browsergym_annotations_ALL.json",{exported_at:new Date().toISOString(),annotator:cfg.annotator,rows_one_per_task:rows,raw:ann});
+  const by=catalogByPool();
+  const breaker1=by[BREAKER1_POOL]||[];
+  const eligible=by[ELIGIBLE_POOL]||[];
+  downloadJSON("browsergym_annotations_ALL.json",{
+    kind:"browsergym_catalog_and_annotations",
+    exported_at:new Date().toISOString(),
+    annotator:cfg.annotator,
+    generated:DATA.generated,
+    source:DATA.source||{},
+    n_tasks:(DATA.tasks||[]).length,
+    n_breaker1:breaker1.length,
+    n_eligible_suite:eligible.length,
+    breaker1_meta:DATA.breaker1_meta||{},
+    eligible_meta:DATA.eligible_meta||{},
+    breaker1,
+    eligible_task_suite:eligible,
+    catalog:by,
+    rows_one_per_task:rows,
+    raw:ann
+  });
+  toast(`Exported catalog ✓ Breaker-1 ${breaker1.length} · Eligible ${eligible.length} · annotation rows ${rows.length}`);
 };
 document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
 function runFilled(rs){ let n=0; if(!rs) return 0;
