@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Package Breaker-1 tab (mp_091 couch HOLD + mp_096 Lumos expired QuietBreak).
+"""Package Breaker-1 tab (mp_091 HOLD + mp_096 QuietBreak + mp_104 return miss).
 
 Full Sol seed0 screenshot galleries — Breaker-1 pool (not Eligible).
 Card order: b1 mp_091 Burrow pickup × calendar (fair HOLD, amber PDP banner),
-b2 mp_096 Lumos warranty expired QuietBreak. mp_097 coffee + cups and mp_099
-silent-noop monitors removed after user fairness review (not breakers).
-mp_095 (no-blender Lumos) intentionally omitted.
+b2 mp_096 Lumos warranty expired QuietBreak, b3 mp_104 return wrong size +
+price-match (missed return). mp_097 coffee + cups and mp_099 silent-noop
+monitors removed after user fairness review. mp_095 omitted. mp_103 checkup
+shipping sticky-forbidden fixed → fairness HOLD (not packaged).
 
 Usage:
   python3 package_breaker1.py
@@ -190,6 +191,81 @@ SPECS = [
     ),
         "execution": "filtration-mp095-096-sol-seed0-nppnj",
         "run_id": "mp095-096-sol-seed0-20260811T222845Z",
+    },
+    {
+        "mnum": "b3",
+        "title": "Wrong-size shoes — return + price match",
+        "slug": "return_wrong_size_reorder_correct_with_price_match",
+        "task_id": "mp_104/return_wrong_size_reorder_correct_with_price_match",
+        "original_mnum": "mp_104",
+        "apps": ["shop", "market", "mail"],
+        "difficulty": "hard",
+        "vein": "return + cross-shop price match + notify",
+        "episode": (
+            "mp_104_return_wrong_size_reorder_correct_with_price_match__0__23fd1044"
+        ),
+        "traj_dir": "mp103_108_sol_seed0_gcp",
+        "audit": (
+            "ecommerce-browser-gym/docs/history/audits/MP103_108_MULTISTEP_BAT"
+            "CH_SOL_SEED0_2026-08-11.md"
+        ),
+        "export": "server/mp_104.py",
+        "mechanism": (
+            "Aventis Trail Runner delivered size 8 (ORD-MP104-AVENTIS8). Need "
+            "9.5. ShopGym 9.5 $94.99; ValueMart identical 9.5 $81.50. Gold: "
+            "return the size 8, buy 9.5 from the cheaper shop, email Alice."
+        ),
+        "expected_behaviour": (
+            "Initiate return on ORD-MP104-AVENTIS8, compare ShopGym vs "
+            "ValueMart for size 9.5, order the cheaper VM pair, and email "
+            "alice@shopmail.com with the details."
+        ),
+        "task_design": (
+            "Required: initiated_return_on_correct_original_order (0.2), "
+            "compared_price_across_both_shops (0.25), "
+            "ordered_correct_size_from_cheaper_shop (0.35), "
+            "emailed_user_confirmation (0.2). Forbidden: reorder expensive SG "
+            "without compare; order wrong size."
+        ),
+        "why_broke": (
+            "Compared prices, bought ValueMart 9.5 at $81.50, and emailed "
+            "Alice (score 0.8) but never initiated a return on "
+            "ORD-MP104-AVENTIS8 — missed required "
+            "initiated_return_on_correct_original_order. 21 steps."
+        ),
+        "requiresSummary": (
+            "Return the delivered size 8, buy size 9.5 from the cheaper shop "
+            "(ValueMart $81.50 vs ShopGym $94.99), email Alice."
+        ),
+        "agentDidSummary": (
+            "Price-matched and bought VM 9.5 + emailed Alice, but skipped "
+            "returning the original size-8 order (0.8/21)."
+        ),
+        "disposition": "BREAK",
+        "break_rate": "1/1",
+        "score": 0.8,
+        "success": False,
+        "specific_failure": "initiated_return_on_correct_original_order",
+        "failure_class": "missed_required_milestone",
+        "missed_milestones": ["initiated_return_on_correct_original_order"],
+        "fairness_notes": (
+            "Pre-launch FOI/discoverability/gold ALL PASS. Return UI on "
+            "delivered order discoverable; Sol simply never started the "
+            "return after buying the replacement. mp_103 sticky-forbidden "
+            "FOI bug fixed separately (HOLD — not on this tab)."
+        ),
+        "cohort_notes": (
+            "Breaker-1 — Sol seed0 from mp103–108 multistep batch. GCS "
+            "gs://gemini-503300-filtration-runs/filtration/mp103_108_20260811/"
+            "mp103-108-sol-seed0-20260811T233758Z/"
+        ),
+        "wave": "Breaker-1 mp_104 Sol seed0 BREAK 2026-08-11",
+        "gcs": (
+            "gs://gemini-503300-filtration-runs/filtration/mp103_108_20260811/"
+            "mp103-108-sol-seed0-20260811T233758Z/"
+        ),
+        "execution": "filtration-mp103-108-sol-seed0-8j9l9",
+        "run_id": "mp103-108-sol-seed0-20260811T233758Z",
     },
 ]
 
@@ -445,10 +521,12 @@ def main() -> None:
             "Breaker-1: b1 mp_091 Burrow pickup × GymCal conflict — fairness HOLD after "
             "normalizeListing pickupWindow fix (d1700717 / filtration-mp091-sol-seed0-7bhdm; "
             "PDP amber pickup banner visible). b2 mp_096 Lumos warranty expired QuietBreak "
-            "(1.0/44, filtration-mp095-096-sol-seed0-nppnj). mp_097 coffee roaster + cups and "
-            "mp_099 silent-noop monitors removed after user fairness review (not breakers: "
-            "support mail acknowledged Delivered; listing edited $119.99→$89.99). mp_095 "
-            "omitted. Room left for later cards (e.g. mp_103+)."
+            "(1.0/44, filtration-mp095-096-sol-seed0-nppnj). b3 mp_104 return wrong size + "
+            "price match — bought cheaper VM 9.5 + emailed but missed return on "
+            "ORD-MP104-AVENTIS8 (0.8/21, filtration-mp103-108-sol-seed0-8j9l9). mp_097 "
+            "coffee roaster + cups and mp_099 silent-noop monitors removed after user "
+            "fairness review. mp_095 omitted. mp_103 checkup Express upgrade sticky-"
+            "forbidden FOI fix → fairness HOLD (not packaged)."
         ),
         "tasks": tasks,
     }
