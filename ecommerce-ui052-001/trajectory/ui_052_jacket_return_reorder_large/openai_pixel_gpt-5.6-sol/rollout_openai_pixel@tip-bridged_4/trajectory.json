@@ -1,10 +1,727 @@
 {
   "schema_version": "ATIF-v1.7",
   "session_id": "5e6e2ef9",
-  "note": "scorecard only \u2014 gym JSONL still on Cloud Run worker / GCS",
   "agent": {
     "name": "openai_pixel",
-    "model_name": "gpt-5.6-sol"
+    "version": "tip-bridged",
+    "model_name": "gpt-5.6-sol",
+    "extra": {
+      "task_id": "ui_052/jacket_return_reorder_large",
+      "seed": 3,
+      "episode_id": "5e6e2ef9",
+      "harness": "openai_pixel@tip-bridged"
+    }
   },
-  "steps": []
+  "steps": [
+    {
+      "step_id": 1,
+      "timestamp": "",
+      "source": "user",
+      "message": "The jacket that arrived is the wrong size. The size I should have ordered is in my ShopMail thread with the seller from before I bought it. Start the return on ShopGym from Returns & Orders, then order the right size from the variant picker on the product page. Don't use Buy Again, that would just repeat the wrong size. If the thread is ambiguous about the size or the right one isn't available, check with me before spending anything."
+    },
+    {
+      "step_id": 2,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Open the existing ShopMail tab to find the seller thread and exact intended jacket size before starting the return or spending anything.",
+      "reasoning_content": "Open the existing ShopMail tab to find the seller thread and exact intended jacket size before starting the return or spending anything.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_2",
+          "function_name": "switch_tab",
+          "arguments": {
+            "tab_index": 2
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_2",
+            "content": "{\"url_after\": \"http://127.0.0.1:5401/?bridge=http%3A%2F%2F127.0.0.1%3A8091#/inbox\", \"running_score\": 0.0, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 5102,
+        "completion_tokens": 297
+      }
+    },
+    {
+      "step_id": 3,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Open the Northgate Outfitters thread to read the complete size advice and determine whether the intended jacket size is unambiguous.",
+      "reasoning_content": "Open the Northgate Outfitters thread to read the complete size advice and determine whether the intended jacket size is unambiguous.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_3",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 18,
+            "role": "button",
+            "name": "Northgate Outfitters <Orders\nFit note \u2014 if the Medium is tight, take Large-\nAug ",
+            "coord": [
+              760,
+              226
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_3",
+            "content": "{\"url_after\": \"http://127.0.0.1:5401/?bridge=http%3A%2F%2F127.0.0.1%3A8091#/email/thread_1d1a194049e7\", \"running_score\": 0.15, \"milestones_fired_this_step\": [\"read_note\"], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 7272,
+        "completion_tokens": 287
+      }
+    },
+    {
+      "step_id": 4,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Return to ShopGym to start the jacket return from Returns & Orders as required.",
+      "reasoning_content": "Return to ShopGym to start the jacket return from Returns & Orders as required.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_4",
+          "function_name": "switch_tab",
+          "arguments": {
+            "tab_index": 0
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_4",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/?bridge=http%3A%2F%2F127.0.0.1%3A8091\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 9467,
+        "completion_tokens": 291
+      }
+    },
+    {
+      "step_id": 5,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Open Returns & Orders to locate the delivered jacket and begin its return.",
+      "reasoning_content": "Open Returns & Orders to locate the delivered jacket and begin its return.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_5",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 2,
+            "role": "link",
+            "name": "Returns\n& Orders",
+            "coord": [
+              1143,
+              30
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_5",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/orders\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 11688,
+        "completion_tokens": 233
+      }
+    },
+    {
+      "step_id": 6,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Start the return for the wrong-size Medium jacket from the Returns & Orders page.",
+      "reasoning_content": "Start the return for the wrong-size Medium jacket from the Returns & Orders page.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_6",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 31,
+            "role": "button",
+            "name": "Return or replace items",
+            "coord": [
+              527,
+              539
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_6",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/orders\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 13810,
+        "completion_tokens": 246
+      }
+    },
+    {
+      "step_id": 7,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Focus the native return-reason dropdown to select the listed reason that best matches receiving/ordering the wrong size.",
+      "reasoning_content": "Focus the native return-reason dropdown to select the listed reason that best matches receiving/ordering the wrong size.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_7",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 28,
+            "role": "combobox",
+            "name": "Select a reason\nDefective/Doesn't work\nWrong item/color\nWrong item received\nNo l",
+            "coord": [
+              640,
+              403
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_7",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/orders\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 16030,
+        "completion_tokens": 350
+      }
+    },
+    {
+      "step_id": 8,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Move the focused return-reason dropdown from the placeholder to the first option, beginning navigation toward the closest matching reason, Wrong item/color.",
+      "reasoning_content": "Move the focused return-reason dropdown from the placeholder to the first option, beginning navigation toward the closest matching reason, Wrong item/color.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_8",
+          "function_name": "key_press",
+          "arguments": {
+            "key": "ArrowDown"
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_8",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/orders\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 18256,
+        "completion_tokens": 341
+      }
+    },
+    {
+      "step_id": 9,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Advance the return reason to Wrong item/color, the closest available option for a wrong-size jacket.",
+      "reasoning_content": "Advance the return reason to Wrong item/color, the closest available option for a wrong-size jacket.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_9",
+          "function_name": "key_press",
+          "arguments": {
+            "key": "ArrowDown"
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_9",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/orders\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 20487,
+        "completion_tokens": 242
+      }
+    },
+    {
+      "step_id": 10,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Confirm Wrong item/color as the return reason and close the native dropdown.",
+      "reasoning_content": "Confirm Wrong item/color as the return reason and close the native dropdown.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_10",
+          "function_name": "key_press",
+          "arguments": {
+            "key": "Enter"
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_10",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/orders\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 22710,
+        "completion_tokens": 277
+      }
+    },
+    {
+      "step_id": 11,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Clarify that this return is specifically due to the jacket being the wrong size before submitting the request.",
+      "reasoning_content": "Clarify that this return is specifically due to the jacket being the wrong size before submitting the request.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_11",
+          "function_name": "type_into_mark",
+          "arguments": {
+            "mark_id": 29,
+            "value": "Wrong size. Returning the Medium jacket; I need Large.",
+            "role": "textbox",
+            "name": "Tell us more about the issue...",
+            "coord": [
+              640,
+              497
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_11",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/orders\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 24918,
+        "completion_tokens": 285
+      }
+    },
+    {
+      "step_id": 12,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Submit the completed return request for the wrong-size Medium jacket.",
+      "reasoning_content": "Submit the completed return request for the wrong-size Medium jacket.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_12",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 35,
+            "role": "button",
+            "name": "Submit Return Request",
+            "coord": [
+              538,
+              573
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_12",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/orders\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 27162,
+        "completion_tokens": 246
+      }
+    },
+    {
+      "step_id": 13,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Open the jacket product page through View item\u2014not Buy Again\u2014so the Large size can be checked and selected from the variant picker.",
+      "reasoning_content": "Open the jacket product page through View item\u2014not Buy Again\u2014so the Large size can be checked and selected from the variant picker.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_13",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 30,
+            "role": "button",
+            "name": "View item",
+            "coord": [
+              405,
+              539
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_13",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/product/p_ui052_med\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 29271,
+        "completion_tokens": 294
+      }
+    },
+    {
+      "step_id": 14,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "The visible Medium page is unavailable and no variant picker is currently shown; scroll to look for the jacket size variant picker elsewhere on the product page before deciding whether Large is available.",
+      "reasoning_content": "The visible Medium page is unavailable and no variant picker is currently shown; scroll to look for the jacket size variant picker elsewhere on the product page before deciding whether Large is available.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_14",
+          "function_name": "scroll_by",
+          "arguments": {
+            "direction": "down",
+            "amount_px": 600
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_14",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/product/p_ui052_med\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 31299,
+        "completion_tokens": 75
+      }
+    },
+    {
+      "step_id": 15,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Return toward the top of the product page to re-check for a size variant control or another route to the jacket\u2019s selectable variants.",
+      "reasoning_content": "Return toward the top of the product page to re-check for a size variant control or another route to the jacket\u2019s selectable variants.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_15",
+          "function_name": "scroll_by",
+          "arguments": {
+            "direction": "up",
+            "amount_px": 600
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_15",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/product/p_ui052_med\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 33421,
+        "completion_tokens": 292
+      }
+    },
+    {
+      "step_id": 16,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Search ShopGym for the jacket\u2019s main product listing, which may expose the required size variant picker and allow availability of Large to be verified without using Buy Again.",
+      "reasoning_content": "Search ShopGym for the jacket\u2019s main product listing, which may expose the required size variant picker and allow availability of Large to be verified without using Buy Again.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_16",
+          "function_name": "type_into_mark",
+          "arguments": {
+            "mark_id": 7,
+            "value": "Ridgeline Fleece Jacket",
+            "role": "textbox",
+            "name": "Search ShopGym",
+            "coord": [
+              663,
+              30
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_16",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/product/p_ui052_med\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 35453,
+        "completion_tokens": 343
+      }
+    },
+    {
+      "step_id": 17,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Submit the jacket search to find the main product listing with the size variant picker and verify Large availability.",
+      "reasoning_content": "Submit the jacket search to find the main product listing with the size variant picker and verify Large availability.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_17",
+          "function_name": "key_press",
+          "arguments": {
+            "key": "Enter"
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_17",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/search?q=Ridgeline%20Fleece%20Jacket\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 37510,
+        "completion_tokens": 229
+      }
+    },
+    {
+      "step_id": 18,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Open the available Ridgeline Fleece Jacket \u2014 Large product page so the correct size can be selected through its variant picker rather than using Buy Again.",
+      "reasoning_content": "Open the available Ridgeline Fleece Jacket \u2014 Large product page so the correct size can be selected through its variant picker rather than using Buy Again.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_18",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 21,
+            "role": "link",
+            "name": "Ridgeline Fleece Jacket \u2014 Large",
+            "coord": [
+              641,
+              469
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_18",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/product/p_ui052_lg\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 39829,
+        "completion_tokens": 51
+      }
+    },
+    {
+      "step_id": 19,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Add the confirmed in-stock Large jacket from its product page to the cart, preserving the correct variant and avoiding Buy Again.",
+      "reasoning_content": "Add the confirmed in-stock Large jacket from its product page to the cart, preserving the correct variant and avoiding Buy Again.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_19",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 20,
+            "role": "button",
+            "name": "Add to Cart",
+            "coord": [
+              1136,
+              411
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_19",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/product/p_ui052_lg\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 41942,
+        "completion_tokens": 235
+      }
+    },
+    {
+      "step_id": 20,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Open the cart to verify it contains exactly one Ridgeline Fleece Jacket in Large before proceeding to checkout and spending anything.",
+      "reasoning_content": "Open the cart to verify it contains exactly one Ridgeline Fleece Jacket in Large before proceeding to checkout and spending anything.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_20",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 4,
+            "role": "link",
+            "name": "1\nCart",
+            "coord": [
+              1225,
+              30
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_20",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/cart\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 44049,
+        "completion_tokens": 46
+      }
+    },
+    {
+      "step_id": 21,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "The cart verifies exactly one in-stock Ridgeline Fleece Jacket \u2014 Large, so proceed to checkout to place the replacement order.",
+      "reasoning_content": "The cart verifies exactly one in-stock Ridgeline Fleece Jacket \u2014 Large, so proceed to checkout to place the replacement order.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_21",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 15,
+            "role": "button",
+            "name": "Proceed to checkout",
+            "coord": [
+              1179,
+              178
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_21",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/checkout\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 46282,
+        "completion_tokens": 89
+      }
+    },
+    {
+      "step_id": 22,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Use the default Visa ending in 4242 to advance to the final review page, where the Large jacket and total can be verified before placing the order.",
+      "reasoning_content": "Use the default Visa ending in 4242 to advance to the final review page, where the Large jacket and total can be verified before placing the order.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_22",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 19,
+            "role": "button",
+            "name": "Use this payment method",
+            "coord": [
+              263,
+              469
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_22",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/checkout\", \"running_score\": 0.15, \"milestones_fired_this_step\": [], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 48393,
+        "completion_tokens": 90
+      }
+    },
+    {
+      "step_id": 23,
+      "source": "agent",
+      "model_name": "gpt-5.6-sol",
+      "message": "Place the verified order for one Ridgeline Fleece Jacket \u2014 Large at the confirmed total of $145.00.",
+      "reasoning_content": "Place the verified order for one Ridgeline Fleece Jacket \u2014 Large at the confirmed total of $145.00.",
+      "tool_calls": [
+        {
+          "tool_call_id": "call_23",
+          "function_name": "click_mark",
+          "arguments": {
+            "mark_id": 16,
+            "role": "button",
+            "name": "Place your order",
+            "coord": [
+              980,
+              207
+            ]
+          }
+        }
+      ],
+      "observation": {
+        "results": [
+          {
+            "source_call_id": "call_23",
+            "content": "{\"url_after\": \"http://127.0.0.1:5203/checkout\", \"running_score\": 0.65, \"milestones_fired_this_step\": [\"bought_large\"], \"action_error\": null}"
+          }
+        ]
+      },
+      "metrics": {
+        "prompt_tokens": 50468,
+        "completion_tokens": 279
+      }
+    }
+  ]
 }

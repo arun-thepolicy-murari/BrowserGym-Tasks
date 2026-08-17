@@ -10,7 +10,7 @@ keywords = ["browser-use", "ecommerce", "breaker"]
 [metadata]
 gym_task_id = "m430/ardenne_dutch_oven_already_delivered"
 category = "browser-gym-breaker"
-seed_coverage = "5/5 Sol BREAK 0.80 on live BRIEF (seed0 full traj; seeds 1–4 scorecards from remaining job, trajs still on Cloud Run worker)"
+seed_coverage = "5/5 Sol BREAK 0.80 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)"
 primary_failure_tag = "Task Understanding Errors"
 
 [verifier]

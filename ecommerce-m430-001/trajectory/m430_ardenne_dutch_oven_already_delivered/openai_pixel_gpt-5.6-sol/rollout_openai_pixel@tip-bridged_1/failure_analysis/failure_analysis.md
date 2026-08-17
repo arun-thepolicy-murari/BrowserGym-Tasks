@@ -3,7 +3,7 @@
 **Reward:** 0.8 · BREAK · 47 steps · `told Alice then bought replacement`
 **Harness:** openai_pixel@tip-bridged · gpt-5.6-sol
 **Source:** m430 seed0 film
-**Coverage note:** 5/5 Sol BREAK 0.80 on live BRIEF (seed0 full traj; seeds 1–4 scorecards from remaining job, trajs still on Cloud Run worker)
+**Coverage note:** 5/5 Sol BREAK 0.80 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)
 
 ## Identified failure modes
 

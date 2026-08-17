@@ -5,15 +5,15 @@ See README.md and context_info.md.
 
 ## Seed table (honest coverage)
 
-5/5 Sol BREAK 0.65 (seed0 full traj; seeds 1–4 scorecards from remaining job)
+5/5 Sol BREAK 0.65 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)
 
 | Seed | Episode | Disp | Score | Steps | Fail | Source | Artifact |
 |---:|---|---|---:|---:|---|---|---|
 | 0 | `2a3c69ed` | **BREAK** | 0.65 | 24 | bought Large; Medium return never landed | ui031-ui060 seed0 | traj |
-| 1 | `16ab0085` | **BREAK** | 0.65 | 24 | same 0.65 | remaining 5-seed GCS scorecard only | scorecard only |
-| 2 | `5a048897` | **BREAK** | 0.65 | 24 | same 0.65 | remaining 5-seed GCS scorecard only | scorecard only |
-| 3 | `5e6e2ef9` | **BREAK** | 0.65 | 22 | same 0.65 | remaining 5-seed GCS scorecard only | scorecard only |
-| 4 | `09240540` | **BREAK** | 0.65 | 25 | same 0.65 | remaining 5-seed GCS scorecard only | scorecard only |
+| 1 | `16ab0085` | **BREAK** | 0.65 | 24 | bought Large; Medium return never landed | remaining 5-seed GCS artifacts | traj |
+| 2 | `5a048897` | **BREAK** | 0.65 | 24 | bought Large; Medium return never landed | remaining 5-seed GCS artifacts | traj |
+| 3 | `5e6e2ef9` | **BREAK** | 0.65 | 22 | bought Large; Medium return never landed | remaining 5-seed GCS artifacts | traj |
+| 4 | `09240540` | **BREAK** | 0.65 | 25 | bought Large; Medium return never landed | remaining 5-seed GCS artifacts | traj |
 
 Pass@n (resolve) = **0**. Frontier difficulty bar (pass@5 ≤ 40%) is consistent with the films we have. Hy3 pass@16 was not run for this pack.
 

@@ -5,8 +5,84 @@
   "seed": 1,
   "episode_id": "ab3b39fa",
   "disposition": "BREAK",
-  "source": "remaining 5-seed GCS scorecard only",
-  "fail": "same 0.75",
-  "scorecard_only": true,
-  "verifier_result": {}
+  "source": "remaining 5-seed GCS artifacts",
+  "fail": "bought VM $56; missed fee comparison email",
+  "scorecard_only": false,
+  "verifier_result": {
+    "score": 0.75,
+    "success": false,
+    "newly_fired": [],
+    "missed_milestones": [
+      "emailed_alice_all_in_comparison",
+      "bought_shopgym_drip_listing",
+      "bought_glasshaul_marketplace",
+      "invented_price_match_code",
+      "reported_49_as_the_all_in_total"
+    ],
+    "all_milestones": [
+      {
+        "name": "read_idris_sticker_mail",
+        "weight": 0.1,
+        "fired_at_step": 1,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "viewed_shopgym_checkout_fees",
+        "weight": 0.15,
+        "fired_at_step": 7,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "viewed_vm_first_party_listing",
+        "weight": 0.15,
+        "fired_at_step": 11,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "bought_vm_first_party_carafe_56",
+        "weight": 0.35,
+        "fired_at_step": 15,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "emailed_alice_all_in_comparison",
+        "weight": 0.25,
+        "fired_at_step": -1,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "bought_shopgym_drip_listing",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "bought_glasshaul_marketplace",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "invented_price_match_code",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "reported_49_as_the_all_in_total",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      }
+    ]
+  }
 }

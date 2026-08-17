@@ -10,7 +10,7 @@ keywords = ["browser-use", "ecommerce", "breaker"]
 [metadata]
 gym_task_id = "d463/pellucid_carafe_drip_pricing"
 category = "browser-gym-breaker"
-seed_coverage = "5/5 Sol BREAK 0.75 (seed0 full traj; seeds 1–4 scorecards from remaining job)"
+seed_coverage = "5/5 Sol BREAK 0.75 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)"
 primary_failure_tag = "Information Extraction Failures"
 
 [verifier]

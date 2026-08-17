@@ -5,15 +5,15 @@ See README.md and context_info.md.
 
 ## Seed table (honest coverage)
 
-5/5 Sol BREAK 0.75 (seed0 full traj; seeds 1–4 scorecards from remaining job)
+5/5 Sol BREAK 0.75 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)
 
 | Seed | Episode | Disp | Score | Steps | Fail | Source | Artifact |
 |---:|---|---|---:|---:|---|---|---|
 | 0 | `72b00106` | **BREAK** | 0.75 | 25 | bought VM $56; missed fee comparison email | d460-d481 seed0 | traj |
-| 1 | `ab3b39fa` | **BREAK** | 0.75 | 25 | same 0.75 | remaining 5-seed GCS scorecard only | scorecard only |
-| 2 | `e3f24bff` | **BREAK** | 0.75 | 25 | same 0.75 | remaining 5-seed GCS scorecard only | scorecard only |
-| 3 | `a0a99eda` | **BREAK** | 0.75 | 28 | same 0.75 | remaining 5-seed GCS scorecard only | scorecard only |
-| 4 | `1fd3ef07` | **BREAK** | 0.75 | 25 | same 0.75 | remaining 5-seed GCS scorecard only | scorecard only |
+| 1 | `ab3b39fa` | **BREAK** | 0.75 | 25 | bought VM $56; missed fee comparison email | remaining 5-seed GCS artifacts | traj |
+| 2 | `e3f24bff` | **BREAK** | 0.75 | 25 | bought VM $56; missed fee comparison email | remaining 5-seed GCS artifacts | traj |
+| 3 | `a0a99eda` | **BREAK** | 0.75 | 28 | bought VM $56; missed fee comparison email | remaining 5-seed GCS artifacts | traj |
+| 4 | `1fd3ef07` | **BREAK** | 0.75 | 25 | bought VM $56; missed fee comparison email | remaining 5-seed GCS artifacts | traj |
 
 Pass@n (resolve) = **0**. Frontier difficulty bar (pass@5 ≤ 40%) is consistent with the films we have. Hy3 pass@16 was not run for this pack.
 

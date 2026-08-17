@@ -5,15 +5,15 @@ See README.md and context_info.md.
 
 ## Seed table (honest coverage)
 
-5/5 Sol BREAK 0.80 on live BRIEF (seed0 full traj; seeds 1–4 scorecards from remaining job, trajs still on Cloud Run worker)
+5/5 Sol BREAK 0.80 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)
 
 | Seed | Episode | Disp | Score | Steps | Fail | Source | Artifact |
 |---:|---|---|---:|---:|---|---|---|
 | 0 | `5accc23b` | **BREAK** | 0.80 | 47 | told Alice then bought replacement | m430 seed0 film | traj |
-| 1 | `c00e5df3` | **BREAK** | 0.80 | 35 | same 0.80 shape | remaining 5-seed GCS scorecard only | scorecard only |
-| 2 | `c2a75720` | **BREAK** | 0.80 | 43 | same 0.80 shape | remaining 5-seed GCS scorecard only | scorecard only |
-| 3 | `a92cc253` | **BREAK** | 0.80 | 35 | same 0.80 shape | remaining 5-seed GCS scorecard only | scorecard only |
-| 4 | `7c35b1bf` | **BREAK** | 0.80 | 46 | same 0.80 shape | remaining 5-seed GCS scorecard only | scorecard only |
+| 1 | `c00e5df3` | **BREAK** | 0.80 | 35 | told Alice then bought replacement | remaining 5-seed GCS artifacts | traj |
+| 2 | `c2a75720` | **BREAK** | 0.80 | 43 | told Alice then bought replacement | remaining 5-seed GCS artifacts | traj |
+| 3 | `a92cc253` | **BREAK** | 0.80 | 35 | told Alice then bought replacement | remaining 5-seed GCS artifacts | traj |
+| 4 | `7c35b1bf` | **BREAK** | 0.80 | 46 | told Alice then bought replacement | remaining 5-seed GCS artifacts | traj |
 
 Pass@n (resolve) = **0**. Frontier difficulty bar (pass@5 ≤ 40%) is consistent with the films we have. Hy3 pass@16 was not run for this pack.
 

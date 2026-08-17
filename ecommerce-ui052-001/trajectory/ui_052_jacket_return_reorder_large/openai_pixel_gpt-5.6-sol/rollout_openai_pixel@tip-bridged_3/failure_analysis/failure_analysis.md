@@ -1,16 +1,16 @@
 # Failure analysis — rollout 3 (seed 2, episode 5a048897)
 
-**Reward:** 0.65 · BREAK · 24 steps · `same 0.65`
+**Reward:** 0.65 · BREAK · 24 steps · `bought Large; Medium return never landed`
 **Harness:** openai_pixel@tip-bridged · gpt-5.6-sol
-**Source:** remaining 5-seed GCS scorecard only
-**Coverage note:** 5/5 Sol BREAK 0.65 (seed0 full traj; seeds 1–4 scorecards from remaining job)
+**Source:** remaining 5-seed GCS artifacts
+**Coverage note:** 5/5 Sol BREAK 0.65 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)
 
 ## Identified failure modes
 
 - `return_ui_not_persisted`
 - `reorder_without_return`
 
-Observed: same 0.65.
+Observed: bought Large; Medium return never landed.
 
 ## Hint (Section 4)
 

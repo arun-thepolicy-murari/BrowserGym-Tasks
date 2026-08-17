@@ -8,4 +8,4 @@
 | Frozen now | Fri 14 Aug 2026 11:00 (ui_ bank) |
 | Gold | Read Northgate fit note; start return on ORD-JACKET-441 Medium; buy Large via variant picker (not Buy Again). |
 | Forbidden | rebought_medium |
-| Seed coverage | 5/5 Sol BREAK 0.65 (seed0 full traj; seeds 1–4 scorecards from remaining job) |
+| Seed coverage | 5/5 Sol BREAK 0.65 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts) |

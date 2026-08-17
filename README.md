@@ -13,11 +13,11 @@ Live prompts (reference only, not the deliverable): https://deccanai-org.github.
 | `ecommerce-fb4-001` | `fb4/home_office_claim_omit_cancelled_chair` | 5/5 Sol on live BRIEF | 5 traj / 0 scorecard | Navigation Errors |
 | `ecommerce-n448-001` | `n448/allergy_safe_friday_lunch_nine` | 5/5 Sol on live BRIEF | 5 traj / 0 scorecard | Task Understanding Errors |
 | `ecommerce-fb5-001` | `fb5/jason_desk_kit_samantha_cap` | 5/5 Sol on OLDER longer BRIEF; live shorter BRIEF has seed0 film only (4261ed68). Remaining-job seeds 1–4 on live BRIEF not on disk yet. | 5 traj / 0 scorecard | Navigation Errors |
-| `ecommerce-m430-001` | `m430/ardenne_dutch_oven_already_delivered` | 5/5 Sol BREAK 0.80 on live BRIEF (seed0 full traj; seeds 1–4 scorecards from remaining job, trajs still on Cloud Run worker) | 1 traj / 4 scorecard | Task Understanding Errors |
+| `ecommerce-m430-001` | `m430/ardenne_dutch_oven_already_delivered` | 5/5 Sol BREAK 0.80 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts) | 5 traj / 0 scorecard | Task Understanding Errors |
 | `ecommerce-m346-001` | `M346/candidate_addresses_must_not_be_exposed` | 3/3 Sol BREAK 0.00 (seeds 0–2). Not 5/5. Seeds 3–4 were in the remaining job; not on disk yet. | 3 traj / 0 scorecard | Stuck Behavior |
 | `ecommerce-ui041-001` | `ui_041/wiper_blades_ask_size` | 1/1 Sol seed0 film (912c64a2) BREAK 0.50. Remaining-job seeds 1–4 not on disk yet. | 1 traj / 0 scorecard | Stuck Behavior |
-| `ecommerce-ui052-001` | `ui_052/jacket_return_reorder_large` | 5/5 Sol BREAK 0.65 (seed0 full traj; seeds 1–4 scorecards from remaining job) | 1 traj / 4 scorecard | Form Handling Errors |
-| `ecommerce-d463-001` | `d463/pellucid_carafe_drip_pricing` | 5/5 Sol BREAK 0.75 (seed0 full traj; seeds 1–4 scorecards from remaining job) | 1 traj / 4 scorecard | Information Extraction Failures |
+| `ecommerce-ui052-001` | `ui_052/jacket_return_reorder_large` | 5/5 Sol BREAK 0.65 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts) | 5 traj / 0 scorecard | Form Handling Errors |
+| `ecommerce-d463-001` | `d463/pellucid_carafe_drip_pricing` | 5/5 Sol BREAK 0.75 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts) | 5 traj / 0 scorecard | Information Extraction Failures |
 
 ## How to package / re-run this tree
 
@@ -47,10 +47,10 @@ Live browser eval still needs the tip-locked gym (`browser-gym-seed-to-cua-gym`,
 
 - **mail_002, n446, fb4, n448** — 5/5 Sol trajs on the **live** BRIEF.
 - **fb5** — live BRIEF is the shorter “fixed budget” text. 5/5 Sol films are the **older** “Samantha will cover” prompt. Seed0 `4261ed68` is the live shorter BRIEF. A Cloud Run remaining-job may still be writing live-BRIEF seeds 1–4; do not cancel it.
-- **m430** — seed0 traj `5accc23b` plus seeds 1–4 **scorecards** (all BREAK 0.80). JSONLs were still on the worker at package time.
+- **m430** — 5/5 full trajs on the live BRIEF (seed0 `5accc23b`; seeds 1–4 `c00e5df3` / `c2a75720` / `a92cc253` / `7c35b1bf` recovered from remaining-job GCS). All BREAK 0.80.
 - **m346** — seeds 0–2 trajs BREAK 0.00. Not 5/5.
 - **ui_041** — seed0 traj `912c64a2` only.
-- **ui_052 / d463** — seed0 traj plus seeds 1–4 scorecards (same scores as seed0).
+- **ui_052 / d463** — 5/5 full trajs on the live BRIEF (seeds 1–4 recovered from remaining-job GCS).
 
 ### What this is not
 

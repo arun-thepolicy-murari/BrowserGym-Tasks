@@ -3,7 +3,7 @@
 **Reward:** 0.65 · BREAK · 24 steps · `bought Large; Medium return never landed`
 **Harness:** openai_pixel@tip-bridged · gpt-5.6-sol
 **Source:** ui031-ui060 seed0
-**Coverage note:** 5/5 Sol BREAK 0.65 (seed0 full traj; seeds 1–4 scorecards from remaining job)
+**Coverage note:** 5/5 Sol BREAK 0.65 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)
 
 ## Identified failure modes
 

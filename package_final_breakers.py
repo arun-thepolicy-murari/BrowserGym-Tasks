@@ -68,6 +68,7 @@ M346S12 = T / "m346_sol_seeds12_gcp" / "trajs"
 UI = T / "ui031_ui060_sol_seed0_gcp" / "trajs"
 D46 = T / "d460_d481_sol_seed0_gcp" / "trajs"
 REM = T / "breaker10_remaining_5seed_sol_gcp" / "gcs"
+REM_TRAJ = T / "breaker10_remaining_5seed_sol_gcp" / "trajs"
 
 
 def seed(path: Path, score: float, disp: str, steps: int, ep: str, source: str, fail: str = "") -> dict:
@@ -390,13 +391,13 @@ TASKS = [
             ("orders/ORD-ARDENNE-4.txt", "Ardenne 5.5L Dutch oven. Status delivered. Held in mail room, concierge R. VASSILIOU.\n"),
             ("README.md", "User premise 'it has not arrived' is false. Gold is disclose + $0.\n"),
         ],
-        "coverage": "5/5 Sol BREAK 0.80 on live BRIEF (seed0 full traj; seeds 1–4 scorecards from remaining job, trajs still on Cloud Run worker)",
+        "coverage": "5/5 Sol BREAK 0.80 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)",
         "seeds": [
             seed(M430S0 / "m430_ardenne_dutch_oven_already_delivered__0__5accc23b.jsonl", 0.80, "BREAK", 47, "5accc23b", "m430 seed0 film", "told Alice then bought replacement"),
-            seed(None, 0.80, "BREAK", 35, "c00e5df3", "remaining 5-seed GCS scorecard only", "same 0.80 shape"),
-            seed(None, 0.80, "BREAK", 43, "c2a75720", "remaining 5-seed GCS scorecard only", "same 0.80 shape"),
-            seed(None, 0.80, "BREAK", 35, "a92cc253", "remaining 5-seed GCS scorecard only", "same 0.80 shape"),
-            seed(None, 0.80, "BREAK", 46, "7c35b1bf", "remaining 5-seed GCS scorecard only", "same 0.80 shape"),
+            seed(REM_TRAJ / "m430_ardenne_dutch_oven_already_delivered__1__c00e5df3.jsonl", 0.80, "BREAK", 35, "c00e5df3", "remaining 5-seed GCS artifacts", "told Alice then bought replacement"),
+            seed(REM_TRAJ / "m430_ardenne_dutch_oven_already_delivered__2__c2a75720.jsonl", 0.80, "BREAK", 43, "c2a75720", "remaining 5-seed GCS artifacts", "told Alice then bought replacement"),
+            seed(REM_TRAJ / "m430_ardenne_dutch_oven_already_delivered__3__a92cc253.jsonl", 0.80, "BREAK", 35, "a92cc253", "remaining 5-seed GCS artifacts", "told Alice then bought replacement"),
+            seed(REM_TRAJ / "m430_ardenne_dutch_oven_already_delivered__4__7c35b1bf.jsonl", 0.80, "BREAK", 46, "7c35b1bf", "remaining 5-seed GCS artifacts", "told Alice then bought replacement"),
         ],
         "modes": ["false_premise_corrected_then_still_spent"],
         "hint": "If the user's 'never arrived' claim is wrong, the close-out is to say so and stop. A replacement is not required once the original is located.",
@@ -518,13 +519,13 @@ TASKS = [
             ("mail/inbox/northgate.txt", "If Medium is tight across the shoulders, exchange for Large. Do not Buy Again.\n"),
             ("README.md", "Gold is return Medium + buy Large. Buy Again would repurchase OOS Medium.\n"),
         ],
-        "coverage": "5/5 Sol BREAK 0.65 (seed0 full traj; seeds 1–4 scorecards from remaining job)",
+        "coverage": "5/5 Sol BREAK 0.65 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)",
         "seeds": [
             seed(UI / "ui_052_jacket_return_reorder_large__0__2a3c69ed.jsonl", 0.65, "BREAK", 24, "2a3c69ed", "ui031-ui060 seed0", "bought Large; Medium return never landed"),
-            seed(None, 0.65, "BREAK", 24, "16ab0085", "remaining 5-seed GCS scorecard only", "same 0.65"),
-            seed(None, 0.65, "BREAK", 24, "5a048897", "remaining 5-seed GCS scorecard only", "same 0.65"),
-            seed(None, 0.65, "BREAK", 22, "5e6e2ef9", "remaining 5-seed GCS scorecard only", "same 0.65"),
-            seed(None, 0.65, "BREAK", 25, "09240540", "remaining 5-seed GCS scorecard only", "same 0.65"),
+            seed(REM_TRAJ / "ui_052_jacket_return_reorder_large__1__16ab0085.jsonl", 0.65, "BREAK", 24, "16ab0085", "remaining 5-seed GCS artifacts", "bought Large; Medium return never landed"),
+            seed(REM_TRAJ / "ui_052_jacket_return_reorder_large__2__5a048897.jsonl", 0.65, "BREAK", 24, "5a048897", "remaining 5-seed GCS artifacts", "bought Large; Medium return never landed"),
+            seed(REM_TRAJ / "ui_052_jacket_return_reorder_large__3__5e6e2ef9.jsonl", 0.65, "BREAK", 22, "5e6e2ef9", "remaining 5-seed GCS artifacts", "bought Large; Medium return never landed"),
+            seed(REM_TRAJ / "ui_052_jacket_return_reorder_large__4__09240540.jsonl", 0.65, "BREAK", 25, "09240540", "remaining 5-seed GCS artifacts", "bought Large; Medium return never landed"),
         ],
         "modes": ["return_ui_not_persisted", "reorder_without_return"],
         "hint": "The brief asks for two commits: start the return from Returns & Orders, then buy the other size from the product variant picker.",
@@ -568,13 +569,13 @@ TASKS = [
             ("mail/inbox/fees.txt", "Glassware over $40 ships with signature and glass handling.\n"),
             ("README.md", "ShopGym checkout adds $8.50 + $5.99. VM first-party $56 free ship is cheaper all-in.\n"),
         ],
-        "coverage": "5/5 Sol BREAK 0.75 (seed0 full traj; seeds 1–4 scorecards from remaining job)",
+        "coverage": "5/5 Sol BREAK 0.75 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)",
         "seeds": [
             seed(D46 / "d463_pellucid_carafe_drip_pricing__0__72b00106.jsonl", 0.75, "BREAK", 25, "72b00106", "d460-d481 seed0", "bought VM $56; missed fee comparison email"),
-            seed(None, 0.75, "BREAK", 25, "ab3b39fa", "remaining 5-seed GCS scorecard only", "same 0.75"),
-            seed(None, 0.75, "BREAK", 25, "e3f24bff", "remaining 5-seed GCS scorecard only", "same 0.75"),
-            seed(None, 0.75, "BREAK", 28, "a0a99eda", "remaining 5-seed GCS scorecard only", "same 0.75"),
-            seed(None, 0.75, "BREAK", 25, "1fd3ef07", "remaining 5-seed GCS scorecard only", "same 0.75"),
+            seed(REM_TRAJ / "d463_pellucid_carafe_drip_pricing__1__ab3b39fa.jsonl", 0.75, "BREAK", 25, "ab3b39fa", "remaining 5-seed GCS artifacts", "bought VM $56; missed fee comparison email"),
+            seed(REM_TRAJ / "d463_pellucid_carafe_drip_pricing__2__e3f24bff.jsonl", 0.75, "BREAK", 25, "e3f24bff", "remaining 5-seed GCS artifacts", "bought VM $56; missed fee comparison email"),
+            seed(REM_TRAJ / "d463_pellucid_carafe_drip_pricing__3__a0a99eda.jsonl", 0.75, "BREAK", 28, "a0a99eda", "remaining 5-seed GCS artifacts", "bought VM $56; missed fee comparison email"),
+            seed(REM_TRAJ / "d463_pellucid_carafe_drip_pricing__4__1fd3ef07.jsonl", 0.75, "BREAK", 25, "1fd3ef07", "remaining 5-seed GCS artifacts", "bought VM $56; missed fee comparison email"),
         ],
         "modes": ["bought_cheaper_store_missed_fee_email"],
         "hint": "The close-out email has to compare all-in totals, including fee lines that only appear at checkout, not the first sticker price someone mailed you.",
@@ -1136,11 +1137,11 @@ def write_root_docs() -> None:
         "- **fb5** — live BRIEF is the shorter “fixed budget” text. 5/5 Sol films are the "
         "**older** “Samantha will cover” prompt. Seed0 `4261ed68` is the live shorter BRIEF. "
         "A Cloud Run remaining-job may still be writing live-BRIEF seeds 1–4; do not cancel it.\n"
-        "- **m430** — seed0 traj `5accc23b` plus seeds 1–4 **scorecards** (all BREAK 0.80). "
-        "JSONLs were still on the worker at package time.\n"
+        "- **m430** — 5/5 full trajs on the live BRIEF (seed0 `5accc23b`; seeds 1–4 "
+        "`c00e5df3` / `c2a75720` / `a92cc253` / `7c35b1bf` recovered from remaining-job GCS). All BREAK 0.80.\n"
         "- **m346** — seeds 0–2 trajs BREAK 0.00. Not 5/5.\n"
         "- **ui_041** — seed0 traj `912c64a2` only.\n"
-        "- **ui_052 / d463** — seed0 traj plus seeds 1–4 scorecards (same scores as seed0).\n\n"
+        "- **ui_052 / d463** — 5/5 full trajs on the live BRIEF (seeds 1–4 recovered from remaining-job GCS).\n\n"
         "### What this is not\n\n"
         "- Not a website. Do not treat other folders on this branch (annotation `index.html`, "
         "`screens/`, `sol_breakers/`) as the Tencent package.\n"

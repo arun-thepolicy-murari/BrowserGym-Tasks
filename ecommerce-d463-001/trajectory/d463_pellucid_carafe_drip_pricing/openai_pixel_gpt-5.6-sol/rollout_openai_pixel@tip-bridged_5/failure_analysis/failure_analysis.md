@@ -1,15 +1,15 @@
 # Failure analysis — rollout 5 (seed 4, episode 1fd3ef07)
 
-**Reward:** 0.75 · BREAK · 25 steps · `same 0.75`
+**Reward:** 0.75 · BREAK · 25 steps · `bought VM $56; missed fee comparison email`
 **Harness:** openai_pixel@tip-bridged · gpt-5.6-sol
-**Source:** remaining 5-seed GCS scorecard only
-**Coverage note:** 5/5 Sol BREAK 0.75 (seed0 full traj; seeds 1–4 scorecards from remaining job)
+**Source:** remaining 5-seed GCS artifacts
+**Coverage note:** 5/5 Sol BREAK 0.75 on live BRIEF (all five full trajs; seeds 1–4 recovered from remaining-job GCS artifacts)
 
 ## Identified failure modes
 
 - `bought_cheaper_store_missed_fee_email`
 
-Observed: same 0.75.
+Observed: bought VM $56; missed fee comparison email.
 
 ## Hint (Section 4)
 
