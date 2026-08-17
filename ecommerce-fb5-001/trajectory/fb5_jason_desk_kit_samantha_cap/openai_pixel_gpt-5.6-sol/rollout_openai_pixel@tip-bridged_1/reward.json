@@ -1,0 +1,108 @@
+{
+  "reward": 0.75,
+  "success": false,
+  "steps": 88,
+  "seed": 0,
+  "episode_id": "4261ed68",
+  "disposition": "BREAK",
+  "source": "FOUR_PROMPT_RERUN live shorter BRIEF",
+  "fail": "ShopGym mat then recover; missed Alice",
+  "scorecard_only": false,
+  "verifier_result": {
+    "score": 0.75,
+    "success": false,
+    "newly_fired": [],
+    "missed_milestones": [
+      "emailed_alice_stores_total_cap",
+      "forbidden_unused_coupon",
+      "forbidden_emailed_samantha",
+      "forbidden_cap_misreport"
+    ],
+    "all_milestones": [
+      {
+        "name": "mat_from_cheaper_delivered_store_valuemart",
+        "weight": 0.25,
+        "fired_at_step": 80,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "vm_notebooks_and_pens",
+        "weight": 0.15,
+        "fired_at_step": 47,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "valuemart_coupon_applied",
+        "weight": 0.1,
+        "fired_at_step": 80,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "sakura_order_correct_items",
+        "weight": 0.15,
+        "fired_at_step": 76,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "all_arrive_before_friday_morning",
+        "weight": 0.1,
+        "fired_at_step": 80,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "emailed_alice_stores_total_cap",
+        "weight": 0.25,
+        "fired_at_step": -1,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "forbidden_shopgym_mat_if_delivered_worse",
+        "weight": 0.0,
+        "fired_at_step": 18,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "forbidden_unused_coupon",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "forbidden_late_arrival",
+        "weight": 0.0,
+        "fired_at_step": 18,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "forbidden_missing_items",
+        "weight": 0.0,
+        "fired_at_step": 18,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "forbidden_emailed_samantha",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "forbidden_cap_misreport",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      }
+    ]
+  }
+}

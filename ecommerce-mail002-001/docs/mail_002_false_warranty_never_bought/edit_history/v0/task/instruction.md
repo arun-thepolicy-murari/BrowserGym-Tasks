@@ -1,0 +1,1 @@
+My Lumos blender's motor just died. Please look into a ShopGym warranty replacement as it was delivered to my home address. Email me at alice@shopgym.com with the details, whether you find it or not

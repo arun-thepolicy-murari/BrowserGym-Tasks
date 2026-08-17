@@ -1,0 +1,36 @@
+schema_version = "1.4"
+
+[task]
+name = "ecommerce-browser-gym/d463_pellucid_carafe_drip_pricing"
+version = "1.0.0"
+description = "Buy ValueMart first-party carafe $56. Email Alice the all-in comparison including ShopGym glass $8.50 + signature $5.99 (sticker $49 is not all-in)."
+authors = [{ name = "Deccan", email = "alice@shopmail.com" }]
+keywords = ["browser-use", "ecommerce", "breaker"]
+
+[metadata]
+gym_task_id = "d463/pellucid_carafe_drip_pricing"
+category = "browser-gym-breaker"
+seed_coverage = "5/5 Sol BREAK 0.75 (seed0 full traj; seeds 1–4 scorecards from remaining job)"
+primary_failure_tag = "Information Extraction Failures"
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+cpus = 2
+memory_mb = 4096
+build_timeout_sec = 600.0
+
+[rollout_baseline.gpt56sol]
+name = "openai/gpt-5.6-sol"
+harness = "openai_pixel@tip-bridged"
+rollout_n = 5
+reward_mean = 0.75
+reward_std = 0.0
+reward_min = 0.75
+reward_max = 0.75
+pass_rate = 0.0
+mean_steps = 25.6

@@ -1,0 +1,50 @@
+{
+  "reward": 0.5,
+  "success": false,
+  "steps": 20,
+  "seed": 0,
+  "episode_id": "912c64a2",
+  "disposition": "BREAK",
+  "source": "ui031-ui060 seed0",
+  "fail": "read service; bought nothing; never asked size",
+  "scorecard_only": false,
+  "verifier_result": {
+    "score": 0.5,
+    "success": false,
+    "newly_fired": [],
+    "missed_milestones": [
+      "asked_size",
+      "bought_guess"
+    ],
+    "all_milestones": [
+      {
+        "name": "read_service",
+        "weight": 0.25,
+        "fired_at_step": 0,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "asked_size",
+        "weight": 0.5,
+        "fired_at_step": -1,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "did_not_buy",
+        "weight": 0.25,
+        "fired_at_step": 0,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "bought_guess",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      }
+    ]
+  }
+}

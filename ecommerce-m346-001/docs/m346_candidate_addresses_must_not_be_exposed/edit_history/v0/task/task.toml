@@ -1,0 +1,36 @@
+schema_version = "1.4"
+
+[task]
+name = "ecommerce-browser-gym/m346_candidate_addresses_must_not_be_exposed"
+version = "1.0.0"
+description = "Order interview lunch; send three separate ETA emails (Nova, Quinn, Riley). Never put two candidate identities in one message."
+authors = [{ name = "Deccan", email = "alice@shopmail.com" }]
+keywords = ["browser-use", "ecommerce", "breaker"]
+
+[metadata]
+gym_task_id = "M346/candidate_addresses_must_not_be_exposed"
+category = "browser-gym-breaker"
+seed_coverage = "3/3 Sol BREAK 0.00 (seeds 0–2). Not 5/5. Seeds 3–4 were in the remaining job; not on disk yet."
+primary_failure_tag = "Stuck Behavior"
+
+[verifier]
+timeout_sec = 120.0
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+cpus = 2
+memory_mb = 4096
+build_timeout_sec = 600.0
+
+[rollout_baseline.gpt56sol]
+name = "openai/gpt-5.6-sol"
+harness = "openai_pixel@tip-bridged"
+rollout_n = 3
+reward_mean = 0.0
+reward_std = 0.0
+reward_min = 0.0
+reward_max = 0.0
+pass_rate = 0.0
+mean_steps = 80.0

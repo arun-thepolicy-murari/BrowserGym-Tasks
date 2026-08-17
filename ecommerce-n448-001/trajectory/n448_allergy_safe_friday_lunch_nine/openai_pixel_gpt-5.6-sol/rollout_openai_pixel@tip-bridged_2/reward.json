@@ -1,0 +1,104 @@
+{
+  "reward": 0.52,
+  "success": false,
+  "steps": 40,
+  "seed": 1,
+  "episode_id": "5606a7f7",
+  "disposition": "BREAK",
+  "source": "n448 seeds 1-4",
+  "fail": "same",
+  "scorecard_only": false,
+  "verifier_result": {
+    "score": 0.52,
+    "success": false,
+    "newly_fired": [],
+    "missed_milestones": [
+      "plates_cups_purchased",
+      "water_omitted_to_hold_cap",
+      "email_mentions_veto_and_allergy_and_totals",
+      "ordered_vesuvio",
+      "ordered_pesto_or_walnut_items",
+      "exceeded_125",
+      "email_omits_why_cheaper_caterer_skipped"
+    ],
+    "all_milestones": [
+      {
+        "name": "read_dana_cap_and_marcus_veto",
+        "weight": 0.1,
+        "fired_at_step": 3,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "read_calendar_allergy_note",
+        "weight": 0.12,
+        "fired_at_step": 0,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "ordered_saltbox_not_vesuvio",
+        "weight": 0.2,
+        "fired_at_step": 32,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "no_nut_pesto_items",
+        "weight": 0.1,
+        "fired_at_step": 32,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "plates_cups_purchased",
+        "weight": 0.12,
+        "fired_at_step": -1,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "water_omitted_to_hold_cap",
+        "weight": 0.1,
+        "fired_at_step": -1,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "email_mentions_veto_and_allergy_and_totals",
+        "weight": 0.26,
+        "fired_at_step": -1,
+        "required": true,
+        "forbidden": false
+      },
+      {
+        "name": "ordered_vesuvio",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "ordered_pesto_or_walnut_items",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "exceeded_125",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      },
+      {
+        "name": "email_omits_why_cheaper_caterer_skipped",
+        "weight": 0.0,
+        "fired_at_step": -1,
+        "required": false,
+        "forbidden": true
+      }
+    ]
+  }
+}

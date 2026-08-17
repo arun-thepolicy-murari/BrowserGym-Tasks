@@ -1,0 +1,1 @@
+ShopGym: no address change after a shipment has left the warehouse.

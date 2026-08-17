@@ -1,0 +1,10 @@
+{
+  "schema_version": "ATIF-v1.7",
+  "session_id": "ab3b39fa",
+  "note": "scorecard only \u2014 gym JSONL still on Cloud Run worker / GCS",
+  "agent": {
+    "name": "openai_pixel",
+    "model_name": "gpt-5.6-sol"
+  },
+  "steps": []
+}

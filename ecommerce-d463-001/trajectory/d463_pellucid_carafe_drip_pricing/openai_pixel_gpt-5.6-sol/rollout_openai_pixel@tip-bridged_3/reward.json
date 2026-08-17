@@ -1,0 +1,12 @@
+{
+  "reward": 0.75,
+  "success": false,
+  "steps": 25,
+  "seed": 2,
+  "episode_id": "e3f24bff",
+  "disposition": "BREAK",
+  "source": "remaining 5-seed GCS scorecard only",
+  "fail": "same 0.75",
+  "scorecard_only": true,
+  "verifier_result": {}
+}

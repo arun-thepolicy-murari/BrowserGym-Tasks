@@ -1,0 +1,1 @@
+Idris emailed about the Pellucid 8-cup glass carafe for the kitchen. I have seen it on ShopGym and on ValueMart. Get it from whichever is cheaper once everything is actually on the card. Email me at alice@shopgym.com with the shop, the all-in total, and the fees you counted.
